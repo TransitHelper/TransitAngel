@@ -1,6 +1,6 @@
-# TransitHelper
+# TransitAngel
 ## Overview
- Transit Helper provides a way for users to plan trips and most importantly get notifications one stop before their upcoming destination on public transports. This app is designed for everyone but we are specially taking in consideration the users who rely heavily on phone’s accessibility features for getting realtime information to plan their daily commute without relying on anyone else.
+ Transit Angel provides a way for users to plan trips and most importantly get notifications one stop before their upcoming destination on public transports. This app is designed for everyone but we are specially taking in consideration the users who rely heavily on phone’s accessibility features for getting realtime information to plan their daily commute without relying on anyone else.
  
 ## User Need 
 Imagine a blind person who is new to the city and  just needs to travel from San Jose to San Francisco via public transit. He needs to figure out which station to go to, find the right train , board it and then rely on fellow passengers to help notify when he/she reaches their destination. The voice alerts in the train announced by the driver are hardly audible with the all the surrounding noise. TransitAngel tries to help ease this process and remove the frustration! The app helps users to plan  trips and get real-time ,on-demand notifications about the current place and upcoming destination while riding on a public transit. Though the app could be used by anyone who is using the public transit , we are specifically optimizing the app for visually impaired users.
