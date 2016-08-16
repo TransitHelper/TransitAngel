@@ -17,3 +17,23 @@
   - User could be delay information about any saved trip proactively via a push engine
   - Add additional services like Muni and other public transportation
   - Add Smart notifications which could give them about upcoming train information learning from their usage pattern of the app. Eg. If they open the app at 7 AM and 5 PM, we could make use of this information to give them information about directions and delay information before hand.
+
+## Wireframes
+
+
+### 1. Home Screen
+![Home Screen](1-HomeScreen.png)
+
+### 2. Search Screen
+![Search Screen](2-SearchScreen.png)
+
+### 3. Trip Info Screen
+![Trip Info Screen](3-TripInfoScreen.png)
+
+### 4. Trip Started Screen
+![Trip Started Screen](4-TripStarted.png)
+
+
+[Fluid working prototype] (https://www.fluidui.com/editor/live/preview/p_cixcZ09rkHMCucNTgQfan4oGan2mEkOi.1471293945783) 
+
+Credit : Fuild Wireframe
