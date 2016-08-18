@@ -1,5 +1,5 @@
 # TransitAngel
-## Overview
+## Overview of the project
  Transit Angel provides a way for users to plan trips and most importantly get notifications one stop before their upcoming destination on public transports. This app is designed for everyone but we are specially taking in consideration the users who rely heavily on phone’s accessibility features for getting realtime information to plan their daily commute without relying on anyone else.
  
 ## User Need 
