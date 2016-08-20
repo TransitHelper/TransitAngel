@@ -30,21 +30,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         mTripHelperApiFactory = new TripHelperApiFactory(new TripHelplerRequestInterceptor(this));
 
-        //get all the services limited,local and babybullet
-        ArrayList<Service> services = CaltrainTransitManager.getSharedInstance().getServices(this);
-        //get all the stops
-        ArrayList<Stop> stops = CaltrainTransitManager.getSharedInstance().getStops(this);
-        //get hashmap for faster lookup of stop if you have stop id
-        HashMap<String,Stop> stopHashMap = CaltrainTransitManager.getSharedInstance().getStopLookup();
-        Log.d("Services",services.toString());
-        Log.d("Stops",stops.toString());
-
-        //fetch trains from SF to Santa Clara
-        //Note: currently ignores the leaving after parameter and also ignore weekday/weekend
-
-        ArrayList<Train> trains = CaltrainTransitManager.getSharedInstance().fetchTrains(this,"70021","70242",null);
-        Log.d("Trains from SF to MView",trains.toString());
-
     }
 
     @Override
@@ -74,4 +59,26 @@ public class MainActivity extends AppCompatActivity {
     private void handleResult(List<sampleJsonModel> response) {
         Log.e(MainActivity.class.getSimpleName(),response.toString());
     }
+
+    public void modelSampleCalls() {
+        //get all the services limited,local and babybullet
+        ArrayList<Service> services = CaltrainTransitManager.getSharedInstance().getServices();
+        //get all the stops
+        ArrayList<Stop> stops = CaltrainTransitManager.getSharedInstance().getStops();
+        //get hashmap for faster lookup of stop if you have stop id
+        HashMap<String,Stop> stopHashMap = CaltrainTransitManager.getSharedInstance().getStopLookup();
+        Log.d("Services",services.toString());
+        Log.d("Stops",stops.toString());
+
+        //fetch trains from SF to Santa Clara
+        //Note: currently ignores the leaving after parameter and also ignore weekday/weekend
+
+        ArrayList<Train> trains = CaltrainTransitManager.getSharedInstance().fetchTrains("70011","70262",-1,null,true);
+        Log.d("Trains from SF to MView",trains.toString());
+
+        //fetch trains arriving at a certain destination within a certain duration
+        ArrayList<Train> arrivingTrains = CaltrainTransitManager.getSharedInstance().fetchTrainsForDestination("70011",3);
+        Log.d("Trains arriving station",arrivingTrains.toString());
+    }
+
 }
