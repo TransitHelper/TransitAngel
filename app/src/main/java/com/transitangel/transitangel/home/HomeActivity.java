@@ -77,6 +77,10 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
 
         //fetch trains from SF to Santa Clara
         //Note: currently ignores the leaving after parameter and also ignore weekday/weekend
+
+        //fetch trains arriving at a certain destination within a certain duration
+        ArrayList<Train> arrivingTrains = CaltrainTransitManager.getSharedInstance().fetchTrainsArrivingAtDestination("70011",3);
+        Log.d("Trains arriving station",arrivingTrains.toString());
     }
 
     private void init() {
@@ -84,7 +88,8 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
         getSupportActionBar().setTitle(null);
         tvTitle.setText(getString(R.string.home_title));
 
-        ArrayList<Train> trains = CaltrainTransitManager.getSharedInstance().fetchTrains("70021", "70242", -1,new Date(),true);
+        Date today = new Date();
+        ArrayList<Train> trains = CaltrainTransitManager.getSharedInstance().fetchTrains("70021", "70242",5,today,false);
         Log.d("Trains from SF to MView", trains.toString());
 
         // Creating a dummy recents list.

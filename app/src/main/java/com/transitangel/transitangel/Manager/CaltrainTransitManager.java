@@ -187,7 +187,7 @@ public class CaltrainTransitManager extends TransitManager {
     //Given a destination and the hour limit, fetch all the trains which will arrive at the destination
     //within that hour limit
     //TODO missed an important part, we need to know if it is north bound or south bound.
-    public ArrayList<Train> fetchTrainsForDestination(
+    public ArrayList<Train> fetchTrainsArrivingAtDestination(
              String toStopId //to station
             , int hourLimit //
     ) {
