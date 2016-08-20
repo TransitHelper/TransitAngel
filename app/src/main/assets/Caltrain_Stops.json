@@ -1,0 +1,596 @@
+{
+  "Contents": {
+    "ResponseTimestamp": "2016-08-19T17:33:35-07:00",
+    "dataObjects": {
+      "id": "CT",
+      "ScheduledStopPoint": [
+        {
+          "id": "70021",
+          "Name": "CALTRAIN - 22ND ST STATION",
+          "Location": {
+            "Longitude": "-122.392318",
+            "Latitude": "37.757692"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70021",
+          "Name": "CALTRAIN - 22ND ST STATION",
+          "Location": {
+            "Longitude": "-122.392318",
+            "Latitude": "37.757692"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70152",
+          "Name": "CALTRAIN - ATHERTON STATION",
+          "Location": {
+            "Longitude": "-122.198152",
+            "Latitude": "37.464458"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70152",
+          "Name": "CALTRAIN - ATHERTON STATION",
+          "Location": {
+            "Longitude": "-122.198152",
+            "Latitude": "37.464458"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70031",
+          "Name": "CALTRAIN - BAYSHORE STATION",
+          "Location": {
+            "Longitude": "-122.401366",
+            "Latitude": "37.711202"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70031",
+          "Name": "CALTRAIN - BAYSHORE STATION",
+          "Location": {
+            "Longitude": "-122.401366",
+            "Latitude": "37.711202"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70122",
+          "Name": "CALTRAIN - BELMONT STATION",
+          "Location": {
+            "Longitude": "-122.275574",
+            "Latitude": "37.520713"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70122",
+          "Name": "CALTRAIN - BELMONT STATION",
+          "Location": {
+            "Longitude": "-122.275574",
+            "Latitude": "37.520713"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70292",
+          "Name": "CALTRAIN - BLOSSOM HILL STATION",
+          "Location": {
+            "Longitude": "-121.797361",
+            "Latitude": "37.252197"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70292",
+          "Name": "CALTRAIN - BLOSSOM HILL STATION",
+          "Location": {
+            "Longitude": "-121.797361",
+            "Latitude": "37.252197"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70071",
+          "Name": "CALTRAIN - BROADWAY STATION",
+          "Location": {
+            "Longitude": "-122.363405",
+            "Latitude": "37.587878"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70071",
+          "Name": "CALTRAIN - BROADWAY STATION",
+          "Location": {
+            "Longitude": "-122.363405",
+            "Latitude": "37.587878"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70081",
+          "Name": "CALTRAIN - BURLINGAME STATION",
+          "Location": {
+            "Longitude": "-122.345145",
+            "Latitude": "37.580246"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70081",
+          "Name": "CALTRAIN - BURLINGAME STATION",
+          "Location": {
+            "Longitude": "-122.345145",
+            "Latitude": "37.580246"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70081",
+          "Name": "CALTRAIN - BURLINGAME STATION",
+          "Location": {
+            "Longitude": "-122.345145",
+            "Latitude": "37.580246"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70191",
+          "Name": "CALTRAIN - CALIFORNIA AVE STATION",
+          "Location": {
+            "Longitude": "-122.142258",
+            "Latitude": "37.42952"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70191",
+          "Name": "CALTRAIN - CALIFORNIA AVE STATION",
+          "Location": {
+            "Longitude": "-122.142258",
+            "Latitude": "37.42952"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70281",
+          "Name": "CALTRAIN - CAPITOL STATION",
+          "Location": {
+            "Longitude": "-121.841793",
+            "Latitude": "37.283864"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70281",
+          "Name": "CALTRAIN - CAPITOL STATION",
+          "Location": {
+            "Longitude": "-121.841793",
+            "Latitude": "37.283864"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70251",
+          "Name": "CALTRAIN - COLLEGE PARK STATION",
+          "Location": {
+            "Longitude": "-121.91539",
+            "Latitude": "37.342687"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70251",
+          "Name": "CALTRAIN - COLLEGE PARK STATION",
+          "Location": {
+            "Longitude": "-121.91539",
+            "Latitude": "37.342687"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70262",
+          "Name": "CALTRAIN - DIRIDON STATION",
+          "Location": {
+            "Longitude": "-121.903447",
+            "Latitude": "37.328642"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70262",
+          "Name": "CALTRAIN - DIRIDON STATION",
+          "Location": {
+            "Longitude": "-121.903447",
+            "Latitude": "37.328642"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70322",
+          "Name": "CALTRAIN - GILROY STATION",
+          "Location": {
+            "Longitude": "-121.567076",
+            "Latitude": "37.00545"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70322",
+          "Name": "CALTRAIN - GILROY STATION",
+          "Location": {
+            "Longitude": "-121.567076",
+            "Latitude": "37.00545"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70101",
+          "Name": "CALTRAIN - HAYWARD PARK STATION",
+          "Location": {
+            "Longitude": "-122.309097",
+            "Latitude": "37.552181"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70101",
+          "Name": "CALTRAIN - HAYWARD PARK STATION",
+          "Location": {
+            "Longitude": "-122.309097",
+            "Latitude": "37.552181"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70101",
+          "Name": "CALTRAIN - HAYWARD PARK STATION",
+          "Location": {
+            "Longitude": "-122.309097",
+            "Latitude": "37.552181"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70111",
+          "Name": "CALTRAIN - HILLSDALE STATION",
+          "Location": {
+            "Longitude": "-122.297001",
+            "Latitude": "37.537416"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70111",
+          "Name": "CALTRAIN - HILLSDALE STATION",
+          "Location": {
+            "Longitude": "-122.297001",
+            "Latitude": "37.537416"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70231",
+          "Name": "CALTRAIN - LAWRENCE STATION",
+          "Location": {
+            "Longitude": "-121.996437",
+            "Latitude": "37.370515"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70231",
+          "Name": "CALTRAIN - LAWRENCE STATION",
+          "Location": {
+            "Longitude": "-121.996437",
+            "Latitude": "37.370515"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70161",
+          "Name": "CALTRAIN - MENLO PARK STATION",
+          "Location": {
+            "Longitude": "-122.182266",
+            "Latitude": "37.454382"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70161",
+          "Name": "CALTRAIN - MENLO PARK STATION",
+          "Location": {
+            "Longitude": "-122.182266",
+            "Latitude": "37.454382"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70062",
+          "Name": "CALTRAIN - MILLBRAE STATION",
+          "Location": {
+            "Longitude": "-122.386097",
+            "Latitude": "37.599223"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70062",
+          "Name": "CALTRAIN - MILLBRAE STATION",
+          "Location": {
+            "Longitude": "-122.386097",
+            "Latitude": "37.599223"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70301",
+          "Name": "CALTRAIN - MORGAN HILL STATION",
+          "Location": {
+            "Longitude": "-121.652744",
+            "Latitude": "37.131693"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70301",
+          "Name": "CALTRAIN - MORGAN HILL STATION",
+          "Location": {
+            "Longitude": "-121.652744",
+            "Latitude": "37.131693"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70211",
+          "Name": "CALTRAIN - MOUNTAIN VIEW STATION",
+          "Location": {
+            "Longitude": "-122.075954",
+            "Latitude": "37.394458"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70211",
+          "Name": "CALTRAIN - MOUNTAIN VIEW STATION",
+          "Location": {
+            "Longitude": "-122.075954",
+            "Latitude": "37.394458"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70172",
+          "Name": "CALTRAIN - PALO ALTO STATION",
+          "Location": {
+            "Longitude": "-122.164182",
+            "Latitude": "37.44334"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70172",
+          "Name": "CALTRAIN - PALO ALTO STATION",
+          "Location": {
+            "Longitude": "-122.164182",
+            "Latitude": "37.44334"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70141",
+          "Name": "CALTRAIN - REDWOOD CITY STATION",
+          "Location": {
+            "Longitude": "-122.231594",
+            "Latitude": "37.485892"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70141",
+          "Name": "CALTRAIN - REDWOOD CITY STATION",
+          "Location": {
+            "Longitude": "-122.231594",
+            "Latitude": "37.485892"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70201",
+          "Name": "CALTRAIN - SAN ANTONIO STATION",
+          "Location": {
+            "Longitude": "-122.108158",
+            "Latitude": "37.40796"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70201",
+          "Name": "CALTRAIN - SAN ANTONIO STATION",
+          "Location": {
+            "Longitude": "-122.108158",
+            "Latitude": "37.40796"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70052",
+          "Name": "CALTRAIN - SAN BRUNO STATION",
+          "Location": {
+            "Longitude": "-122.411291",
+            "Latitude": "37.629831"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70052",
+          "Name": "CALTRAIN - SAN BRUNO STATION",
+          "Location": {
+            "Longitude": "-122.411291",
+            "Latitude": "37.629831"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70131",
+          "Name": "CALTRAIN - SAN CARLOS STATION",
+          "Location": {
+            "Longitude": "-122.259862",
+            "Latitude": "37.507648"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70131",
+          "Name": "CALTRAIN - SAN CARLOS STATION",
+          "Location": {
+            "Longitude": "-122.259862",
+            "Latitude": "37.507648"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70011",
+          "Name": "CALTRAIN - SAN FRANCISCO STATION",
+          "Location": {
+            "Longitude": "-122.395406",
+            "Latitude": "37.776541"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70011",
+          "Name": "CALTRAIN - SAN FRANCISCO STATION",
+          "Location": {
+            "Longitude": "-122.395406",
+            "Latitude": "37.776541"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70311",
+          "Name": "CALTRAIN - SAN MARTIN STATION",
+          "Location": {
+            "Longitude": "-121.609916",
+            "Latitude": "37.085107"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70311",
+          "Name": "CALTRAIN - SAN MARTIN STATION",
+          "Location": {
+            "Longitude": "-121.609916",
+            "Latitude": "37.085107"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70091",
+          "Name": "CALTRAIN - SAN MATEO STATION",
+          "Location": {
+            "Longitude": "-122.32325",
+            "Latitude": "37.567616"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70091",
+          "Name": "CALTRAIN - SAN MATEO STATION",
+          "Location": {
+            "Longitude": "-122.32325",
+            "Latitude": "37.567616"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70091",
+          "Name": "CALTRAIN - SAN MATEO STATION",
+          "Location": {
+            "Longitude": "-122.32325",
+            "Latitude": "37.567616"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70242",
+          "Name": "CALTRAIN - SANTA CLARA STATION",
+          "Location": {
+            "Longitude": "-121.936346",
+            "Latitude": "37.352892"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70242",
+          "Name": "CALTRAIN - SANTA CLARA STATION",
+          "Location": {
+            "Longitude": "-121.936346",
+            "Latitude": "37.352892"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70042",
+          "Name": "CALTRAIN - S SAN FRANCISCO STATION",
+          "Location": {
+            "Longitude": "-122.405821",
+            "Latitude": "37.654972"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70042",
+          "Name": "CALTRAIN - S SAN FRANCISCO STATION",
+          "Location": {
+            "Longitude": "-122.405821",
+            "Latitude": "37.654972"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70221",
+          "Name": "CALTRAIN - SUNNYVALE STATION",
+          "Location": {
+            "Longitude": "-122.030683",
+            "Latitude": "37.378613"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70221",
+          "Name": "CALTRAIN - SUNNYVALE STATION",
+          "Location": {
+            "Longitude": "-122.030683",
+            "Latitude": "37.378613"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70271",
+          "Name": "CALTRAIN - TAMIEN STATION",
+          "Location": {
+            "Longitude": "-121.882759",
+            "Latitude": "37.310346"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "70271",
+          "Name": "CALTRAIN - TAMIEN STATION",
+          "Location": {
+            "Longitude": "-121.882759",
+            "Latitude": "37.310346"
+          },
+          "StopType": "onstreetBus"
+        }
+      ],
+      "stopAreas": null
+    }
+  }
+}

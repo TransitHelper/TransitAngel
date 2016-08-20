@@ -1,0 +1,29 @@
+[
+  {
+    "Id": "LOCAL",
+    "Name": "LOCAL",
+    "TransportMode": "rail",
+    "PublicCode": "LOCAL",
+    "SiriLineRef": "LOCAL",
+    "Montiored": true,
+    "OperatorRef": "Caltrain"
+  },
+  {
+    "Id": "BABY BULLET",
+    "Name": "BABY BULLET",
+    "TransportMode": "rail",
+    "PublicCode": "BABY BULLET",
+    "SiriLineRef": "BABY BULLET",
+    "Montiored": true,
+    "OperatorRef": "Caltrain"
+  },
+  {
+    "Id": "LIMITED",
+    "Name": "LIMITED",
+    "TransportMode": "rail",
+    "PublicCode": "LIMITED",
+    "SiriLineRef": "LIMITED",
+    "Montiored": true,
+    "OperatorRef": "Caltrain"
+  }
+]
