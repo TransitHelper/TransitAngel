@@ -1,5 +1,7 @@
 package com.transitangel.transitangel.Manager;
 
+import android.content.Context;
+
 import com.loopj.android.http.AsyncHttpClient;
 import com.transitangel.transitangel.model.Transit.Service;
 import com.transitangel.transitangel.model.Transit.Stop;
@@ -33,6 +35,10 @@ public class CaltrainTransitManager extends TransitManager {
 
         }
         return sInstance;
+    }
+
+    public void setup(Context context) {
+        mApplicationContext = context;
     }
 
     private void populateServices() {

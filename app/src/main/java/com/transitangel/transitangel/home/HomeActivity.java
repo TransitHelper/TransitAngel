@@ -24,6 +24,7 @@ import com.transitangel.transitangel.model.Transit.Train;
 import com.transitangel.transitangel.model.sampleJsonModel;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -31,8 +32,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.subscriptions.CompositeSubscription;
-
-
 
 public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnItemClickListener {
 
@@ -67,10 +66,10 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
         mTripHelperApiFactory = new TripHelperApiFactory(new TripHelplerRequestInterceptor(this));
 
         //get all the services limited,local and babybullet
-        ArrayList<Service> services = CaltrainTransitManager.getSharedInstance().getServices(this);
+        ArrayList<Service> services = CaltrainTransitManager.getSharedInstance().getServices();
 
         //get all the stops
-        ArrayList<Stop> stops = CaltrainTransitManager.getSharedInstance().getStops(this);
+        ArrayList<Stop> stops = CaltrainTransitManager.getSharedInstance().getStops();
         //get hashmap for faster lookup of stop if you have stop id
         HashMap<String, Stop> stopHashMap = CaltrainTransitManager.getSharedInstance().getStopLookup();
         Log.d("Services", services.toString());
@@ -85,7 +84,7 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
         getSupportActionBar().setTitle(null);
         tvTitle.setText(getString(R.string.home_title));
 
-        ArrayList<Train> trains = CaltrainTransitManager.getSharedInstance().fetchTrains(this, "70021", "70242", null);
+        ArrayList<Train> trains = CaltrainTransitManager.getSharedInstance().fetchTrains("70021", "70242", -1,new Date(),true);
         Log.d("Trains from SF to MView", trains.toString());
 
         // Creating a dummy recents list.
