@@ -31,6 +31,7 @@ public class TransitManager {
     protected String apiBaseUrl = "http://api.511.org/transit";
     protected String apiKey = "a24b8b61-63e2-4571-a41b-11490cd9ada9";
 
+    protected Context mApplicationContext;
     public static TAConstants.TRANSIT_TYPE mTransitType;
 
     public static AsyncHttpClient httpClient;
@@ -41,6 +42,10 @@ public class TransitManager {
 
         }
         return sInstance;
+    }
+
+    public void setup(Context context) {
+        mApplicationContext = context;
     }
 
     public RequestParams getBaseParams() {
@@ -126,11 +131,11 @@ public class TransitManager {
     }
 
 
-    public String loadJSONFromAsset(Context context, String fileName) {
+    public String loadJSONFromAsset(String fileName) {
         String json = null;
         try {
 
-            InputStream is = context.getAssets().open(fileName);
+            InputStream is = mApplicationContext.getAssets().open(fileName);
 
             int size = is.available();
 

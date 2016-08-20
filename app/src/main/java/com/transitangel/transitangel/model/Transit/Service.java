@@ -15,10 +15,11 @@ public class Service {
 
     TAConstants.SERVICE_TYPE serviceType; //Limited,Baby Bullet,Local
     ArrayList<Route> routes;
-    ArrayList<Train> trains;
+    ArrayList<Train> weekdayTrains;
+    ArrayList<Train> weekendTrains;
 
 
-    public  Service(JSONObject serviceObj ,TAConstants.SERVICE_TYPE service_type) throws JSONException {
+    public Service(JSONObject serviceObj, TAConstants.SERVICE_TYPE service_type) throws JSONException {
 
         serviceType = service_type;
 
@@ -30,31 +31,37 @@ public class Service {
 
         //populate routes
         routes = new ArrayList<Route>();
-        for (int i = 0; i< routeObjs.length();i++){
+        for (int i = 0; i < routeObjs.length(); i++) {
             JSONObject routeObj = routeObjs.getJSONObject(i);
             Route route = new Route(routeObj);
             routes.add(route);
         }
 
         //populate trains
-        trains = new ArrayList<Train>();
+        weekdayTrains = new ArrayList<>();
+        weekendTrains = new ArrayList<>();
         JSONArray ttFrames = serviceObj
                 .getJSONObject("Content")
                 .getJSONArray("TimetableFrame");
         //ttframe represent south bound -weekday, northbound-weekend etc..
         //each ttframe has multiple trains
-        for (int i=0;i<ttFrames.length();i++) {
+        for (int i = 0; i < ttFrames.length(); i++) {
             JSONObject ttFrame = ttFrames.getJSONObject(i);
             String name = ttFrame.getString("Name"); //example LIMITED:N :Weekday
+
             JSONArray trainObjArr = ttFrame.getJSONObject("vehicleJourneys").getJSONArray("ServiceJourney");
-            for (int j=0;j<trainObjArr.length();j++) {
+            for (int j = 0; j < trainObjArr.length(); j++) {
                 JSONObject trainObj = trainObjArr.getJSONObject(j);
                 Train train = new Train(trainObj);
                 train.name = name;
-                trains.add(train);
+
+                if (name.contains("Weekday")) {
+                    weekdayTrains.add(train);
+                } else {
+                    weekendTrains.add(train);
+                }
             }
         }
-
     }
 
     public TAConstants.SERVICE_TYPE getServiceType() {
@@ -65,7 +72,11 @@ public class Service {
         return routes;
     }
 
-    public ArrayList<Train> getTrains() {
-        return trains;
+    public ArrayList<Train> getWeekdayTrains() {
+        return weekdayTrains;
+    }
+
+    public ArrayList<Train> getWeekendTrains() {
+        return weekendTrains;
     }
 }
