@@ -24,7 +24,6 @@
         <activity android:name=".search.SearchActivity" />
         <activity android:name=".LocationActivity"></activity>
         <activity android:name=".schedule.ScheduleActivity"/>
-        </activity>
     </application>
 
 </manifest>
