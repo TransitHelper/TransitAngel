@@ -1,4 +1,4 @@
-package com.transitangel.transitangel.search;
+package com.transitangel.transitangel.schedule;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,9 +22,9 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if (position == 0)
-            return SearchFragment.newInstance(TAConstants.TRANSIT_TYPE.CALTRAIN);
+            return ScheduleFragment.newInstance(TAConstants.TRANSIT_TYPE.CALTRAIN);
         else
-            return SearchFragment.newInstance(TAConstants.TRANSIT_TYPE.BART);
+            return ScheduleFragment.newInstance(TAConstants.TRANSIT_TYPE.BART);
     }
 
     @Override

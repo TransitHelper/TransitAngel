@@ -1,4 +1,4 @@
-package com.transitangel.transitangel.search;
+package com.transitangel.transitangel.schedule;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -31,7 +31,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SearchFragment extends Fragment {
+public class ScheduleFragment extends Fragment {
 
     @BindView(R.id.from_station)
     Spinner mFromStation;
@@ -53,13 +53,13 @@ public class SearchFragment extends Fragment {
     int mFromStationPosition=0;
     int mToStationPosition=0;
 
-    public SearchFragment() {
+    public ScheduleFragment() {
         // Required empty public constructor
     }
 
     // TODO: Rename and change types and number of parameters
-    public static SearchFragment newInstance(TAConstants.TRANSIT_TYPE type) {
-        SearchFragment fragment = new SearchFragment();
+    public static ScheduleFragment newInstance(TAConstants.TRANSIT_TYPE type) {
+        ScheduleFragment fragment = new ScheduleFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_TRANSIT_TYPE, type);
         fragment.setArguments(args);
@@ -82,7 +82,7 @@ public class SearchFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_search, container, false);
+        View view = inflater.inflate(R.layout.fragment_schedule, container, false);
         ButterKnife.bind(this, view);
         setUpStations();
         getRecentTrains();

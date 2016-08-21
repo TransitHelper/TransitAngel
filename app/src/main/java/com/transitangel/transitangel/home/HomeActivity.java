@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.transitangel.transitangel.LocationActivity;
 import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
 import com.transitangel.transitangel.Manager.TrafficNewsAlertResponseHandler;
@@ -30,6 +29,7 @@ import com.transitangel.transitangel.model.Transit.TrafficNewsAlert;
 import com.transitangel.transitangel.model.Transit.Train;
 import com.transitangel.transitangel.model.Transit.Tweet;
 import com.transitangel.transitangel.model.sampleJsonModel;
+import com.transitangel.transitangel.schedule.ScheduleActivity;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -106,9 +106,6 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
 
     private void executeSampleAPICalls() {
 
-        Stop caltrainStop = CaltrainTransitManager.getSharedInstance().getNearestStop(37.401438,-121.9252457);
-        Stop bartStop = BartTransitManager.getSharedInstance().getNearestStop(37.401438,-121.9252457);
-
         //get all the services limited,local and babybullet
         ArrayList<Service> services = CaltrainTransitManager.getSharedInstance().getServices();
 
@@ -177,9 +174,7 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
 
     @OnClick(R.id.btnSchedule)
     public void onScheduleClicked() {
-//        Intent intent= new Intent(this, SearchActivity.class);
-//        startActivity(intent);
-        Intent intent= new Intent(this, LocationActivity.class);
+        Intent intent= new Intent(this, ScheduleActivity.class);
         startActivity(intent);
     }
 
