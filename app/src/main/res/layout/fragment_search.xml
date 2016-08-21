@@ -1,0 +1,57 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.transitangel.transitangel.search.SearchFragment">
+
+    <Spinner
+        android:id="@+id/from_station"
+        style="@style/spinnerStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:dropDownWidth="wrap_content"
+        android:gravity="center"
+        android:padding="8dp"
+        android:spinnerMode="dropdown" />
+
+    <ImageButton
+        android:id="@+id/swap_station"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@android:color/white"
+        android:src="@drawable/ic_swap" />
+
+    <Spinner
+        android:id="@+id/to_station"
+        style="@style/spinnerStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:dropDownWidth="wrap_content"
+        android:gravity="center"
+        android:padding="8dp"
+        android:spinnerMode="dropdown" />
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/recents_Scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvRecents"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp" />
+    </android.support.v4.widget.NestedScrollView>
+</LinearLayout>

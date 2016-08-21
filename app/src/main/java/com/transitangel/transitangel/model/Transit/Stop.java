@@ -35,4 +35,9 @@ public class Stop
     public String getLatitude() {
         return latitude;
     }
+
+    //to display object as a string in spinner
+    public String toString() {
+        return name;
+    }
 }

@@ -1,5 +1,6 @@
 package com.transitangel.transitangel.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -22,6 +23,7 @@ import com.transitangel.transitangel.model.Transit.Service;
 import com.transitangel.transitangel.model.Transit.Stop;
 import com.transitangel.transitangel.model.Transit.Train;
 import com.transitangel.transitangel.model.sampleJsonModel;
+import com.transitangel.transitangel.search.SearchActivity;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -79,8 +81,8 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
         //Note: currently ignores the leaving after parameter and also ignore weekday/weekend
 
         //fetch trains arriving at a certain destination within a certain duration
-        ArrayList<Train> arrivingTrains = CaltrainTransitManager.getSharedInstance().fetchTrainsArrivingAtDestination("70011",3);
-        Log.d("Trains arriving station",arrivingTrains.toString());
+        ArrayList<Train> arrivingTrains = CaltrainTransitManager.getSharedInstance().fetchTrainsArrivingAtDestination("70011", 3);
+        Log.d("Trains arriving station", arrivingTrains.toString());
     }
 
     private void init() {
@@ -89,13 +91,13 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
         tvTitle.setText(getString(R.string.home_title));
 
         Date today = new Date();
-        ArrayList<Train> trains = CaltrainTransitManager.getSharedInstance().fetchTrains("70021", "70242",5,today,false);
+        ArrayList<Train> trains = CaltrainTransitManager.getSharedInstance().fetchTrains("70021", "70242", 5, today, false);
         Log.d("Trains from SF to MView", trains.toString());
 
         // Creating a dummy recents list.
         recentsItemList = new ArrayList<>();
-        for(Train train: trains) {
-            recentsItemList.add(new RecentsItem(train.getTrainStops().get(0).getStopId(), train.getTrainStops().get(train.getTrainStops().size()-1).getStopId()));
+        for (Train train : trains) {
+            recentsItemList.add(new RecentsItem(train.getTrainStops().get(0).getStopId(), train.getTrainStops().get(train.getTrainStops().size() - 1).getStopId()));
         }
         // Create the recents adapter.
         RecentAdapter adapter = new RecentAdapter(this, recentsItemList);
@@ -105,7 +107,7 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
         adapter.setOnItemClickListener(this);
 
         // Hack to avoid recycler view scrolling to middle.
-        nsvContent.post(() -> nsvContent.scrollTo(0,0));
+        nsvContent.post(() -> nsvContent.scrollTo(0, 0));
     }
 
 
@@ -116,7 +118,8 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
 
     @OnClick(R.id.btnSchedule)
     public void onScheduleClicked() {
-        showSnackBar(clMainContent, "Schedule clicked!");
+        Intent intent= new Intent(this, SearchActivity.class);
+        startActivity(intent);
     }
 
     @Override
