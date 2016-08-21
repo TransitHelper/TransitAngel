@@ -15,13 +15,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
+import com.transitangel.transitangel.Manager.TrafficNewsAlertResponseHandler;
+import com.transitangel.transitangel.Manager.TransitManager;
+import com.transitangel.transitangel.Manager.TweetAlertResponseHandler;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.api.TripHelperApiFactory;
 import com.transitangel.transitangel.api.TripHelplerRequestInterceptor;
 import com.transitangel.transitangel.model.Transit.Service;
 import com.transitangel.transitangel.model.Transit.Stop;
+import com.transitangel.transitangel.model.Transit.TrafficNewsAlert;
 import com.transitangel.transitangel.model.Transit.Train;
+import com.transitangel.transitangel.model.Transit.Tweet;
 import com.transitangel.transitangel.model.sampleJsonModel;
 import com.transitangel.transitangel.search.SearchActivity;
 
@@ -67,19 +73,7 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
         init();
         mTripHelperApiFactory = new TripHelperApiFactory(new TripHelplerRequestInterceptor(this));
 
-        //get all the services limited,local and babybullet
-        ArrayList<Service> services = CaltrainTransitManager.getSharedInstance().getServices();
-
-        //get all the stops
-        ArrayList<Stop> stops = CaltrainTransitManager.getSharedInstance().getStops();
-        //get hashmap for faster lookup of stop if you have stop id
-        HashMap<String, Stop> stopHashMap = CaltrainTransitManager.getSharedInstance().getStopLookup();
-        Log.d("Services", services.toString());
-        Log.d("Stops", stops.toString());
-
-        //fetch trains from SF to Santa Clara
-        //Note: currently ignores the leaving after parameter and also ignore weekday/weekend
-
+        executeSampleAPICalls();
         //fetch trains arriving at a certain destination within a certain duration
         ArrayList<Train> arrivingTrains = CaltrainTransitManager.getSharedInstance().fetchTrainsArrivingAtDestination("70011", 3);
         Log.d("Trains arriving station", arrivingTrains.toString());
@@ -110,6 +104,68 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
         nsvContent.post(() -> nsvContent.scrollTo(0, 0));
     }
 
+    private void executeSampleAPICalls() {
+
+        //get all the services limited,local and babybullet
+        ArrayList<Service> services = CaltrainTransitManager.getSharedInstance().getServices();
+
+        //get all the stops
+        ArrayList<Stop> stops = CaltrainTransitManager.getSharedInstance().getStops();
+        //get hashmap for faster lookup of stop if you have stop id
+        HashMap<String, Stop> stopHashMap = CaltrainTransitManager.getSharedInstance().getStopLookup();
+        Log.d("Services", services.toString());
+        Log.d("Stops", stops.toString());
+
+        //fetch trains from SF to Santa Clara
+        //Note: currently ignores the leaving after parameter and also ignore weekday/weekend
+
+        //fetch trains arriving at a certain destination within a certain duration
+        ArrayList<Train> arrivingTrains = CaltrainTransitManager.getSharedInstance().fetchTrainsArrivingAtDestination("70011",3);
+        Log.d("Trains arriving station",arrivingTrains.toString());
+
+        //bart stops
+        ArrayList<Stop> bartStops = BartTransitManager.getSharedInstance().getStops();
+        Log.d("Bart Stops",bartStops.toString());
+        //bart services
+        ArrayList<Service> bartServices = BartTransitManager.getSharedInstance().getServices();
+        Log.d("Bart Services",bartServices.toString());
+        // fetch trains from Fremont to Daly City
+        //last boolean to include all trains irrespective of that day time or not
+        ArrayList<Train> bartTrains = BartTransitManager.getSharedInstance().fetchTrains("12018519","12018513",-1,new Date(),true);
+        Log.d("Fremont to DalyCity",bartTrains.toString());
+        ArrayList<Train> arrivingBartTrains = BartTransitManager.getSharedInstance().fetchTrainsArrivingAtDestination("12018519",4);
+        Log.d("Bart arriving fremont",arrivingBartTrains.toString());
+
+        //fetch news alerts
+        TransitManager.getSharedInstance().fetchLatestTrafficNewsAlerts(new TrafficNewsAlertResponseHandler() {
+            @Override
+            public void onNewsAlertsReceived(boolean isSuccess, ArrayList<TrafficNewsAlert> trafficNewsAlerts) {
+                if ( isSuccess) {
+                    Log.d("Traffic News Alerts",trafficNewsAlerts.toString());
+                }
+            }
+        });
+
+        //fetch tweets
+        TransitManager.getSharedInstance().fetchTweetAlerts(new TweetAlertResponseHandler() {
+            @Override
+            public void onTweetsReceived(boolean isSuccess, ArrayList<Tweet> tweetAlerts) {
+                if ( isSuccess) {
+                    Log.d("Tweet alerts",tweetAlerts.toString());
+                }
+            }
+        });
+
+        //sample recents
+//        ArrayList<Trip> recents = TransitManager.getSharedInstance().fetchRecents();
+//        Trip trip = new Trip();
+//        trip.setFromStop(bartStops.get(0));
+//        trip.setToStop(bartStops.get(1));
+//        trip.setDate(new Date());
+//        TransitManager.getSharedInstance().saveRecent(trip);
+//        recents = TransitManager.getSharedInstance().fetchRecents();
+//        Log.d("Recents",recents.toString());
+    }
 
     @OnClick(R.id.fabStartTrip)
     public void onStartTripClicked() {
@@ -166,4 +222,6 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
         RecentsItem recent = recentsItemList.get(position);
         showSnackBar(clMainContent, recent.from + " to " + recent.to);
     }
+
+
 }

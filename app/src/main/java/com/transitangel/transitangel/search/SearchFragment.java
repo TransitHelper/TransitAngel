@@ -50,6 +50,8 @@ public class SearchFragment extends Fragment {
     List<Stop> mStops = new ArrayList<>();
     List<RecentsItem> mRecentItems = new ArrayList<>();
     RecentAdapter mRecyclerViewAdapter;
+    int mFromStationPosition=0;
+    int mToStationPosition=0;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -71,7 +73,7 @@ public class SearchFragment extends Fragment {
             mTRANSIT_type = (TAConstants.TRANSIT_TYPE) getArguments().getSerializable(ARG_TRANSIT_TYPE);
         }
         if (mTRANSIT_type == TAConstants.TRANSIT_TYPE.BART) {
-            mStops= BartTransitManager.getSharedInstance().ge
+            mStops = BartTransitManager.getSharedInstance().getStops();
         } else {
             mStops = CaltrainTransitManager.getSharedInstance().getStops();
         }
@@ -83,18 +85,27 @@ public class SearchFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         ButterKnife.bind(this, view);
         setUpStations();
-        ArrayList<Train> trains = CaltrainTransitManager.getSharedInstance().fetchTrains(mFromStationId, mToStationId,
-                5, new Date(), false);
-        mRecentItems.clear();
-        for (Train train : trains) {
-            mRecentItems.add(new RecentsItem(train.getTrainStops().get(0).getStopId(), train.getTrainStops().get(train.getTrainStops().size() - 1).getStopId()));
-        }
+        getRecentTrains();
         mRecyclerViewAdapter = new RecentAdapter(getContext(), mRecentItems);
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setNestedScrollingEnabled(false);
         mNestedScrollView.post(() -> mNestedScrollView.scrollTo(0, 0));
         return view;
+    }
+
+    private void getRecentTrains() {
+        ArrayList<Train> trains = new ArrayList<>();
+        if (TAConstants.TRANSIT_TYPE.BART == mTRANSIT_type) {
+            trains = BartTransitManager.getSharedInstance().fetchTrains(mFromStationId, mToStationId, 5, new Date(), false);
+        } else {
+            trains = CaltrainTransitManager.getSharedInstance().fetchTrains(mFromStationId, mToStationId,
+                    5, new Date(), false);
+        }
+        mRecentItems.clear();
+        for (Train train : trains) {
+            mRecentItems.add(new RecentsItem(train.getTrainStops().get(0).getStopId(), train.getTrainStops().get(train.getTrainStops().size() - 1).getStopId()));
+        }
     }
 
     private void setUpStations() {
@@ -106,9 +117,9 @@ public class SearchFragment extends Fragment {
                 (getContext(), android.R.layout.simple_spinner_item, mStops);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // Specify the layout to use when the list of choices appears
         mFromStation.setAdapter(adapter); // Apply the adapter to the spinner
-        mToStation.setSelection(adapter.getPosition(stopHashMap.get(mFromStationId)));
+        mToStation.setSelection(mFromStationPosition);
         mToStation.setAdapter(adapter);
-        mToStation.setSelection(adapter.getPosition(stopHashMap.get(mToStationId)));
+        mToStation.setSelection(mToStationPosition);
         mFromStation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
@@ -156,9 +167,11 @@ public class SearchFragment extends Fragment {
 
     @OnClick(R.id.swap_station)
     protected void onSwapStationClick() {
+        //TODO: replace spinner with new screen
         String mtemp = mFromStationId;
         mFromStationId = mToStationId;
         mToStationId = mtemp;
+      //  mToStation.setSelection((adapter.getPosition(stopHashMap.get(mToStationId)));
         refreshTrainSchedule();
 
     }
