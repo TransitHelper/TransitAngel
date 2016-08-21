@@ -106,6 +106,9 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
 
     private void executeSampleAPICalls() {
 
+        Stop caltrainStop = CaltrainTransitManager.getSharedInstance().getNearestStop(37.401438,-121.9252457);
+        Stop bartStop = BartTransitManager.getSharedInstance().getNearestStop(37.401438,-121.9252457);
+
         //get all the services limited,local and babybullet
         ArrayList<Service> services = CaltrainTransitManager.getSharedInstance().getServices();
 
