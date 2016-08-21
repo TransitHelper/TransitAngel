@@ -476,5 +476,47 @@ public class TransitManager {
         prefsEditor.commit();
     }
 
+    //ref:http://stackoverflow.com/questions/8383863/how-can-find-nearest-place-from-current-location-from-given-data
+    protected double distance(double lat1, double lon1, double lat2, double lon2) {
+        // haversine great circle distance approximation, returns meters
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2))
+                + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2))
+                * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60; // 60 nautical miles per degree of seperation
+        dist = dist * 1852; // 1852 meters per nautical mile
+        return (dist);
+    }
+
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
+    }
+
+    protected Stop getNearestStop(double lat, double lon, ArrayList<Stop> stops) {
+        Stop nearestStop = null;
+        double minDistance = 0;
+
+        for (Stop stop : stops ) {
+            double stopLat = Double.parseDouble(stop.getLatitude());
+            double stopLon = Double.parseDouble(stop.getLongitude());
+            double distanceToStop = distance(lat,lon,stopLat,stopLon);
+            if ( nearestStop == null ) {
+                nearestStop = stop;
+                minDistance = distanceToStop;
+            }
+            else if ( distanceToStop < minDistance ) {
+                minDistance = distanceToStop;
+                nearestStop = stop;
+            }
+        }
+
+        return nearestStop;
+    }
 
 }

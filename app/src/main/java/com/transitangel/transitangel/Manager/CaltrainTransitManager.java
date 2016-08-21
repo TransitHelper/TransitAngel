@@ -90,4 +90,9 @@ public class CaltrainTransitManager extends TransitManager {
         }
         return mServices;
     }
+
+    public Stop getNearestStop(double lat, double lon) {
+        return  getNearestStop(lat,lon,getStops());
+    }
+
 }
