@@ -1,0 +1,416 @@
+{
+  "Contents": {
+    "ResponseTimestamp": "2016-08-20T17:34:08-07:00",
+    "dataObjects": {
+      "id": "BA",
+      "ScheduledStopPoint": [
+        {
+          "id": "12018501",
+          "Name": "BART 12TH ST, OAKLAND CITY CENTER",
+          "Location": {
+            "Longitude": "-122.271407",
+            "Latitude": "37.803197"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018502",
+          "Name": "BART 16TH ST MISSION",
+          "Location": {
+            "Longitude": "-122.419321",
+            "Latitude": "37.765184"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018503",
+          "Name": "BART 19TH ST",
+          "Location": {
+            "Longitude": "-122.268678",
+            "Latitude": "37.807481"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018504",
+          "Name": "BART 24TH ST MISSION",
+          "Location": {
+            "Longitude": "-122.418106",
+            "Latitude": "37.752393"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018505",
+          "Name": "BART ASHBY",
+          "Location": {
+            "Longitude": "-122.269759",
+            "Latitude": "37.852916"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018506",
+          "Name": "BART BALBOA PARK",
+          "Location": {
+            "Longitude": "-122.447253",
+            "Latitude": "37.721861"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018507",
+          "Name": "BART BAYFAIR",
+          "Location": {
+            "Longitude": "-122.126297",
+            "Latitude": "37.697002"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018508",
+          "Name": "BART CASTRO VALLEY",
+          "Location": {
+            "Longitude": "-122.075437",
+            "Latitude": "37.690787"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018509",
+          "Name": "BART CIVIC CENTER",
+          "Location": {
+            "Longitude": "-122.413457",
+            "Latitude": "37.779424"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018510",
+          "Name": "BART COLISEUM",
+          "Location": {
+            "Longitude": "-122.196562",
+            "Latitude": "37.753599"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018511",
+          "Name": "BART COLMA",
+          "Location": {
+            "Longitude": "-122.466057",
+            "Latitude": "37.684633"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018512",
+          "Name": "BART CONCORD",
+          "Location": {
+            "Longitude": "-122.029037",
+            "Latitude": "37.973231"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018513",
+          "Name": "BART DALY CITY",
+          "Location": {
+            "Longitude": "-122.468707",
+            "Latitude": "37.706354"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018514",
+          "Name": "BART DOWNTOWN BERKELEY",
+          "Location": {
+            "Longitude": "-122.267836",
+            "Latitude": "37.86969"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018515",
+          "Name": "BART DUBLIN/PLEASANTON",
+          "Location": {
+            "Longitude": "-121.898894",
+            "Latitude": "37.701648"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018516",
+          "Name": "BART EL CERRITO DEL NORTE",
+          "Location": {
+            "Longitude": "-122.316681",
+            "Latitude": "37.925021"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018517",
+          "Name": "BART EL CERRITO PLAZA",
+          "Location": {
+            "Longitude": "-122.298721",
+            "Latitude": "37.902454"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018518",
+          "Name": "BART EMBARCADERO",
+          "Location": {
+            "Longitude": "-122.396534",
+            "Latitude": "37.79288"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018519",
+          "Name": "BART FREMONT",
+          "Location": {
+            "Longitude": "-121.976444",
+            "Latitude": "37.557439"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018520",
+          "Name": "BART FRUITVALE",
+          "Location": {
+            "Longitude": "-122.223901",
+            "Latitude": "37.774899"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018521",
+          "Name": "BART GLEN PARK",
+          "Location": {
+            "Longitude": "-122.433915",
+            "Latitude": "37.732964"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018522",
+          "Name": "BART HAYWARD",
+          "Location": {
+            "Longitude": "-122.086754",
+            "Latitude": "37.669729"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018523",
+          "Name": "BART LAFAYETTE",
+          "Location": {
+            "Longitude": "-122.124495",
+            "Latitude": "37.892981"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018524",
+          "Name": "BART LAKE MERRITT",
+          "Location": {
+            "Longitude": "-122.265668",
+            "Latitude": "37.797345"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018525",
+          "Name": "BART MACARTHUR",
+          "Location": {
+            "Longitude": "-122.266925",
+            "Latitude": "37.828781"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018526",
+          "Name": "BART MILLBRAE",
+          "Location": {
+            "Longitude": "-122.386381",
+            "Latitude": "37.600038"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018527",
+          "Name": "BART MONTGOMERY",
+          "Location": {
+            "Longitude": "-122.401317",
+            "Latitude": "37.78938"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018528",
+          "Name": "BART NORTH BERKELEY",
+          "Location": {
+            "Longitude": "-122.283266",
+            "Latitude": "37.873793"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018529",
+          "Name": "BART NORTH CONCORD",
+          "Location": {
+            "Longitude": "-122.024462",
+            "Latitude": "38.003038"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12169910",
+          "Name": "BART OAKLAND INT'L AIRPORT",
+          "Location": {
+            "Longitude": "-122.21244",
+            "Latitude": "37.712972"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018530",
+          "Name": "BART ORINDA",
+          "Location": {
+            "Longitude": "-122.183462",
+            "Latitude": "37.878258"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018531",
+          "Name": "BART PITTSBURG/BAY POINT",
+          "Location": {
+            "Longitude": "-121.944947",
+            "Latitude": "38.018726"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018532",
+          "Name": "BART PLEASANT HILL",
+          "Location": {
+            "Longitude": "-122.055748",
+            "Latitude": "37.928279"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018533",
+          "Name": "BART POWELL",
+          "Location": {
+            "Longitude": "-122.406781",
+            "Latitude": "37.784975"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018534",
+          "Name": "BART RICHMOND",
+          "Location": {
+            "Longitude": "-122.352934",
+            "Latitude": "37.936666"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018535",
+          "Name": "BART ROCKRIDGE",
+          "Location": {
+            "Longitude": "-122.251116",
+            "Latitude": "37.84459"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018536",
+          "Name": "BART SAN BRUNO",
+          "Location": {
+            "Longitude": "-122.415937",
+            "Latitude": "37.637508"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018537",
+          "Name": "BART SAN LEANDRO",
+          "Location": {
+            "Longitude": "-122.160456",
+            "Latitude": "37.721801"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018538",
+          "Name": "BART SFO",
+          "Location": {
+            "Longitude": "-122.392015",
+            "Latitude": "37.616028"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018539",
+          "Name": "BART SOUTH HAYWARD",
+          "Location": {
+            "Longitude": "-122.056972",
+            "Latitude": "37.634371"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018540",
+          "Name": "BART SOUTH SAN FRANCISCO",
+          "Location": {
+            "Longitude": "-122.44371",
+            "Latitude": "37.664238"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018541",
+          "Name": "BART UNION CITY",
+          "Location": {
+            "Longitude": "-122.017028",
+            "Latitude": "37.590746"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018542",
+          "Name": "BART WALNUT CREEK",
+          "Location": {
+            "Longitude": "-122.067106",
+            "Latitude": "37.905592"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018543",
+          "Name": "BART WEST DUBLIN/PLEASANTON",
+          "Location": {
+            "Longitude": "-121.927831",
+            "Latitude": "37.699829"
+          },
+          "StopType": "onstreetBus"
+        },
+        {
+          "id": "12018544",
+          "Name": "BART WEST OAKLAND",
+          "Location": {
+            "Longitude": "-122.29497",
+            "Latitude": "37.804706"
+          },
+          "StopType": "onstreetBus"
+        }
+      ],
+      "stopAreas": null
+    }
+  }
+}

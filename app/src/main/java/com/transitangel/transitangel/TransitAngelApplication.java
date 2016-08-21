@@ -2,6 +2,7 @@ package com.transitangel.transitangel;
 
 import android.app.Application;
 
+import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
 
 /**
@@ -13,5 +14,6 @@ public class TransitAngelApplication extends Application {
     public void onCreate() {
         super.onCreate();
          CaltrainTransitManager.getSharedInstance().setup(this);
+         BartTransitManager.getSharedInstance().setup(this);
     }
 }

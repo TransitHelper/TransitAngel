@@ -1,0 +1,110 @@
+[
+  {
+    "Id": "DALY/FREMONT",
+    "Name": "Fremont",
+    "TransportMode": "rail",
+    "PublicCode": "DALY/FREMONT",
+    "SiriLineRef": "",
+    "Montiored": false,
+    "OperatorRef": "BART"
+  },
+  {
+    "Id": "COLS/OAKL",
+    "Name": "COLS/OAKL",
+    "TransportMode": "rail",
+    "PublicCode": "COLS/OAKL",
+    "SiriLineRef": "",
+    "Montiored": false,
+    "OperatorRef": "BART"
+  },
+  {
+    "Id": "BAY PT/SFIA",
+    "Name": "SF Airport",
+    "TransportMode": "rail",
+    "PublicCode": "BAY PT/SFIA",
+    "SiriLineRef": "",
+    "Montiored": false,
+    "OperatorRef": "BART"
+  },
+  {
+    "Id": "DALY/DUBLIN",
+    "Name": "Dublin Pleasanton",
+    "TransportMode": "rail",
+    "PublicCode": "DALY/DUBLIN",
+    "SiriLineRef": "",
+    "Montiored": false,
+    "OperatorRef": "BART"
+  },
+  {
+    "Id": "RICH/MILL",
+    "Name": "Millbrae",
+    "TransportMode": "rail",
+    "PublicCode": "RICH/MILL",
+    "SiriLineRef": "",
+    "Montiored": false,
+    "OperatorRef": "BART"
+  },
+  {
+    "Id": "OAKL/COLS",
+    "Name": "OAKL/COLS",
+    "TransportMode": "rail",
+    "PublicCode": "OAKL/COLS",
+    "SiriLineRef": "",
+    "Montiored": false,
+    "OperatorRef": "BART"
+  },
+  {
+    "Id": "DUBLIN/DALY",
+    "Name": "Daly City",
+    "TransportMode": "rail",
+    "PublicCode": "DUBLIN/DALY",
+    "SiriLineRef": "",
+    "Montiored": false,
+    "OperatorRef": "BART"
+  },
+  {
+    "Id": "FREMONT/DALY",
+    "Name": "Daly City",
+    "TransportMode": "rail",
+    "PublicCode": "FREMONT/DALY",
+    "SiriLineRef": "",
+    "Montiored": false,
+    "OperatorRef": "BART"
+  },
+  {
+    "Id": "FREMONT/RICH",
+    "Name": "Richmond",
+    "TransportMode": "rail",
+    "PublicCode": "FREMONT/RICH",
+    "SiriLineRef": "",
+    "Montiored": false,
+    "OperatorRef": "BART"
+  },
+  {
+    "Id": "MILL/RICH",
+    "Name": "Richmond",
+    "TransportMode": "rail",
+    "PublicCode": "MILL/RICH",
+    "SiriLineRef": "",
+    "Montiored": false,
+    "OperatorRef": "BART"
+  },
+  {
+    "Id": "RICH/FREMONT",
+    "Name": "Fremont",
+    "TransportMode": "rail",
+    "PublicCode": "RICH/FREMONT",
+    "SiriLineRef": "",
+    "Montiored": false,
+    "OperatorRef": "BART"
+  },
+  {
+    "Id": "SFIA/BAY PT",
+    "Name": "Pittsburg Bay Point",
+    "TransportMode": "rail",
+    "PublicCode": "SFIA/BAY PT",
+    "SiriLineRef": "",
+    "Montiored": false,
+    "OperatorRef": "BART"
+  }
+]

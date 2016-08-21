@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.api.TripHelperApiFactory;
@@ -81,6 +82,19 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
         //fetch trains arriving at a certain destination within a certain duration
         ArrayList<Train> arrivingTrains = CaltrainTransitManager.getSharedInstance().fetchTrainsArrivingAtDestination("70011",3);
         Log.d("Trains arriving station",arrivingTrains.toString());
+
+        //bart stops
+        ArrayList<Stop> bartStops = BartTransitManager.getSharedInstance().getStops();
+        Log.d("Bart Stops",bartStops.toString());
+        //bart services
+        ArrayList<Service> bartServices = BartTransitManager.getSharedInstance().getServices();
+        Log.d("Bart Services",bartServices.toString());
+        // fetch trains from Fremont to Daly City
+        //last boolean to include all trains irrespective of that day time or not
+        ArrayList<Train> bartTrains = BartTransitManager.getSharedInstance().fetchTrains("12018519","12018513",-1,new Date(),true);
+        Log.d("Fremont to DalyCity",bartTrains.toString());
+        ArrayList<Train> arrivingBartTrains = BartTransitManager.getSharedInstance().fetchTrainsArrivingAtDestination("12018519",4);
+        Log.d("Bart arriving fremont",arrivingBartTrains.toString());
     }
 
     private void init() {
