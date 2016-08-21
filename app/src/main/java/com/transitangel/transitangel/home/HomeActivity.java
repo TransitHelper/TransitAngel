@@ -29,7 +29,7 @@ import com.transitangel.transitangel.model.Transit.TrafficNewsAlert;
 import com.transitangel.transitangel.model.Transit.Train;
 import com.transitangel.transitangel.model.Transit.Tweet;
 import com.transitangel.transitangel.model.sampleJsonModel;
-import com.transitangel.transitangel.search.SearchActivity;
+import com.transitangel.transitangel.schedule.ScheduleActivity;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -174,7 +174,7 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
 
     @OnClick(R.id.btnSchedule)
     public void onScheduleClicked() {
-        Intent intent= new Intent(this, SearchActivity.class);
+        Intent intent= new Intent(this, ScheduleActivity.class);
         startActivity(intent);
     }
 
