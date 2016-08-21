@@ -46,6 +46,7 @@ dependencies {
     //RxAndroid
     compile "io.reactivex:rxjava:$rootProject.ext.rxJavaVersion"
     compile "io.reactivex:rxandroid:$rootProject.ext.rxAndroidVersion"
-
+    //Gson
+    compile 'com.google.code.gson:gson:2.6.2'
     testCompile 'junit:junit:4.12'
 }

@@ -26,6 +26,7 @@ import com.transitangel.transitangel.model.Transit.Service;
 import com.transitangel.transitangel.model.Transit.Stop;
 import com.transitangel.transitangel.model.Transit.TrafficNewsAlert;
 import com.transitangel.transitangel.model.Transit.Train;
+import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.model.Transit.Tweet;
 import com.transitangel.transitangel.model.sampleJsonModel;
 
@@ -72,6 +73,8 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
         mTripHelperApiFactory = new TripHelperApiFactory(new TripHelplerRequestInterceptor(this));
 
         executeSampleAPICalls();
+
+
     }
 
     private void init() {
@@ -150,6 +153,16 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
                 }
             }
         });
+
+        //recents
+        ArrayList<Trip> recents = TransitManager.getSharedInstance().fetchRecents();
+        Trip trip = new Trip();
+        trip.setFromStop(bartStops.get(0));
+        trip.setToStop(bartStops.get(1));
+        trip.setDate(new Date());
+        TransitManager.getSharedInstance().saveRecent(trip);
+        recents = TransitManager.getSharedInstance().fetchRecents();
+        Log.d("Recents",recents.toString());
     }
 
     @OnClick(R.id.fabStartTrip)

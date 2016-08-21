@@ -1,17 +1,22 @@
 package com.transitangel.transitangel.Manager;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.transitangel.transitangel.model.Transit.Line;
-import com.transitangel.transitangel.model.Transit.TrafficNewsAlert;
 import com.transitangel.transitangel.model.Transit.Service;
 import com.transitangel.transitangel.model.Transit.Stop;
+import com.transitangel.transitangel.model.Transit.TrafficNewsAlert;
 import com.transitangel.transitangel.model.Transit.Train;
 import com.transitangel.transitangel.model.Transit.TrainStop;
+import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.model.Transit.Tweet;
 import com.transitangel.transitangel.utils.TAConstants;
 
@@ -21,6 +26,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -438,6 +444,36 @@ public class TransitManager {
 
     public HashMap<String, Stop> getStopLookup() {
         return mStopLookup;
+    }
+
+    //save recents
+
+    public ArrayList<Trip> fetchRecents() {
+        //ArrayList<Trip> recents = new ArrayList<Trip>();
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<Trip>>(){}.getType();
+        SharedPreferences recentPref = PreferenceManager.getDefaultSharedPreferences(mApplicationContext);
+        String recentJSON = recentPref.getString("recents","");
+        ArrayList<Trip> recents = gson.fromJson(recentJSON,type);
+        return recents;
+    }
+
+    public void saveRecent(Trip trip) {
+        SharedPreferences recentPref = PreferenceManager.getDefaultSharedPreferences(mApplicationContext);
+        SharedPreferences.Editor prefsEditor = recentPref.edit();
+        //fetch recents
+        String existingRecent = recentPref.getString("recents","");
+        Type type = new TypeToken<ArrayList<Trip>>(){}.getType();
+        Gson gson = new Gson();
+        ArrayList<Trip> recents = gson.fromJson(existingRecent,type);
+        if ( recents == null ) {
+            recents = new ArrayList<Trip>();
+        }
+        recents.add(trip);
+
+        String newRecent = gson.toJson(recents,type);
+        prefsEditor.putString("recents",newRecent);
+        prefsEditor.commit();
     }
 
 
