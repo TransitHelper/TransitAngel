@@ -7,10 +7,12 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.transitangel.transitangel.model.Transit.Line;
+import com.transitangel.transitangel.model.Transit.TrafficNewsAlert;
 import com.transitangel.transitangel.model.Transit.Service;
 import com.transitangel.transitangel.model.Transit.Stop;
 import com.transitangel.transitangel.model.Transit.Train;
 import com.transitangel.transitangel.model.Transit.TrainStop;
+import com.transitangel.transitangel.model.Transit.Tweet;
 import com.transitangel.transitangel.utils.TAConstants;
 
 import org.json.JSONArray;
@@ -115,6 +117,73 @@ public class TransitManager {
             }
         });
     }
+
+    public void fetchLatestTrafficNewsAlerts(TrafficNewsAlertResponseHandler handler) {
+
+        String newsUrl = "https://proxy-prod.511.org/api-proxy/api/v1/traffic/news/";
+
+        httpClient.get(newsUrl, new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.d("JSON response",response.toString());
+                try {
+                    JSONArray newsArr = response.getJSONArray("News");
+                    ArrayList<TrafficNewsAlert> trafficNewsAlerts = new ArrayList<TrafficNewsAlert>();
+                    for (int i = 0; i< newsArr.length(); i++ ) {
+                        JSONObject newsObj = newsArr.getJSONObject(i);
+                        TrafficNewsAlert trafficNewsAlert = new TrafficNewsAlert(newsObj);
+                        trafficNewsAlerts.add(trafficNewsAlert);
+                    }
+
+                    handler.onNewsAlertsReceived(true, trafficNewsAlerts);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    handler.onNewsAlertsReceived(false,null);
+                }
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                handler.onNewsAlertsReceived(false,null);
+            }
+        });
+    }
+
+    public void fetchTweetAlerts(TweetAlertResponseHandler handler) {
+
+        String newsUrl = "https://proxy-prod.511.org/api-proxy/api/v1/common/twitter/";
+
+        httpClient.get(newsUrl, new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+                try {
+                    JSONArray tweetsArr = response.getJSONArray("Timeline");
+                    ArrayList<Tweet> tweetAlerts = new ArrayList<Tweet>();
+                    for (int i = 0; i< tweetsArr.length(); i++ ) {
+                        JSONObject tweetObj = tweetsArr.getJSONObject(i);
+                        Tweet tweet = new Tweet(tweetObj);
+                        tweetAlerts.add(tweet);
+                    }
+
+                    handler.onTweetsReceived(true, tweetAlerts);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    handler.onTweetsReceived(false, null);
+                }
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                handler.onTweetsReceived(false, null);
+            }
+        });
+    }
+
 
     public void fetchStops(StopResponseHandler handler){
         String stopUrl = apiBaseUrl + "/stops";

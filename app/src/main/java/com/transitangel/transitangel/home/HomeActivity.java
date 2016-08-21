@@ -16,12 +16,17 @@ import android.widget.TextView;
 
 import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
+import com.transitangel.transitangel.Manager.TrafficNewsAlertResponseHandler;
+import com.transitangel.transitangel.Manager.TransitManager;
+import com.transitangel.transitangel.Manager.TweetAlertResponseHandler;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.api.TripHelperApiFactory;
 import com.transitangel.transitangel.api.TripHelplerRequestInterceptor;
 import com.transitangel.transitangel.model.Transit.Service;
 import com.transitangel.transitangel.model.Transit.Stop;
+import com.transitangel.transitangel.model.Transit.TrafficNewsAlert;
 import com.transitangel.transitangel.model.Transit.Train;
+import com.transitangel.transitangel.model.Transit.Tweet;
 import com.transitangel.transitangel.model.sampleJsonModel;
 
 import java.util.ArrayList;
@@ -66,6 +71,36 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
         init();
         mTripHelperApiFactory = new TripHelperApiFactory(new TripHelplerRequestInterceptor(this));
 
+        executeSampleAPICalls();
+    }
+
+    private void init() {
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(null);
+        tvTitle.setText(getString(R.string.home_title));
+
+        Date today = new Date();
+        ArrayList<Train> trains = CaltrainTransitManager.getSharedInstance().fetchTrains("70021", "70242",5,today,false);
+        Log.d("Trains from SF to MView", trains.toString());
+
+        // Creating a dummy recents list.
+        recentsItemList = new ArrayList<>();
+        for(Train train: trains) {
+            recentsItemList.add(new RecentsItem(train.getTrainStops().get(0).getStopId(), train.getTrainStops().get(train.getTrainStops().size()-1).getStopId()));
+        }
+        // Create the recents adapter.
+        RecentAdapter adapter = new RecentAdapter(this, recentsItemList);
+        rvRecents.setAdapter(adapter);
+        rvRecents.setLayoutManager(new LinearLayoutManager(this));
+        rvRecents.setNestedScrollingEnabled(false);
+        adapter.setOnItemClickListener(this);
+
+        // Hack to avoid recycler view scrolling to middle.
+        nsvContent.post(() -> nsvContent.scrollTo(0,0));
+    }
+
+    private void executeSampleAPICalls() {
+
         //get all the services limited,local and babybullet
         ArrayList<Service> services = CaltrainTransitManager.getSharedInstance().getServices();
 
@@ -95,33 +130,27 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
         Log.d("Fremont to DalyCity",bartTrains.toString());
         ArrayList<Train> arrivingBartTrains = BartTransitManager.getSharedInstance().fetchTrainsArrivingAtDestination("12018519",4);
         Log.d("Bart arriving fremont",arrivingBartTrains.toString());
+
+        //fetch news alerts
+        TransitManager.getSharedInstance().fetchLatestTrafficNewsAlerts(new TrafficNewsAlertResponseHandler() {
+            @Override
+            public void onNewsAlertsReceived(boolean isSuccess, ArrayList<TrafficNewsAlert> trafficNewsAlerts) {
+                if ( isSuccess) {
+                    Log.d("Traffic News Alerts",trafficNewsAlerts.toString());
+                }
+            }
+        });
+
+        //fetch tweets
+        TransitManager.getSharedInstance().fetchTweetAlerts(new TweetAlertResponseHandler() {
+            @Override
+            public void onTweetsReceived(boolean isSuccess, ArrayList<Tweet> tweetAlerts) {
+                if ( isSuccess) {
+                    Log.d("Tweet alerts",tweetAlerts.toString());
+                }
+            }
+        });
     }
-
-    private void init() {
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(null);
-        tvTitle.setText(getString(R.string.home_title));
-
-        Date today = new Date();
-        ArrayList<Train> trains = CaltrainTransitManager.getSharedInstance().fetchTrains("70021", "70242",5,today,false);
-        Log.d("Trains from SF to MView", trains.toString());
-
-        // Creating a dummy recents list.
-        recentsItemList = new ArrayList<>();
-        for(Train train: trains) {
-            recentsItemList.add(new RecentsItem(train.getTrainStops().get(0).getStopId(), train.getTrainStops().get(train.getTrainStops().size()-1).getStopId()));
-        }
-        // Create the recents adapter.
-        RecentAdapter adapter = new RecentAdapter(this, recentsItemList);
-        rvRecents.setAdapter(adapter);
-        rvRecents.setLayoutManager(new LinearLayoutManager(this));
-        rvRecents.setNestedScrollingEnabled(false);
-        adapter.setOnItemClickListener(this);
-
-        // Hack to avoid recycler view scrolling to middle.
-        nsvContent.post(() -> nsvContent.scrollTo(0,0));
-    }
-
 
     @OnClick(R.id.fabStartTrip)
     public void onStartTripClicked() {
@@ -177,4 +206,6 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
         RecentsItem recent = recentsItemList.get(position);
         showSnackBar(clMainContent, recent.from + " to " + recent.to);
     }
+
+
 }
