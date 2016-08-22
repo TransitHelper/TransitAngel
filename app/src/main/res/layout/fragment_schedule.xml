@@ -13,8 +13,8 @@
         android:layout_margin="8dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:dropDownWidth="wrap_content"
         android:contentDescription="From Station"
+        android:dropDownWidth="wrap_content"
         android:gravity="center"
         android:padding="8dp" />
 
@@ -24,8 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@android:color/white"
-        android:src="@drawable/ic_swap"
-        android:contentDescription="@string/CD_switch_button"/>
+        android:contentDescription="@string/CD_switch_button"
+        android:src="@drawable/ic_swap" />
 
     <TextView
         android:id="@+id/to_station"
@@ -39,19 +39,10 @@
         android:contentDescription="Destination Station"
         android:gravity="center"
         android:padding="8dp" />
-
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/recents_Scroll_view"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvRecents"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rvRecents"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp" />
-    </android.support.v4.widget.NestedScrollView>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"/>
 </LinearLayout>
