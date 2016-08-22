@@ -182,14 +182,20 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
         });
 
         //sample recents
-//        ArrayList<Trip> recents = TransitManager.getSharedInstance().fetchRecents();
+//        ArrayList<Trip> recents = TransitManager.getSharedInstance().fetchRecentSearchList();
 //        Trip trip = new Trip();
 //        trip.setFromStop(bartStops.get(0));
 //        trip.setToStop(bartStops.get(1));
 //        trip.setDate(new Date());
-//        TransitManager.getSharedInstance().saveRecent(trip);
-//        recents = TransitManager.getSharedInstance().fetchRecents();
+//        TransitManager.getSharedInstance().saveRecentSearch(trip);
+//        recents = TransitManager.getSharedInstance().fetchRecentSearchList();
 //        Log.d("Recents",recents.toString());
+//       //sample trips
+//        ArrayList<Trip> trips = TransitManager.getSharedInstance().fetchRecentTripList();
+//        TransitManager.getSharedInstance().saveRecentTrip(trip);
+//        trips = TransitManager.getSharedInstance().fetchRecentTripList();
+//        Log.d("Trips",trips.toString());
+
     }
 
     @OnClick(R.id.fabStartTrip)

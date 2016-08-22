@@ -48,7 +48,25 @@ public class CaltrainTransitManager extends TransitManager {
 
     public ArrayList<Stop> getStops() {
         //load the json from files
-        return getStops("Caltrain_Stops.json");
+        ArrayList<Stop> stops =  getStops("Caltrain_Stops.json");
+        ArrayList<Stop> stopsWithoutDuplicates = new ArrayList<Stop>();
+       for (Stop originalStop : stops ) {
+           if ( stopsWithoutDuplicates.size() == 0 ) {
+               stopsWithoutDuplicates.add(originalStop);
+           }
+           else {
+               Boolean alreadyContains = false;
+               for ( Stop stop: stopsWithoutDuplicates ) {
+                   if ( stop.getName().equals(originalStop.getName())) {
+                       alreadyContains = true;
+                   }
+               }
+               if ( !alreadyContains ) {
+                   stopsWithoutDuplicates.add(originalStop);
+               }
+           }
+       }
+        return stopsWithoutDuplicates;
     }
 
 

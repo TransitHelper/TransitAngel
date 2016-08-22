@@ -449,32 +449,78 @@ public class TransitManager {
     //save recents
 
     //order/ remove duplicates
-    public ArrayList<Trip> fetchRecents() {
-        //ArrayList<Trip> recents = new ArrayList<Trip>();
+    private ArrayList<Trip> fetchSavedItems(TAConstants.SAVED_PREF_TYPE prefType) {
+
         Gson gson = new Gson();
         Type type = new TypeToken<ArrayList<Trip>>(){}.getType();
-        SharedPreferences recentPref = PreferenceManager.getDefaultSharedPreferences(mApplicationContext);
-        String recentJSON = recentPref.getString("recents","");
-        ArrayList<Trip> recents = gson.fromJson(recentJSON,type);
-        return recents;
+        SharedPreferences itemPref = PreferenceManager.getDefaultSharedPreferences(mApplicationContext);
+        String itemJSON;
+        if ( prefType == TAConstants.SAVED_PREF_TYPE.RECENT_SEARCH) {
+            itemJSON  = itemPref.getString("recents","");
+        }
+        else {
+            itemJSON = itemPref.getString("trips","");
+        }
+        ArrayList<Trip> items = gson.fromJson(itemJSON,type);
+        return items;
     }
 
-    public void saveRecent(Trip trip) {
-        SharedPreferences recentPref = PreferenceManager.getDefaultSharedPreferences(mApplicationContext);
-        SharedPreferences.Editor prefsEditor = recentPref.edit();
+    private void saveItem(Trip trip,TAConstants.SAVED_PREF_TYPE prefType) {
+        SharedPreferences itemPref = PreferenceManager.getDefaultSharedPreferences(mApplicationContext);
+        SharedPreferences.Editor prefsEditor = itemPref.edit();
         //fetch recents
-        String existingRecent = recentPref.getString("recents","");
+
+        String existingItemStr;
+        if (prefType == TAConstants.SAVED_PREF_TYPE.RECENT_SEARCH ) {
+          existingItemStr  = itemPref.getString("recents","");
+        }
+        else {
+            existingItemStr  = itemPref.getString("trips","");
+        }
+
         Type type = new TypeToken<ArrayList<Trip>>(){}.getType();
         Gson gson = new Gson();
-        ArrayList<Trip> recents = gson.fromJson(existingRecent,type);
-        if ( recents == null ) {
-            recents = new ArrayList<Trip>();
+        ArrayList<Trip> items = gson.fromJson(existingItemStr,type);
+        if ( items == null ) {
+            items = new ArrayList<Trip>();
         }
-        recents.add(trip);
+        if ( items.size() ==  10 ) {
+            //remove the last element
+            items.remove(items.size()-1);
+        }
 
-        String newRecent = gson.toJson(recents,type);
-        prefsEditor.putString("recents",newRecent);
+        //add as first element
+        //TODO check for duplicates
+        if ( !items.contains(trip)) {
+            items.add(0,trip);
+        }
+
+        String newItemsStr = gson.toJson(items,type);
+        if (prefType == TAConstants.SAVED_PREF_TYPE.RECENT_SEARCH ) {
+            prefsEditor.putString("recents",newItemsStr);
+        }
+        else {
+            prefsEditor.putString("trips",newItemsStr);
+        }
         prefsEditor.commit();
+    }
+
+    //order/ remove duplicates
+    public ArrayList<Trip> fetchRecentSearchList() {
+       return fetchSavedItems(TAConstants.SAVED_PREF_TYPE.RECENT_SEARCH);
+    }
+
+    public ArrayList<Trip> fetchRecentTripList() {
+        return fetchSavedItems(TAConstants.SAVED_PREF_TYPE.RECENT_TRIP);
+    }
+
+
+    public void saveRecentSearch(Trip trip) {
+       saveItem(trip, TAConstants.SAVED_PREF_TYPE.RECENT_SEARCH);
+    }
+
+    public void saveRecentTrip(Trip trip) {
+        saveItem(trip, TAConstants.SAVED_PREF_TYPE.RECENT_TRIP);
     }
 
     //ref:http://stackoverflow.com/questions/8383863/how-can-find-nearest-place-from-current-location-from-given-data

@@ -2,6 +2,7 @@ package com.transitangel.transitangel.utils;
 
 public class TAConstants {
     public  enum TRANSIT_TYPE{BART, CALTRAIN}
+        public enum SAVED_PREF_TYPE{RECENT_SEARCH,RECENT_TRIP}
     public enum SERVICE_TYPE{
             CALTRAIN_LIMITED
             ,CALTRAIN_LOCAL
@@ -19,5 +20,7 @@ public class TAConstants {
             ,BART_RICH_MILL
             ,BART_SFIA_BAYPT
     }
+
+
 
 }
