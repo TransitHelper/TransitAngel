@@ -49,6 +49,7 @@ public class RecentSearchFragment extends Fragment implements RecentAdapter.OnIt
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
     }
 

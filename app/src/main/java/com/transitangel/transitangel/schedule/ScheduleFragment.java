@@ -20,6 +20,7 @@ import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.model.Transit.Stop;
 import com.transitangel.transitangel.model.Transit.Train;
 import com.transitangel.transitangel.model.Transit.TrainStop;
+import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.model.scheduleItem;
 import com.transitangel.transitangel.search.SearchActivity;
 import com.transitangel.transitangel.utils.TAConstants;
@@ -61,8 +62,6 @@ public class ScheduleFragment extends Fragment {
     List<scheduleItem> mRecentItems = new ArrayList<>();
     ScheduleRecyclerAdapter mRecyclerViewAdapter;
     HashMap<String, Stop> stopHashMap = new HashMap<>();
-    int mFromStationPosition = 0;
-    int mToStationPosition = 0;
     ScheduleRecyclerAdapter.OnItemClickListener mOnItemClickListener;
 
     public ScheduleFragment() {
@@ -100,7 +99,7 @@ public class ScheduleFragment extends Fragment {
         ButterKnife.bind(this, view);
         setUpStations();
         getTrainSchedule();
-        mRecyclerViewAdapter = new ScheduleRecyclerAdapter(getContext(), mRecentItems,mOnItemClickListener);
+        mRecyclerViewAdapter = new ScheduleRecyclerAdapter(getContext(), mRecentItems, mOnItemClickListener);
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setNestedScrollingEnabled(true);
@@ -165,11 +164,10 @@ public class ScheduleFragment extends Fragment {
         String mtemp = mFromStationId;
         mFromStationId = mToStationId;
         mToStationId = mtemp;
-        updateStationLabels();
-        //  mToStation.setSelection((adapter.getPosition(stopHashMap.get(mToStationId)));
+        updateStationLabels(true);
     }
 
-    private void updateStationLabels() {
+    private void updateStationLabels(boolean isSwapStation) {
         boolean isStation = stopHashMap.containsKey(mToStationId);
         if (isStation) {
             String stationName = stopHashMap.get(mToStationId).getName();
@@ -187,6 +185,17 @@ public class ScheduleFragment extends Fragment {
         mFromStation.setText(stopHashMap.containsKey(mFromStationId) ?
                 stopHashMap.get(mFromStationId).getName() : "Select From Station");
         refreshTrainSchedule();
+        if (!isSwapStation && stopHashMap.containsKey(mFromStationId) && stopHashMap.containsKey(mToStationId)) {
+            Trip trip = new Trip();
+            trip.setFromStop(stopHashMap.get(mFromStationId));
+            trip.setToStop(stopHashMap.get(mToStationId));
+            trip.setDate(new Date());
+            if (mTRANSITType == TAConstants.TRANSIT_TYPE.CALTRAIN) {
+                CaltrainTransitManager.getSharedInstance().saveRecentSearch(trip);
+            } else {
+                BartTransitManager.getSharedInstance().saveRecentSearch(trip);
+            }
+        }
     }
 
     @Override
@@ -219,6 +228,6 @@ public class ScheduleFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        updateStationLabels();
+        updateStationLabels(false);
     }
 }
