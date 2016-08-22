@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#00ADED</color>
-    <color name="colorPrimaryDark">#06709e</color>
+    <color name="colorPrimary">#2196F3</color>
+    <color name="colorPrimaryDark">#1976D2</color>
     <color name="colorAccent">#FF4081</color>
     <color name="color_control_normal">#84a1bb</color>
     <color name="gray">#d3d3d3</color>
     <!-- Text colors -->
-    <color name="text_primary">#54799B</color>
-    <color name="text_subtitle">#84a1bb</color>
+    <color name="textPrimary">#212121</color>
+    <color name="textSubtitle">#BBDEFB</color>
+    <color name="textSecondary">#757575</color>
+    <color name="divider">#BDBDBD</color>
+    <color name="textColor">#FFFFFF</color>
 
     <!-- FAB colors -->
     <color name="fab_normal">#FF4081</color>
@@ -17,4 +20,6 @@
 
     <!-- Lists -->
     <color name="list_divider">#E1EAF2</color>
+    <color name="red_caltrain">#A81C1C</color>
+
 </resources>

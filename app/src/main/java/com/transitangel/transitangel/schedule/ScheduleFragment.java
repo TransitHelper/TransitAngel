@@ -1,10 +1,13 @@
 package com.transitangel.transitangel.schedule;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +23,7 @@ import com.transitangel.transitangel.home.RecentAdapter;
 import com.transitangel.transitangel.home.RecentsItem;
 import com.transitangel.transitangel.model.Transit.Stop;
 import com.transitangel.transitangel.model.Transit.Train;
+import com.transitangel.transitangel.search.SearchActivity;
 import com.transitangel.transitangel.utils.TAConstants;
 
 import java.util.ArrayList;
@@ -33,6 +37,9 @@ import butterknife.OnClick;
 
 public class ScheduleFragment extends Fragment {
 
+    private static final int RESULT_SEARCH = 1;
+    private static final String TAG = ScheduleFragment.class.getSimpleName();
+
     @BindView(R.id.from_station)
     Spinner mFromStation;
     @BindView(R.id.to_station)
@@ -43,6 +50,7 @@ public class ScheduleFragment extends Fragment {
     RecyclerView mRecyclerView;
     @BindView(R.id.recents_Scroll_view)
     NestedScrollView mNestedScrollView;
+
     private static final String ARG_TRANSIT_TYPE = "transit_type";
     private TAConstants.TRANSIT_TYPE mTRANSIT_type;
     private String mFromStationId = "";
@@ -168,11 +176,24 @@ public class ScheduleFragment extends Fragment {
     @OnClick(R.id.swap_station)
     protected void onSwapStationClick() {
         //TODO: replace spinner with new screen
-        String mtemp = mFromStationId;
-        mFromStationId = mToStationId;
-        mToStationId = mtemp;
-      //  mToStation.setSelection((adapter.getPosition(stopHashMap.get(mToStationId)));
-        refreshTrainSchedule();
+//        String mtemp = mFromStationId;
+//        mFromStationId = mToStationId;
+//        mToStationId = mtemp;
+//      //  mToStation.setSelection((adapter.getPosition(stopHashMap.get(mToStationId)));
+//        refreshTrainSchedule();
 
+        Intent intent = new Intent(getActivity(), SearchActivity.class);
+        // Show from current location
+        getActivity().startActivityForResult(intent, RESULT_SEARCH, null);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == RESULT_SEARCH) {
+            if(resultCode == Activity.RESULT_OK) {
+                Stop stop = data.getParcelableExtra(SearchActivity.EXTRA_SELECTED_STATION);
+                Log.d(TAG, "Stop name: " + stop.getName());
+            }
+        }
     }
 }

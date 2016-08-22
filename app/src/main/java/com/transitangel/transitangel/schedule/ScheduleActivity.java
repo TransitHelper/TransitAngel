@@ -1,6 +1,8 @@
 package com.transitangel.transitangel.schedule;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,6 +22,7 @@ public class ScheduleActivity extends AppCompatActivity {
     @BindView(R.id.toolbar_main)
     Toolbar mToolbar;
 
+    private SampleFragmentPagerAdapter fragmentPageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +34,22 @@ public class ScheduleActivity extends AppCompatActivity {
     }
 
     private void setUpViewPager() {
-        mViewPager.setAdapter(new SampleFragmentPagerAdapter(getSupportFragmentManager()));
+        fragmentPageAdapter = new SampleFragmentPagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(fragmentPageAdapter);
         mPagerTabStrip.setViewPager(mViewPager);
     }
 
     private void setUpTitle() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(R.string.label_caltrain);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Fragment currentFragment = fragmentPageAdapter.getItem(mViewPager.getCurrentItem());
+        if(currentFragment != null) {
+            currentFragment.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

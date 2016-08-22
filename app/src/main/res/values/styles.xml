@@ -23,12 +23,12 @@
     </style>
 
     <style name="ItemMainLabelStyle" parent="style/ItemLabelStyle">
-        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColor">@color/textPrimary</item>
         <item name="android:textSize">@dimen/list_item_text_title</item>
     </style>
 
     <style name="ItemSubLabelStyle" parent="style/ItemLabelStyle">
-        <item name="android:textColor">@color/text_subtitle</item>
+        <item name="android:textColor">@color/textSubtitle</item>
         <item name="android:textSize">@dimen/list_item_text_subtitle</item>
     </style>
 
