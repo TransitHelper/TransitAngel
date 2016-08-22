@@ -11,13 +11,23 @@
 
     <View
         android:id="@+id/vIcon"
-        android:layout_width="3dp"
+        android:layout_width="2dp"
         android:layout_height="match_parent"
         android:background="@color/red_caltrain"
-        android:layout_marginRight="8dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="8dp"
         android:layout_alignParentLeft="true"
         android:layout_alignTop="@+id/tvStopName"
         android:layout_alignBottom="@+id/tvStopTime"/>
+
+    <ImageView
+        android:id="@+id/vCircleIcon"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:src="@drawable/checkbox_blank_circle_outline"
+        android:background="#fff"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"/>
 
     <TextView
         android:id="@+id/tvStopName"
@@ -25,7 +35,6 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/vIcon"
         android:paddingTop="8dp"
-        android:layout_toLeftOf="@+id/ivNotificationIcon"
         tools:text="Mountain View"/>
 
     <TextView
@@ -36,15 +45,14 @@
         android:paddingBottom="8dp"
         android:layout_below="@+id/tvStopName"
         android:layout_toRightOf="@+id/vIcon"
-        android:layout_toLeftOf="@+id/ivNotificationIcon"
         tools:text="14:30"/>
 
-    <ImageView
-        android:id="@+id/ivNotificationIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/alarm_plus"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"/>
+    <!--<ImageView-->
+        <!--android:id="@+id/ivNotificationIcon"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:src="@drawable/alarm_plus"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_centerVertical="true"/>-->
 
 </RelativeLayout>

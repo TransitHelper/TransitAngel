@@ -5,14 +5,16 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.transitangel.transitangel.Manager.BartTransitManager;
@@ -41,26 +43,22 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.subscriptions.CompositeSubscription;
 
-public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnItemClickListener {
+public class HomeActivity extends AppCompatActivity implements ShowNotificationListener {
 
     @BindView(R.id.tvTitle)
     TextView tvTitle;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.btnSchedule)
-    Button btnSchedule;
-    @BindView(R.id.tvRecents)
-    TextView tvRecents;
-    @BindView(R.id.rvRecents)
-    RecyclerView rvRecents;
     @BindView(R.id.nsvContent)
     NestedScrollView nsvContent;
     @BindView(R.id.fabStartTrip)
     FloatingActionButton fabAdd;
     @BindView(R.id.clMainContent)
     CoordinatorLayout clMainContent;
-
-    List<RecentsItem> recentsItemList;
+    @BindView(R.id.sliding_tabs)
+    TabLayout slidingTabs;
+    @BindView(R.id.viewpager)
+    ViewPager viewpager;
 
     private TripHelperApiFactory mTripHelperApiFactory;
     private CompositeSubscription mSubscription = new CompositeSubscription();
@@ -83,31 +81,43 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(null);
         tvTitle.setText(getString(R.string.home_title));
+        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+        nsvContent.setFillViewport(true);
 
-        Date today = new Date();
-        ArrayList<Train> trains = CaltrainTransitManager.getSharedInstance().fetchTrains("70021", "70242", 5, today, false);
-        Log.d("Trains from SF to MView", trains.toString());
+        // Get the ViewPager and set it's PagerAdapter so that it can display items
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager.setAdapter(new RecentsFragmentPagerAdapter(getSupportFragmentManager()));
 
-        // Creating a dummy recents list.
-        recentsItemList = new ArrayList<>();
-        for (Train train : trains) {
-            recentsItemList.add(new RecentsItem(train.getTrainStops().get(0).getStopId(), train.getTrainStops().get(train.getTrainStops().size() - 1).getStopId()));
-        }
-        // Create the recents adapter.
-        RecentAdapter adapter = new RecentAdapter(this, recentsItemList);
-        rvRecents.setAdapter(adapter);
-        rvRecents.setLayoutManager(new LinearLayoutManager(this));
-        rvRecents.setNestedScrollingEnabled(false);
-        adapter.setOnItemClickListener(this);
+        // Give the TabLayout the ViewPager
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        tabLayout.setupWithViewPager(viewPager);
 
         // Hack to avoid recycler view scrolling to middle.
         nsvContent.post(() -> nsvContent.scrollTo(0, 0));
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_home, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.action_search) {
+            onScheduleClicked();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     private void executeSampleAPICalls() {
 
-        Stop caltrainStop = CaltrainTransitManager.getSharedInstance().getNearestStop(37.401438,-121.9252457);
-        Stop bartStop = BartTransitManager.getSharedInstance().getNearestStop(37.401438,-121.9252457);
+        Stop caltrainStop = CaltrainTransitManager.getSharedInstance().getNearestStop(37.401438, -121.9252457);
+        Stop bartStop = BartTransitManager.getSharedInstance().getNearestStop(37.401438, -121.9252457);
 
         //get all the services limited,local and babybullet
         ArrayList<Service> services = CaltrainTransitManager.getSharedInstance().getServices();
@@ -123,28 +133,28 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
         //Note: currently ignores the leaving after parameter and also ignore weekday/weekend
 
         //fetch trains arriving at a certain destination within a certain duration
-        ArrayList<Train> arrivingTrains = CaltrainTransitManager.getSharedInstance().fetchTrainsArrivingAtDestination("70011",3);
-        Log.d("Trains arriving station",arrivingTrains.toString());
+        ArrayList<Train> arrivingTrains = CaltrainTransitManager.getSharedInstance().fetchTrainsArrivingAtDestination("70011", 3);
+        Log.d("Trains arriving station", arrivingTrains.toString());
 
         //bart stops
         ArrayList<Stop> bartStops = BartTransitManager.getSharedInstance().getStops();
-        Log.d("Bart Stops",bartStops.toString());
+        Log.d("Bart Stops", bartStops.toString());
         //bart services
         ArrayList<Service> bartServices = BartTransitManager.getSharedInstance().getServices();
-        Log.d("Bart Services",bartServices.toString());
+        Log.d("Bart Services", bartServices.toString());
         // fetch trains from Fremont to Daly City
         //last boolean to include all trains irrespective of that day time or not
-        ArrayList<Train> bartTrains = BartTransitManager.getSharedInstance().fetchTrains("12018519","12018513",-1,new Date(),true);
-        Log.d("Fremont to DalyCity",bartTrains.toString());
-        ArrayList<Train> arrivingBartTrains = BartTransitManager.getSharedInstance().fetchTrainsArrivingAtDestination("12018519",4);
-        Log.d("Bart arriving fremont",arrivingBartTrains.toString());
+        ArrayList<Train> bartTrains = BartTransitManager.getSharedInstance().fetchTrains("12018519", "12018513", -1, new Date(), true);
+        Log.d("Fremont to DalyCity", bartTrains.toString());
+        ArrayList<Train> arrivingBartTrains = BartTransitManager.getSharedInstance().fetchTrainsArrivingAtDestination("12018519", 4);
+        Log.d("Bart arriving fremont", arrivingBartTrains.toString());
 
         //fetch news alerts
         TransitManager.getSharedInstance().fetchLatestTrafficNewsAlerts(new TrafficNewsAlertResponseHandler() {
             @Override
             public void onNewsAlertsReceived(boolean isSuccess, ArrayList<TrafficNewsAlert> trafficNewsAlerts) {
-                if ( isSuccess) {
-                    Log.d("Traffic News Alerts",trafficNewsAlerts.toString());
+                if (isSuccess) {
+                    Log.d("Traffic News Alerts", trafficNewsAlerts.toString());
                 }
             }
         });
@@ -153,8 +163,8 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
         TransitManager.getSharedInstance().fetchTweetAlerts(new TweetAlertResponseHandler() {
             @Override
             public void onTweetsReceived(boolean isSuccess, ArrayList<Tweet> tweetAlerts) {
-                if ( isSuccess) {
-                    Log.d("Tweet alerts",tweetAlerts.toString());
+                if (isSuccess) {
+                    Log.d("Tweet alerts", tweetAlerts.toString());
                 }
             }
         });
@@ -177,7 +187,7 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
 
     @OnClick(R.id.btnSchedule)
     public void onScheduleClicked() {
-        Intent intent= new Intent(this, ScheduleActivity.class);
+        Intent intent = new Intent(this, ScheduleActivity.class);
         startActivity(intent);
     }
 
@@ -221,10 +231,7 @@ public class HomeActivity extends AppCompatActivity implements RecentAdapter.OnI
     }
 
     @Override
-    public void onItemClick(int position) {
-        RecentsItem recent = recentsItemList.get(position);
-        showSnackBar(clMainContent, recent.from + " to " + recent.to);
+    public void showNotification(String text) {
+        showSnackBar(clMainContent, text);
     }
-
-
 }

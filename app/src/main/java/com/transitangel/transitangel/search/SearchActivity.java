@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.model.Transit.Stop;
+import com.transitangel.transitangel.model.Transit.Train;
 
 import java.util.ArrayList;
 
@@ -24,6 +25,11 @@ public class SearchActivity extends AppCompatActivity implements StationsAdapter
     private static final String TAG = SearchActivity.class.getSimpleName();
 
     public static final String EXTRA_SELECTED_STATION = TAG + ".EXTRA_SELECTED_STATION";
+    public static final String EXTRA_MODE = TAG + ".EXTRA_MODE";
+    private static final String EXTRA_TRAIN_INFO = TAG + ".EXTRA_TRAIN_INFO";
+
+    public static final int MODE_TYPE_SEARCH = 1;
+    public static final int MODE_TYPE_DETAILS = 2;
 
 
     @BindView(R.id.tvTitle)
@@ -36,6 +42,9 @@ public class SearchActivity extends AppCompatActivity implements StationsAdapter
     CoordinatorLayout clMainContent;
 
     private ArrayList<Stop> mStops;
+    private Train train;
+
+    private int mode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +55,20 @@ public class SearchActivity extends AppCompatActivity implements StationsAdapter
     }
 
     private void init() {
+        mode = getIntent().getIntExtra(EXTRA_MODE, MODE_TYPE_SEARCH);
+        mStops = CaltrainTransitManager.getSharedInstance().getStops();
+        if(mode == MODE_TYPE_DETAILS) {
+            train = getIntent().getParcelableExtra(EXTRA_TRAIN_INFO);
+            if(train != null) {
+                tvTitle.setText("Train Details :" + train.getName());
+            }
+        } else {
+            tvTitle.setText(getString(R.string.search_title));
+        }
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(null);
-        tvTitle.setText(getString(R.string.search_title));
-        mStops = CaltrainTransitManager.getSharedInstance().getStops();
+
         // Create the recents adapter.
         StationsAdapter adapter = new StationsAdapter(this, mStops);
         rvStationList.setAdapter(adapter);

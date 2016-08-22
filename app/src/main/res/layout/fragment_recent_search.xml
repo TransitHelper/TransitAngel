@@ -1,0 +1,28 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
+    android:orientation="vertical"
+    tools:context="com.transitangel.transitangel.home.RecentSearchFragment">
+
+    <TextView
+        android:id="@+id/tvRecents"
+        style="@style/caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:text="@string/recents"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvRecents"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:paddingRight="24dp"
+        android:paddingLeft="24dp"
+        android:layout_marginBottom="10dp"/>
+</LinearLayout>
+

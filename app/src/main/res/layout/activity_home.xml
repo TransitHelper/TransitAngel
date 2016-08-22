@@ -14,41 +14,35 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize">
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
             <Button
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="20dp"
                 android:id="@+id/btnSchedule"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/schedule"
-                android:layout_gravity="center_horizontal"
+                android:layout_centerHorizontal="true"
                 android:minWidth="@dimen/schedule_min_width"
                 android:contentDescription="@string/contentdescription_lookup_schedule"/>
 
-            <TextView
-                android:id="@+id/tvRecents"
-                style="@style/caption"
-                android:layout_width="wrap_content"
+            <android.support.design.widget.TabLayout
+                android:id="@+id/sliding_tabs"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:text="@string/recents"/>
+                android:layout_below="@+id/btnSchedule"/>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rvRecents"
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewpager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:paddingRight="24dp"
-                android:paddingLeft="24dp"
-                android:layout_marginBottom="10dp"/>
-        </LinearLayout>
+                android:layout_below="@+id/sliding_tabs"
+                android:layout_alignParentBottom="true"/>
+        </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabStartTrip"
         android:layout_width="wrap_content"
@@ -58,5 +52,4 @@
         android:src="@drawable/start_trip_drawable"
         app:layout_anchor="@id/nsvContent"
         app:layout_anchorGravity="bottom|right|end"/>
-
 </android.support.design.widget.CoordinatorLayout>

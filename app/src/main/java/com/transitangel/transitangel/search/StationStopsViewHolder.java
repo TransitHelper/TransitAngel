@@ -2,7 +2,6 @@ package com.transitangel.transitangel.search;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.transitangel.transitangel.R;
@@ -21,8 +20,6 @@ public class StationStopsViewHolder extends RecyclerView.ViewHolder implements V
     TextView tvStopName;
     @BindView(R.id.tvStopTime)
     TextView tvStopTime;
-    @BindView(R.id.ivNotificationIcon)
-    ImageView ivNotificationIcon;
 
     View parent;
 

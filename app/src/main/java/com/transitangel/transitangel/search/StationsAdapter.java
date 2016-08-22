@@ -12,7 +12,7 @@ import com.transitangel.transitangel.model.Transit.Stop;
 import java.util.ArrayList;
 
 /**
- * author yvastavaus.
+ * @author yvastavaus.
  */
 public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -74,13 +74,16 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         switch (getItemViewType(position)) {
             case ITEM_TYPE_STATION_START:
                 viewHolder.tvStopName.setText(stationStopItemList.get(position).getName());
+                viewHolder.tvStopTime.setText("14:30");
                 break;
             case ITEM_TYPE_STATION_END:
                 viewHolder.tvStopName.setText(stationStopItemList.get(position).getName());
+                viewHolder.tvStopTime.setText("18:30");
                 break;
             case ITEM_TYPE_STATION_MIDDLE:
             default:
                 viewHolder.tvStopName.setText(stationStopItemList.get(position).getName());
+                viewHolder.tvStopTime.setText("15:30");
         }
     }
 

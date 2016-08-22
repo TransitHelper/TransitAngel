@@ -47,13 +47,13 @@ dependencies {
     compile "io.reactivex:rxjava:$rootProject.ext.rxJavaVersion"
     compile "io.reactivex:rxandroid:$rootProject.ext.rxAndroidVersion"
     //Gson
-    compile 'com.google.code.gson:gson:2.6.2'
-    compile 'com.google.android.gms:play-services-location:8.4.0'
     //permission dispatcher
-    compile 'com.github.hotchemi:permissionsdispatcher:2.0.7'
     apt 'com.github.hotchemi:permissionsdispatcher-processor:2.0.7'
     testCompile 'junit:junit:4.12'
+    compile 'com.google.code.gson:gson:2.6.2'
+    compile 'com.google.android.gms:play-services-location:8.4.0'
+    compile 'com.github.hotchemi:permissionsdispatcher:2.0.7'
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
-    compile 'com.android.support:support-v4:24.1.1'
+    compile 'com.android.support:support-v4:24.2.0'
 }

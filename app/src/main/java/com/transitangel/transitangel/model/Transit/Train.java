@@ -1,5 +1,8 @@
 package com.transitangel.transitangel.model.Transit;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,7 +12,7 @@ import java.util.ArrayList;
 /**
  * Created by vidhurvoora on 8/19/16.
  */
-public class Train {
+public class Train implements Parcelable {
     String number;
     String name;
     String direction;
@@ -42,4 +45,37 @@ public class Train {
     public ArrayList<TrainStop> getTrainStops() {
         return trainStops;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.number);
+        dest.writeString(this.name);
+        dest.writeString(this.direction);
+        dest.writeList(this.trainStops);
+    }
+
+    protected Train(Parcel in) {
+        this.number = in.readString();
+        this.name = in.readString();
+        this.direction = in.readString();
+        this.trainStops = new ArrayList<TrainStop>();
+        in.readList(this.trainStops, TrainStop.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<Train> CREATOR = new Parcelable.Creator<Train>() {
+        @Override
+        public Train createFromParcel(Parcel source) {
+            return new Train(source);
+        }
+
+        @Override
+        public Train[] newArray(int size) {
+            return new Train[size];
+        }
+    };
 }
