@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
+    android:padding="8dp"
+    android:background="?attr/selectableItemBackground"
     android:orientation="vertical">
 
     <TextView
@@ -34,12 +35,4 @@
         android:contentDescription="important information"
         android:visibility="gone" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/train_time"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="16dp"
-        android:src="@drawable/ic_more_info" />
 </RelativeLayout>

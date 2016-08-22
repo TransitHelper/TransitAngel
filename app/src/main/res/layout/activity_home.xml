@@ -52,4 +52,5 @@
         android:src="@drawable/start_trip_drawable"
         app:layout_anchor="@id/nsvContent"
         app:layout_anchorGravity="bottom|right|end"/>
+
 </android.support.design.widget.CoordinatorLayout>
