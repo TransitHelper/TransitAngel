@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -134,10 +133,6 @@ public class ScheduleFragment extends Fragment {
         //TODO: getDefault stations
         mFromStationId = mStops.get(0).getId();
         mToStationId = mStops.get(mStops.size() - 1).getId();
-
-        ArrayAdapter<Stop> adapter = new ArrayAdapter<Stop>
-                (getContext(), android.R.layout.simple_spinner_item, mStops);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // Specify the layout to use when the list of choices appears
         mFromStation.setText(mStops.get(0).getName());
         mToStation.setText(mStops.get(2).getName());
     }
@@ -176,6 +171,18 @@ public class ScheduleFragment extends Fragment {
     }
 
     private void updateStationLabels() {
+        boolean isStation = stopHashMap.containsKey(mToStationId);
+        if(isStation) {
+            String stationName = stopHashMap.get(mToStationId).getName();
+            mToStation.setText(stationName);
+            Log.d(TAG, "To Station : " + stationName);
+        }
+
+        isStation = stopHashMap.containsKey(mFromStationId);
+        if(isStation) {
+            String stationName = stopHashMap.get(mFromStationId).getName();
+            Log.d(TAG, "From Station : " + stationName);
+        }
         mToStation.setText(stopHashMap.containsKey(mToStationId) ?
                 stopHashMap.get(mToStationId).getName() : "Select To Station");
         mFromStation.setText(stopHashMap.containsKey(mFromStationId) ?
@@ -184,10 +191,21 @@ public class ScheduleFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RESULT_SEARCH_FROM || requestCode == RESULT_SEARCH_TO) {
+        if (requestCode == RESULT_SEARCH_FROM) {
             if (resultCode == Activity.RESULT_OK) {
                 Stop stop = data.getParcelableExtra(SearchActivity.EXTRA_SELECTED_STATION);
-                Log.d(TAG, "Stop name: " + stop.getName());
+                mFromStationId = stop.getId();
+                Log.d(TAG, "from station id: " + mFromStationId);
+                return;
+            }
+        }
+
+        if(requestCode == RESULT_SEARCH_TO) {
+            if (resultCode == Activity.RESULT_OK) {
+                Stop stop = data.getParcelableExtra(SearchActivity.EXTRA_SELECTED_STATION);
+                mToStationId = stop.getId();
+                Log.d(TAG, "to station id: " + mToStationId);
+                return;
             }
         }
     }
@@ -196,5 +214,11 @@ public class ScheduleFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mOnItemClickListener=(ScheduleRecyclerAdapter.OnItemClickListener)getActivity();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateStationLabels();
     }
 }
