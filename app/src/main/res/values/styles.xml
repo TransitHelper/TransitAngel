@@ -28,8 +28,14 @@
     </style>
 
     <style name="ItemSubLabelStyle" parent="style/ItemLabelStyle">
-        <item name="android:textColor">@color/textSubtitle</item>
+        <item name="android:textColor">@color/color_control_normal</item>
         <item name="android:textSize">@dimen/list_item_text_subtitle</item>
+    </style>
+
+    <style name="TextTitleStyle" parent="style/ItemLabelStyle">
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:textSize">@dimen/list_item_text_title</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="caption">

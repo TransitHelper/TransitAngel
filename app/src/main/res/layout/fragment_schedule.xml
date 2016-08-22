@@ -5,7 +5,7 @@
     android:orientation="vertical"
     tools:context=".schedule.ScheduleFragment">
 
-    <Spinner
+    <TextView
         android:id="@+id/from_station"
         style="@style/spinnerStyle"
         android:layout_width="match_parent"
@@ -14,9 +14,9 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:dropDownWidth="wrap_content"
+        android:contentDescription="From Station"
         android:gravity="center"
-        android:padding="8dp"
-        android:spinnerMode="dropdown" />
+        android:padding="8dp" />
 
     <ImageButton
         android:id="@+id/swap_station"
@@ -24,9 +24,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@android:color/white"
-        android:src="@drawable/ic_swap" />
+        android:src="@drawable/ic_swap"
+        android:contentDescription="@string/CD_switch_button"/>
 
-    <Spinner
+    <TextView
         android:id="@+id/to_station"
         style="@style/spinnerStyle"
         android:layout_width="match_parent"
@@ -35,10 +36,9 @@
         android:layout_margin="8dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:dropDownWidth="wrap_content"
+        android:contentDescription="Destination Station"
         android:gravity="center"
-        android:padding="8dp"
-        android:spinnerMode="dropdown" />
+        android:padding="8dp" />
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/recents_Scroll_view"

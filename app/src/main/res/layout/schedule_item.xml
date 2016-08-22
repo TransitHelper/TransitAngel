@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:layout_margin="4dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/train_name"
+        style="@style/ItemMainLabelStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:contentDescription="Train Name"/>
+
+    <TextView
+        android:id="@+id/train_time"
+        android:layout_below="@+id/train_name"
+        style="@style/ItemSubLabelStyle"
+        android:text="15mins"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="Train arrives"/>
+
+    <TextView
+        android:id="@+id/important_info"
+        android:layout_below="@id/train_time"
+        style="@style/ItemSubLabelStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="important information"
+        android:visibility="gone"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_more_info"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/train_time" />
+</RelativeLayout>

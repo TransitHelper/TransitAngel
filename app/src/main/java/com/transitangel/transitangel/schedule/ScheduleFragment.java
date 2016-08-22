@@ -1,6 +1,7 @@
 package com.transitangel.transitangel.schedule;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,20 +12,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
 import com.transitangel.transitangel.R;
-import com.transitangel.transitangel.home.RecentAdapter;
-import com.transitangel.transitangel.home.RecentsItem;
 import com.transitangel.transitangel.model.Transit.Stop;
 import com.transitangel.transitangel.model.Transit.Train;
+import com.transitangel.transitangel.model.Transit.TrainStop;
+import com.transitangel.transitangel.model.scheduleItem;
 import com.transitangel.transitangel.search.SearchActivity;
 import com.transitangel.transitangel.utils.TAConstants;
+import com.transitangel.transitangel.view.RecyclerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,13 +38,17 @@ import butterknife.OnClick;
 
 public class ScheduleFragment extends Fragment {
 
-    private static final int RESULT_SEARCH = 1;
+    private static final int RESULT_SEARCH_FROM = 1;
+    private static final int RESULT_SEARCH_TO = 2;
+    public static final String FROM_STATION_ID = "from_station_id";
+    public static final String TO_STATION_ID = "to_station_id";
+
     private static final String TAG = ScheduleFragment.class.getSimpleName();
 
     @BindView(R.id.from_station)
-    Spinner mFromStation;
+    TextView mFromStation;
     @BindView(R.id.to_station)
-    Spinner mToStation;
+    TextView mToStation;
     @BindView(R.id.swap_station)
     ImageButton mSwapStationBtn;
     @BindView(R.id.rvRecents)
@@ -52,20 +57,21 @@ public class ScheduleFragment extends Fragment {
     NestedScrollView mNestedScrollView;
 
     private static final String ARG_TRANSIT_TYPE = "transit_type";
-    private TAConstants.TRANSIT_TYPE mTRANSIT_type;
+    private TAConstants.TRANSIT_TYPE mTRANSITType;
     private String mFromStationId = "";
     private String mToStationId = "";
     List<Stop> mStops = new ArrayList<>();
-    List<RecentsItem> mRecentItems = new ArrayList<>();
-    RecentAdapter mRecyclerViewAdapter;
-    int mFromStationPosition=0;
-    int mToStationPosition=0;
+    List<scheduleItem> mRecentItems = new ArrayList<>();
+    ScheduleRecyclerAdapter mRecyclerViewAdapter;
+    HashMap<String, Stop> stopHashMap = new HashMap<>();
+    int mFromStationPosition = 0;
+    int mToStationPosition = 0;
+    ScheduleRecyclerAdapter.OnItemClickListener mOnItemClickListener;
 
     public ScheduleFragment() {
         // Required empty public constructor
     }
 
-    // TODO: Rename and change types and number of parameters
     public static ScheduleFragment newInstance(TAConstants.TRANSIT_TYPE type) {
         ScheduleFragment fragment = new ScheduleFragment();
         Bundle args = new Bundle();
@@ -78,13 +84,16 @@ public class ScheduleFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mTRANSIT_type = (TAConstants.TRANSIT_TYPE) getArguments().getSerializable(ARG_TRANSIT_TYPE);
+            mTRANSITType = (TAConstants.TRANSIT_TYPE) getArguments().getSerializable(ARG_TRANSIT_TYPE);
         }
-        if (mTRANSIT_type == TAConstants.TRANSIT_TYPE.BART) {
+        if (mTRANSITType == TAConstants.TRANSIT_TYPE.BART) {
             mStops = BartTransitManager.getSharedInstance().getStops();
+            stopHashMap = BartTransitManager.getSharedInstance().getStopLookup();
         } else {
             mStops = CaltrainTransitManager.getSharedInstance().getStops();
+            stopHashMap = CaltrainTransitManager.getSharedInstance().getStopLookup();
         }
+
     }
 
     @Override
@@ -93,18 +102,20 @@ public class ScheduleFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_schedule, container, false);
         ButterKnife.bind(this, view);
         setUpStations();
-        getRecentTrains();
-        mRecyclerViewAdapter = new RecentAdapter(getContext(), mRecentItems);
+        getTrainSchedule();
+        mRecyclerViewAdapter = new ScheduleRecyclerAdapter(getContext(), mRecentItems);
+        mRecyclerViewAdapter.setOnItemClickListener(mOnItemClickListener);
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setNestedScrollingEnabled(false);
+        mRecyclerView.addItemDecoration(new RecyclerItemDecoration(getContext(),R.drawable.recycler_view_divider));
         mNestedScrollView.post(() -> mNestedScrollView.scrollTo(0, 0));
         return view;
     }
 
-    private void getRecentTrains() {
+    private void getTrainSchedule() {
         ArrayList<Train> trains = new ArrayList<>();
-        if (TAConstants.TRANSIT_TYPE.BART == mTRANSIT_type) {
+        if (TAConstants.TRANSIT_TYPE.BART == mTRANSITType) {
             trains = BartTransitManager.getSharedInstance().fetchTrains(mFromStationId, mToStationId, 5, new Date(), false);
         } else {
             trains = CaltrainTransitManager.getSharedInstance().fetchTrains(mFromStationId, mToStationId,
@@ -112,7 +123,10 @@ public class ScheduleFragment extends Fragment {
         }
         mRecentItems.clear();
         for (Train train : trains) {
-            mRecentItems.add(new RecentsItem(train.getTrainStops().get(0).getStopId(), train.getTrainStops().get(train.getTrainStops().size() - 1).getStopId()));
+            TrainStop mSource=train.getTrainStops().get(0);
+            mRecentItems.add(new scheduleItem(mSource.getStopId(),
+                    train.getTrainStops().get(train.getTrainStops().size() - 1).getStopId()
+                    ,mSource.getDepartureTime(),""));
         }
     }
 
@@ -120,80 +134,67 @@ public class ScheduleFragment extends Fragment {
         //TODO: getDefault stations
         mFromStationId = mStops.get(0).getId();
         mToStationId = mStops.get(mStops.size() - 1).getId();
-        HashMap<String, Stop> stopHashMap = CaltrainTransitManager.getSharedInstance().getStopLookup();
+
         ArrayAdapter<Stop> adapter = new ArrayAdapter<Stop>
                 (getContext(), android.R.layout.simple_spinner_item, mStops);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // Specify the layout to use when the list of choices appears
-        mFromStation.setAdapter(adapter); // Apply the adapter to the spinner
-        mToStation.setSelection(mFromStationPosition);
-        mToStation.setAdapter(adapter);
-        mToStation.setSelection(mToStationPosition);
-        mFromStation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                if (mFromStationId.isEmpty() || !mFromStationId.equals(mStops.get(position).getId())) {
-                    mFromStationId = mStops.get(position).getId();
-                    refreshTrainSchedule();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        mToStation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                if (mToStationId.isEmpty() || !mToStationId.equals(mStops.get(position).getId())) {
-                    mToStationId = mStops.get(position).getId();
-                    refreshTrainSchedule();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
+        mFromStation.setText(mStops.get(0).getName());
+        mToStation.setText(mStops.get(2).getName());
     }
 
     private void refreshTrainSchedule() {
-        ArrayList<Train> trains = CaltrainTransitManager.getSharedInstance().fetchTrains(mFromStationId, mToStationId,
-                5, new Date(), false);
-        mRecentItems.clear();
-        for (Train train : trains) {
-            mRecentItems.add(new RecentsItem(train.getTrainStops().get(0).getStopId(), train.getTrainStops().get(train.getTrainStops().size() - 1).getStopId()));
-        }
+        getTrainSchedule();
         if (mRecyclerViewAdapter != null) {
             mRecyclerViewAdapter.notifyDataSetChanged();
         }
 
     }
 
+    @OnClick(R.id.to_station)
+    protected void onToStationClick() {
+        Intent intent = new Intent(getActivity(), SearchActivity.class);
+        intent.putExtra(FROM_STATION_ID, mFromStationId);
+        getActivity().startActivityForResult(intent, RESULT_SEARCH_TO, null);
+    }
+
+    @OnClick(R.id.from_station)
+    protected void onFromStationClick() {
+        Intent intent = new Intent(getActivity(), SearchActivity.class);
+        intent.putExtra(TO_STATION_ID, mToStationId);
+        getActivity().startActivityForResult(intent, RESULT_SEARCH_FROM, null);
+    }
+
     @OnClick(R.id.swap_station)
     protected void onSwapStationClick() {
         //TODO: replace spinner with new screen
-//        String mtemp = mFromStationId;
-//        mFromStationId = mToStationId;
-//        mToStationId = mtemp;
-//      //  mToStation.setSelection((adapter.getPosition(stopHashMap.get(mToStationId)));
-//        refreshTrainSchedule();
+        String mtemp = mFromStationId;
+        mFromStationId = mToStationId;
+        mToStationId = mtemp;
+        updateStationLabels();
+        //  mToStation.setSelection((adapter.getPosition(stopHashMap.get(mToStationId)));
+        refreshTrainSchedule();
+    }
 
-        Intent intent = new Intent(getActivity(), SearchActivity.class);
-        // Show from current location
-        getActivity().startActivityForResult(intent, RESULT_SEARCH, null);
+    private void updateStationLabels() {
+        mToStation.setText(stopHashMap.containsKey(mToStationId) ?
+                stopHashMap.get(mToStationId).getName() : "Select To Station");
+        mFromStation.setText(stopHashMap.containsKey(mFromStationId) ?
+                stopHashMap.get(mFromStationId).getName() : "Select From Station");
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == RESULT_SEARCH) {
-            if(resultCode == Activity.RESULT_OK) {
+        if (requestCode == RESULT_SEARCH_FROM || requestCode == RESULT_SEARCH_TO) {
+            if (resultCode == Activity.RESULT_OK) {
                 Stop stop = data.getParcelableExtra(SearchActivity.EXTRA_SELECTED_STATION);
                 Log.d(TAG, "Stop name: " + stop.getName());
             }
         }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mOnItemClickListener=(ScheduleRecyclerAdapter.OnItemClickListener)getActivity();
     }
 }

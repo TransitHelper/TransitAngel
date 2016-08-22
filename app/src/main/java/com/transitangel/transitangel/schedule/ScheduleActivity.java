@@ -2,26 +2,28 @@ package com.transitangel.transitangel.schedule;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.TextView;
 
-import com.astuetz.PagerSlidingTabStrip;
 import com.transitangel.transitangel.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ScheduleActivity extends AppCompatActivity {
+public class ScheduleActivity extends AppCompatActivity implements ScheduleRecyclerAdapter.OnItemClickListener {
 
     @BindView(R.id.viewpager)
     ViewPager mViewPager;
-    @BindView(R.id.tabs)
-    PagerSlidingTabStrip mPagerTabStrip;
-    @BindView(R.id.toolbar_main)
+    @BindView(R.id.tablayout)
+    TabLayout mTabLayout;
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-
+    @BindView(R.id.tvTitle)
+    TextView mTitle;
     private SampleFragmentPagerAdapter fragmentPageAdapter;
 
     @Override
@@ -36,20 +38,26 @@ public class ScheduleActivity extends AppCompatActivity {
     private void setUpViewPager() {
         fragmentPageAdapter = new SampleFragmentPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(fragmentPageAdapter);
-        mPagerTabStrip.setViewPager(mViewPager);
+        mTabLayout.setupWithViewPager(mViewPager);
     }
 
     private void setUpTitle() {
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle(R.string.label_caltrain);
+        getSupportActionBar().setTitle(null);
+        mTitle.setText("Schedule");
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Fragment currentFragment = fragmentPageAdapter.getItem(mViewPager.getCurrentItem());
-        if(currentFragment != null) {
+        if (currentFragment != null) {
             currentFragment.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        //TODO : go to search activity
     }
 }
