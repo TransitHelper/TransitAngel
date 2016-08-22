@@ -15,7 +15,7 @@
     <dimen name="text_header">20dp</dimen>
 
     <!-- List -->
-    <dimen name="list_item_text_title">@dimen/text_title</dimen>
-    <dimen name="list_item_text_subtitle">@dimen/text_subtitle</dimen>
+    <dimen name="list_item_text_title">@dimen/text_header</dimen>
+    <dimen name="list_item_text_subtitle">@dimen/text_title</dimen>
 
 </resources>
