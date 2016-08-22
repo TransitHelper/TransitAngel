@@ -27,12 +27,9 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
 
     private OnItemClickListener onItemClickListener;
 
-    public ScheduleRecyclerAdapter(Context context, List<scheduleItem> recentsItemList) {
+    public ScheduleRecyclerAdapter(Context context, List<scheduleItem> recentsItemList, OnItemClickListener onItemClickListener) {
         this.recentsItemList = recentsItemList;
         this.context = context;
-    }
-
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
 

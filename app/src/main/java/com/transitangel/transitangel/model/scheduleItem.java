@@ -1,6 +1,11 @@
 package com.transitangel.transitangel.model;
 
 public class scheduleItem {
+    String from;
+    String to;
+    String DepatureTime;
+    String ImportantInformation;
+
     public String getDepatureTime() {
         return DepatureTime;
     }
@@ -32,12 +37,6 @@ public class scheduleItem {
     public void setTo(String to) {
         this.to = to;
     }
-
-    String from;
-    String to;
-    String DepatureTime;
-    String ImportantInformation;
-
 
     public scheduleItem(String from, String to) {
         this.from = from;

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -52,13 +51,12 @@ public class ScheduleFragment extends Fragment {
     ImageButton mSwapStationBtn;
     @BindView(R.id.rvRecents)
     RecyclerView mRecyclerView;
-    @BindView(R.id.recents_Scroll_view)
-    NestedScrollView mNestedScrollView;
+
 
     private static final String ARG_TRANSIT_TYPE = "transit_type";
     private TAConstants.TRANSIT_TYPE mTRANSITType;
-    private String mFromStationId = "";
-    private String mToStationId = "";
+    private static String mFromStationId;
+    private static String mToStationId;
     List<Stop> mStops = new ArrayList<>();
     List<scheduleItem> mRecentItems = new ArrayList<>();
     ScheduleRecyclerAdapter mRecyclerViewAdapter;
@@ -102,13 +100,11 @@ public class ScheduleFragment extends Fragment {
         ButterKnife.bind(this, view);
         setUpStations();
         getTrainSchedule();
-        mRecyclerViewAdapter = new ScheduleRecyclerAdapter(getContext(), mRecentItems);
-        mRecyclerViewAdapter.setOnItemClickListener(mOnItemClickListener);
+        mRecyclerViewAdapter = new ScheduleRecyclerAdapter(getContext(), mRecentItems,mOnItemClickListener);
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRecyclerView.setNestedScrollingEnabled(false);
-        mRecyclerView.addItemDecoration(new RecyclerItemDecoration(getContext(),R.drawable.recycler_view_divider));
-        mNestedScrollView.post(() -> mNestedScrollView.scrollTo(0, 0));
+        mRecyclerView.setNestedScrollingEnabled(true);
+        mRecyclerView.addItemDecoration(new RecyclerItemDecoration(getContext(), R.drawable.recycler_view_divider));
         return view;
     }
 
@@ -122,27 +118,31 @@ public class ScheduleFragment extends Fragment {
         }
         mRecentItems.clear();
         for (Train train : trains) {
-            TrainStop mSource=train.getTrainStops().get(0);
-            mRecentItems.add(new scheduleItem(mSource.getStopId(),
-                    train.getTrainStops().get(train.getTrainStops().size() - 1).getStopId()
-                    ,mSource.getDepartureTime(),""));
+            TrainStop mSource = train.getTrainStops().get(0);
+            mRecentItems.add(new scheduleItem(stopHashMap.get(mSource.getStopId()).getName(),
+                    stopHashMap.get(train.getTrainStops().get(train.getTrainStops().size() - 1).getStopId()).getName()
+                    , mSource.getDepartureTime(), ""));
         }
     }
 
     private void setUpStations() {
-        //TODO: getDefault stations
-        mFromStationId = mStops.get(0).getId();
-        mToStationId = mStops.get(mStops.size() - 1).getId();
-        mFromStation.setText(mStops.get(0).getName());
-        mToStation.setText(mStops.get(2).getName());
+        if (mToStationId == null || mToStationId.isEmpty()) {
+            mToStationId = mStops.get(mStops.size() - 1).getId();
+            mToStation.setText(stopHashMap.get(mToStationId).getName());
+        }
+        if (mFromStationId == null || mFromStationId.isEmpty()) {
+            mFromStationId = mStops.get(0).getId();
+            mFromStation.setText(stopHashMap.get(mFromStationId).getName());
+        }
     }
 
     private void refreshTrainSchedule() {
-        getTrainSchedule();
-        if (mRecyclerViewAdapter != null) {
-            mRecyclerViewAdapter.notifyDataSetChanged();
+        if (mFromStationId != null && mToStationId != null) {
+            getTrainSchedule();
+            if (mRecyclerViewAdapter != null) {
+                mRecyclerViewAdapter.notifyDataSetChanged();
+            }
         }
-
     }
 
     @OnClick(R.id.to_station)
@@ -167,19 +167,18 @@ public class ScheduleFragment extends Fragment {
         mToStationId = mtemp;
         updateStationLabels();
         //  mToStation.setSelection((adapter.getPosition(stopHashMap.get(mToStationId)));
-        refreshTrainSchedule();
     }
 
     private void updateStationLabels() {
         boolean isStation = stopHashMap.containsKey(mToStationId);
-        if(isStation) {
+        if (isStation) {
             String stationName = stopHashMap.get(mToStationId).getName();
             mToStation.setText(stationName);
             Log.d(TAG, "To Station : " + stationName);
         }
 
         isStation = stopHashMap.containsKey(mFromStationId);
-        if(isStation) {
+        if (isStation) {
             String stationName = stopHashMap.get(mFromStationId).getName();
             Log.d(TAG, "From Station : " + stationName);
         }
@@ -187,6 +186,7 @@ public class ScheduleFragment extends Fragment {
                 stopHashMap.get(mToStationId).getName() : "Select To Station");
         mFromStation.setText(stopHashMap.containsKey(mFromStationId) ?
                 stopHashMap.get(mFromStationId).getName() : "Select From Station");
+        refreshTrainSchedule();
     }
 
     @Override
@@ -200,7 +200,7 @@ public class ScheduleFragment extends Fragment {
             }
         }
 
-        if(requestCode == RESULT_SEARCH_TO) {
+        if (requestCode == RESULT_SEARCH_TO) {
             if (resultCode == Activity.RESULT_OK) {
                 Stop stop = data.getParcelableExtra(SearchActivity.EXTRA_SELECTED_STATION);
                 mToStationId = stop.getId();
@@ -213,7 +213,7 @@ public class ScheduleFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mOnItemClickListener=(ScheduleRecyclerAdapter.OnItemClickListener)getActivity();
+        mOnItemClickListener = (ScheduleRecyclerAdapter.OnItemClickListener) getActivity();
     }
 
     @Override
