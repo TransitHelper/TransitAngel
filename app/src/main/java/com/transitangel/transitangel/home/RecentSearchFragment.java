@@ -11,8 +11,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
+import com.transitangel.transitangel.Manager.TransitManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.model.Transit.Train;
+import com.transitangel.transitangel.model.Transit.Trip;
+import com.transitangel.transitangel.utils.TAConstants;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,15 +31,19 @@ public class RecentSearchFragment extends Fragment implements RecentAdapter.OnIt
     @BindView(R.id.rvRecents)
     RecyclerView rvRecents;
 
-    List<RecentsItem> recentsItemList;
+    List<Trip> recentsItemList;
 
     private ShowNotificationListener mNotificationListener;
+    private int savedType;
 
     public RecentSearchFragment() {
     }
 
-    public static RecentSearchFragment newInstance() {
+    public static RecentSearchFragment newInstance(TAConstants.SAVED_PREF_TYPE savedPrefType) {
         RecentSearchFragment fragment = new RecentSearchFragment();
+        Bundle args = new Bundle();
+        args.putInt("PrefType",savedPrefType.ordinal());
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -54,30 +61,25 @@ public class RecentSearchFragment extends Fragment implements RecentAdapter.OnIt
     }
 
     private void init() {
+        savedType = getArguments().getInt("PrefType");
         Date today = new Date();
         ArrayList<Train> trains = CaltrainTransitManager.getSharedInstance().fetchTrains("70021", "70242", 5, today, true);
         // Creating a dummy recents list.
         recentsItemList = new ArrayList<>();
-        for (Train train : trains) {
-            recentsItemList.add(new RecentsItem(train.getTrainStops().get(0).getStopId(), train.getTrainStops().get(train.getTrainStops().size() - 1).getStopId()));
+        if ( savedType == TAConstants.SAVED_PREF_TYPE.RECENT_SEARCH.ordinal()) {
+            recentsItemList = TransitManager.getSharedInstance().fetchRecentSearchList();
+            tvRecents.setText("Recent Search");
         }
-
-        for (Train train : trains) {
-            recentsItemList.add(new RecentsItem(train.getTrainStops().get(0).getStopId(), train.getTrainStops().get(train.getTrainStops().size() - 1).getStopId()));
-        }
-
-        for (Train train : trains) {
-            recentsItemList.add(new RecentsItem(train.getTrainStops().get(0).getStopId(), train.getTrainStops().get(train.getTrainStops().size() - 1).getStopId()));
-        }
-
-        for (Train train : trains) {
-            recentsItemList.add(new RecentsItem(train.getTrainStops().get(0).getStopId(), train.getTrainStops().get(train.getTrainStops().size() - 1).getStopId()));
+        else {
+            recentsItemList = TransitManager.getSharedInstance().fetchRecentTripList();
+            tvRecents.setText("Recent Trips");
         }
 
         // Create the recents adapter.
         RecentAdapter adapter = new RecentAdapter(getActivity(), recentsItemList);
         rvRecents.setAdapter(adapter);
         rvRecents.setLayoutManager(new LinearLayoutManager(getActivity()));
+
 //        rvRecents.setNestedScrollingEnabled(false);
         adapter.setOnItemClickListener(this);
     }
@@ -101,7 +103,7 @@ public class RecentSearchFragment extends Fragment implements RecentAdapter.OnIt
 
     @Override
     public void onItemClick(int position) {
-        RecentsItem recent = recentsItemList.get(position);
-        mNotificationListener.showNotification(recent.from + " to " + recent.to);
+        Trip trip = recentsItemList.get(position);
+        mNotificationListener.showNotification(trip.getFromStop().getName() + " to " + trip.getToStop().getName());
     }
 }

@@ -4,6 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.transitangel.transitangel.utils.TAConstants;
+
 /**
  * author yogesh.shrivastava.
  */
@@ -22,7 +24,10 @@ public class RecentsFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return RecentSearchFragment.newInstance();
+        if (position == 0) {
+            return RecentSearchFragment.newInstance(TAConstants.SAVED_PREF_TYPE.RECENT_SEARCH);
+        }
+        return RecentSearchFragment.newInstance(TAConstants.SAVED_PREF_TYPE.RECENT_TRIP);
     }
 
     @Override

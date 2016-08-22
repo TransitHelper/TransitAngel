@@ -32,6 +32,7 @@ import com.transitangel.transitangel.model.Transit.Service;
 import com.transitangel.transitangel.model.Transit.Stop;
 import com.transitangel.transitangel.model.Transit.TrafficNewsAlert;
 import com.transitangel.transitangel.model.Transit.Train;
+import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.model.Transit.Tweet;
 import com.transitangel.transitangel.model.sampleJsonModel;
 import com.transitangel.transitangel.schedule.ScheduleActivity;
@@ -182,19 +183,23 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
         });
 
         //sample recents
-//        ArrayList<Trip> recents = TransitManager.getSharedInstance().fetchRecentSearchList();
-//        Trip trip = new Trip();
-//        trip.setFromStop(bartStops.get(0));
-//        trip.setToStop(bartStops.get(1));
-//        trip.setDate(new Date());
-//        TransitManager.getSharedInstance().saveRecentSearch(trip);
-//        recents = TransitManager.getSharedInstance().fetchRecentSearchList();
-//        Log.d("Recents",recents.toString());
-//       //sample trips
-//        ArrayList<Trip> trips = TransitManager.getSharedInstance().fetchRecentTripList();
-//        TransitManager.getSharedInstance().saveRecentTrip(trip);
-//        trips = TransitManager.getSharedInstance().fetchRecentTripList();
-//        Log.d("Trips",trips.toString());
+        ArrayList<Trip> recents = TransitManager.getSharedInstance().fetchRecentSearchList();
+        Trip trip = new Trip();
+        trip.setFromStop(bartStops.get(3));
+        trip.setToStop(bartStops.get(5));
+        trip.setDate(new Date());
+        TransitManager.getSharedInstance().saveRecentSearch(trip);
+        recents = TransitManager.getSharedInstance().fetchRecentSearchList();
+        Log.d("Recents",recents.toString());
+       //sample trips
+        ArrayList<Trip> trips = TransitManager.getSharedInstance().fetchRecentTripList();
+        Trip trip2 = new Trip();
+        trip2.setFromStop(stops.get(0));
+        trip2.setToStop(stops.get(5));
+        trip2.setDate(new Date());
+        TransitManager.getSharedInstance().saveRecentTrip(trip2);
+        trips = TransitManager.getSharedInstance().fetchRecentTripList();
+        Log.d("Trips",trips.toString());
 
     }
 

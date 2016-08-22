@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.transitangel.transitangel.R;
+import com.transitangel.transitangel.model.Transit.Trip;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class RecentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private static final int RECENT_ITEM_TYPE = 1;
 
-    private List<RecentsItem> recentsItemList;
+    private List<Trip> recentsItemList;
     private Context context;
     public interface OnItemClickListener {
         void onItemClick(int position);
@@ -25,7 +26,7 @@ public class RecentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private OnItemClickListener onItemClickListener;
 
-    public RecentAdapter(Context context, List<RecentsItem> recentsItemList) {
+    public RecentAdapter(Context context, List<Trip> recentsItemList) {
         this.recentsItemList = recentsItemList;
         this.context = context;
     }
@@ -56,15 +57,18 @@ public class RecentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof RecentItemViewHolder) {
             RecentItemViewHolder recentItemViewHolder = (RecentItemViewHolder)holder;
-            recentItemViewHolder.tvFrom.setText(recentsItemList.get(position).from);
-            recentItemViewHolder.tvTo.setText(recentsItemList.get(position).to);
+            recentItemViewHolder.tvFrom.setText(recentsItemList.get(position).getFromStop().getName());
+            recentItemViewHolder.tvTo.setText(recentsItemList.get(position).getToStop().getName());
             // Setting up content description for accessibility.
-            recentItemViewHolder.parent.setContentDescription(context.getString(R.string.contentdescription_from_to, recentsItemList.get(position).from, recentsItemList.get(position).to));
+            recentItemViewHolder.parent.setContentDescription(context.getString(R.string.contentdescription_from_to, recentsItemList.get(position).getFromStop().getName(), recentsItemList.get(position).getToStop().getName()));
         }
     }
 
     @Override
     public int getItemCount() {
-        return recentsItemList.size();
-    }
+        if ( recentsItemList != null ) {
+            return recentsItemList.size();
+        }
+        return 0;
+     }
 }
