@@ -448,6 +448,7 @@ public class TransitManager {
 
     //save recents
 
+    //order/ remove duplicates
     public ArrayList<Trip> fetchRecents() {
         //ArrayList<Trip> recents = new ArrayList<Trip>();
         Gson gson = new Gson();

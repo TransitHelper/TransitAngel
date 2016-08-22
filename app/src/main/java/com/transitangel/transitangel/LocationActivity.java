@@ -17,6 +17,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.transitangel.transitangel.utils.PermissionUtils;
 
 
 public class LocationActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,LocationListener {
@@ -56,16 +57,17 @@ public class LocationActivity extends Activity implements GoogleApiClient.Connec
     }
 
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if ( requestCode == 100 ) {
+           requestLocation();
+        }
+    }
+
+    private void requestLocation() {
         // Get last known recent location.
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            PermissionUtils.requestPermission(Manifest.permission.ACCESS_FINE_LOCATION,100,this);
             return;
         }
         Location mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -77,6 +79,11 @@ public class LocationActivity extends Activity implements GoogleApiClient.Connec
         }
         // Begin polling for new location updates.
         startLocationUpdates();
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+       requestLocation();
     }
 
     // Trigger new location updates at interval

@@ -1,5 +1,6 @@
 package com.transitangel.transitangel.Manager;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.transitangel.transitangel.model.Transit.Line;
 
 import java.util.ArrayList;
@@ -11,5 +12,4 @@ import java.util.ArrayList;
 public interface LineResponseHandler {
     public void OnLinesResponseReceived(boolean isSuccess, ArrayList<Line> lines);
 }
-
 

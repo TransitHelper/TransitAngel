@@ -17,8 +17,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
+import com.transitangel.transitangel.Manager.LocationManager;
+import com.transitangel.transitangel.Manager.LocationResponseHandler;
 import com.transitangel.transitangel.Manager.TrafficNewsAlertResponseHandler;
 import com.transitangel.transitangel.Manager.TransitManager;
 import com.transitangel.transitangel.Manager.TweetAlertResponseHandler;
@@ -165,6 +168,15 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
             public void onTweetsReceived(boolean isSuccess, ArrayList<Tweet> tweetAlerts) {
                 if (isSuccess) {
                     Log.d("Tweet alerts", tweetAlerts.toString());
+                }
+            }
+        });
+
+        LocationManager.getSharedInstance().getCurrentLocation(this, new LocationResponseHandler() {
+            @Override
+            public void OnLocationReceived(boolean isSuccess, LatLng latLng) {
+                if ( isSuccess ) {
+                    Log.d("Latitude Longitue",latLng.toString());
                 }
             }
         });
