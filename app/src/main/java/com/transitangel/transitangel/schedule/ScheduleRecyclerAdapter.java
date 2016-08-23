@@ -79,7 +79,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         }
 
         public void bindTrainData(scheduleItem item) {
-            mTrainName.setText(item.getTo());
+            mTrainName.setText(item.getFrom());
             mTrainArrivalTime.setText(item.getDepatureTime());
         }
     }

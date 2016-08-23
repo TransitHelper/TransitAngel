@@ -10,7 +10,6 @@
         <item name="tabPaddingStart">12dp</item>
         <item name="tabPaddingEnd">12dp</item>
     </style>
-
     <style name="spinnerStyle">
         <item name="android:background">@color/colorPrimary</item>
         <item name="android:textColor">@android:color/white</item>
@@ -42,4 +41,5 @@
         <item name="android:textSize">13sp</item>
         <item name="android:color">@color/gray</item>
     </style>
+
 </resources>

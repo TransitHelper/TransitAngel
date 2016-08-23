@@ -14,7 +14,7 @@ import com.transitangel.transitangel.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ScheduleActivity extends AppCompatActivity implements ScheduleRecyclerAdapter.OnItemClickListener {
+public class ScheduleActivity extends AppCompatActivity {
 
     @BindView(R.id.viewpager)
     ViewPager mViewPager;
@@ -54,10 +54,5 @@ public class ScheduleActivity extends AppCompatActivity implements ScheduleRecyc
         if (currentFragment != null) {
             currentFragment.onActivityResult(requestCode, resultCode, data);
         }
-    }
-
-    @Override
-    public void onItemClick(int position) {
-        //TODO : go to search activity
     }
 }

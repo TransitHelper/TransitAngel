@@ -54,10 +54,13 @@ public class LocationManager implements GoogleApiClient.ConnectionCallbacks,Goog
                 .addConnectionCallbacks(sInstance)
                 .addOnConnectionFailedListener(sInstance).build();
 
+        start();
+
     }
 
 
     public void start() {
+
         mGoogleApiClient.connect();
     }
 
@@ -83,7 +86,10 @@ public class LocationManager implements GoogleApiClient.ConnectionCallbacks,Goog
         activityContext = context;
         activityLocationResponseHandler = handler;
 
-        start();
+        if (!mGoogleApiClient.isConnected()) {
+            start();
+        }
+
         // Get last known recent location.
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -137,7 +143,8 @@ public class LocationManager implements GoogleApiClient.ConnectionCallbacks,Goog
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-
+        Log.d("Connected","Api client connected");
+        getCurrentLocation(activityContext,activityLocationResponseHandler);
     }
 
     @Override

@@ -6,6 +6,15 @@
     tools:context=".schedule.ScheduleFragment">
 
     <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/from_label"
+        android:textAllCaps="true"
+        android:textSize="13sp"
+        android:textColor="@color/textSecondary"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="10dp"/>
+    <TextView
         android:id="@+id/from_station"
         style="@style/spinnerStyle"
         android:layout_width="match_parent"
@@ -28,6 +37,16 @@
         android:src="@drawable/ic_swap" />
 
     <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/to_label"
+        android:textAllCaps="true"
+        android:textSize="13sp"
+        android:textColor="@color/textSecondary"
+        android:layout_marginTop="-2dp"
+        android:layout_marginLeft="10dp"/>
+
+    <TextView
         android:id="@+id/to_station"
         style="@style/spinnerStyle"
         android:layout_width="match_parent"
@@ -39,10 +58,12 @@
         android:contentDescription="Destination Station"
         android:gravity="center"
         android:padding="8dp" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvRecents"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"/>
 </LinearLayout>

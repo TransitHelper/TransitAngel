@@ -13,4 +13,6 @@
 
     <!--ContentDescription-->
     <string name="CD_switch_button">Switch from and to station</string>
+    <string name="from_label">From</string>
+    <string name="to_label">to</string>
 </resources>

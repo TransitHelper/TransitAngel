@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
 import com.transitangel.transitangel.R;
+import com.transitangel.transitangel.details.DetailsActivity;
 import com.transitangel.transitangel.model.Transit.Stop;
 import com.transitangel.transitangel.model.Transit.Train;
 import com.transitangel.transitangel.model.Transit.TrainStop;
@@ -24,7 +25,6 @@ import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.model.scheduleItem;
 import com.transitangel.transitangel.search.SearchActivity;
 import com.transitangel.transitangel.utils.TAConstants;
-import com.transitangel.transitangel.view.RecyclerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,10 +35,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ScheduleFragment extends Fragment {
+public class ScheduleFragment extends Fragment implements ScheduleRecyclerAdapter.OnItemClickListener {
 
     private static final int RESULT_SEARCH_FROM = 1;
     private static final int RESULT_SEARCH_TO = 2;
+    private static final int RESULT_DETAILS = 3;
     public static final String FROM_STATION_ID = "from_station_id";
     public static final String TO_STATION_ID = "to_station_id";
 
@@ -62,8 +63,6 @@ public class ScheduleFragment extends Fragment {
     List<scheduleItem> mRecentItems = new ArrayList<>();
     ScheduleRecyclerAdapter mRecyclerViewAdapter;
     HashMap<String, Stop> stopHashMap = new HashMap<>();
-    ScheduleRecyclerAdapter.OnItemClickListener mOnItemClickListener;
-
     public ScheduleFragment() {
         // Required empty public constructor
     }
@@ -97,13 +96,11 @@ public class ScheduleFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_schedule, container, false);
         ButterKnife.bind(this, view);
-        setUpStations();
-        getTrainSchedule();
-        mRecyclerViewAdapter = new ScheduleRecyclerAdapter(getContext(), mRecentItems, mOnItemClickListener);
+        mRecyclerViewAdapter = new ScheduleRecyclerAdapter(getContext(), mRecentItems, this);
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setNestedScrollingEnabled(true);
-        mRecyclerView.addItemDecoration(new RecyclerItemDecoration(getContext(), R.drawable.recycler_view_divider));
+//        mRecyclerView.addItemDecoration(new RecyclerItemDecoration(getContext(), R.drawable.recycler_view_divider));
         return view;
     }
 
@@ -120,20 +117,10 @@ public class ScheduleFragment extends Fragment {
             TrainStop mSource = train.getTrainStops().get(0);
             mRecentItems.add(new scheduleItem(stopHashMap.get(mSource.getStopId()).getName(),
                     stopHashMap.get(train.getTrainStops().get(train.getTrainStops().size() - 1).getStopId()).getName()
-                    , mSource.getDepartureTime(), ""));
+                    , mSource.getDepartureTime(), "", train));
         }
     }
 
-    private void setUpStations() {
-        if (mToStationId == null || mToStationId.isEmpty()) {
-            mToStationId = mStops.get(mStops.size() - 1).getId();
-            mToStation.setText(stopHashMap.get(mToStationId).getName());
-        }
-        if (mFromStationId == null || mFromStationId.isEmpty()) {
-            mFromStationId = mStops.get(0).getId();
-            mFromStation.setText(stopHashMap.get(mFromStationId).getName());
-        }
-    }
 
     private void refreshTrainSchedule() {
         if (mFromStationId != null && mToStationId != null) {
@@ -147,6 +134,11 @@ public class ScheduleFragment extends Fragment {
     @OnClick(R.id.to_station)
     protected void onToStationClick() {
         Intent intent = new Intent(getActivity(), SearchActivity.class);
+        if(mTRANSITType == TAConstants.TRANSIT_TYPE.BART) {
+            intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_BART);
+        } else {
+            intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_CALTRAIN);
+        }
         intent.putExtra(FROM_STATION_ID, mFromStationId);
         getActivity().startActivityForResult(intent, RESULT_SEARCH_TO, null);
     }
@@ -154,6 +146,11 @@ public class ScheduleFragment extends Fragment {
     @OnClick(R.id.from_station)
     protected void onFromStationClick() {
         Intent intent = new Intent(getActivity(), SearchActivity.class);
+        if(mTRANSITType == TAConstants.TRANSIT_TYPE.BART) {
+            intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_BART);
+        } else {
+            intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_CALTRAIN);
+        }
         intent.putExtra(TO_STATION_ID, mToStationId);
         getActivity().startActivityForResult(intent, RESULT_SEARCH_FROM, null);
     }
@@ -203,8 +200,12 @@ public class ScheduleFragment extends Fragment {
         if (requestCode == RESULT_SEARCH_FROM) {
             if (resultCode == Activity.RESULT_OK) {
                 Stop stop = data.getParcelableExtra(SearchActivity.EXTRA_SELECTED_STATION);
-                mFromStationId = stop.getId();
-                Log.d(TAG, "from station id: " + mFromStationId);
+                if(stop != null) {
+                    mFromStationId = stop.getId();
+                    Log.d(TAG, "from station id: " + mFromStationId);
+                } else {
+                    Log.e(TAG, "Error while getting stop for from");
+                }
                 return;
             }
         }
@@ -212,8 +213,12 @@ public class ScheduleFragment extends Fragment {
         if (requestCode == RESULT_SEARCH_TO) {
             if (resultCode == Activity.RESULT_OK) {
                 Stop stop = data.getParcelableExtra(SearchActivity.EXTRA_SELECTED_STATION);
-                mToStationId = stop.getId();
-                Log.d(TAG, "to station id: " + mToStationId);
+                if(stop != null) {
+                    mToStationId = stop.getId();
+                    Log.d(TAG, "to station id: " + mToStationId);
+                } else {
+                    Log.e(TAG, "Error while getting stop for to");
+                }
                 return;
             }
         }
@@ -222,12 +227,23 @@ public class ScheduleFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mOnItemClickListener = (ScheduleRecyclerAdapter.OnItemClickListener) getActivity();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         updateStationLabels(false);
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        Intent intent = new Intent(getActivity(), DetailsActivity.class);
+        if(mTRANSITType == TAConstants.TRANSIT_TYPE.BART) {
+            intent.putExtra(DetailsActivity.EXTRA_SERVICE, DetailsActivity.EXTRA_SERVICE_BART);
+        } else {
+            intent.putExtra(DetailsActivity.EXTRA_SERVICE, DetailsActivity.EXTRA_SERVICE_CALTRAIN);
+        }
+        intent.putExtra(DetailsActivity.EXTRA_TRAIN, mRecentItems.get(position).getTrain());
+        getActivity().startActivityForResult(intent, RESULT_DETAILS, null);
     }
 }
