@@ -3,7 +3,8 @@ package com.transitangel.transitangel.model.Transit;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.transitangel.transitangel.Manager.TransitManager;
+import com.transitangel.transitangel.Manager.BartTransitManager;
+import com.transitangel.transitangel.Manager.CaltrainTransitManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,8 +28,13 @@ public class TrainStop implements Parcelable {
         stopId = trainStopObj.getJSONObject("ScheduledStopPointRef").getString("ref");
         arrrivalTime = trainStopObj.getJSONObject("Arrival").getString("Time");
         departureTime = trainStopObj.getJSONObject("Departure").getString("Time");
-        HashMap<String,Stop> stopLookup = TransitManager.getSharedInstance().getStopLookup();
+        HashMap<String,Stop> stopLookup = CaltrainTransitManager.getSharedInstance().getStopLookup();
         Stop stop =  stopLookup.get(stopId);
+        if ( stop == null ) {
+            //check bart
+            HashMap<String,Stop> bartStopLookup = BartTransitManager.getSharedInstance().getStopLookup();
+            stop = bartStopLookup.get(stopId);
+        }
         if ( stop != null ) {
             name = stop.getName();
             latitude = stop.getLatitude();

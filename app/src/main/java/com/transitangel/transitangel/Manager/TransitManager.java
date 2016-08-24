@@ -442,6 +442,7 @@ public class TransitManager {
         return trains;
     }
 
+
     public HashMap<String, Stop> getStopLookup() {
         return mStopLookup;
     }
