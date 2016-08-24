@@ -10,12 +10,14 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.transitangel.transitangel.Manager.BartTransitManager;
@@ -37,6 +39,7 @@ import com.transitangel.transitangel.model.Transit.TrainStop;
 import com.transitangel.transitangel.model.Transit.TrainStopFence;
 import com.transitangel.transitangel.model.Transit.Tweet;
 import com.transitangel.transitangel.model.sampleJsonModel;
+import com.transitangel.transitangel.notifications.NotificationProvider;
 import com.transitangel.transitangel.schedule.ScheduleActivity;
 
 import java.util.ArrayList;
@@ -50,6 +53,8 @@ import butterknife.OnClick;
 import rx.subscriptions.CompositeSubscription;
 
 public class HomeActivity extends AppCompatActivity implements ShowNotificationListener {
+
+    public static final String ACTION_SHOW_ONGOING = "ACTION_SHOW_ONGOING";
 
     @BindView(R.id.tvTitle)
     TextView tvTitle;
@@ -76,7 +81,6 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
         ButterKnife.bind(this);
         init();
         mTripHelperApiFactory = new TripHelperApiFactory(new TripHelplerRequestInterceptor(this));
-
         executeSampleAPICalls();
         //fetch trains arriving at a certain destination within a certain duration
         ArrayList<Train> arrivingTrains = CaltrainTransitManager.getSharedInstance().fetchTrainsArrivingAtDestination("70011", 3);
@@ -100,6 +104,10 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
 
         // Hack to avoid recycler view scrolling to middle.
         nsvContent.post(() -> nsvContent.scrollTo(0, 0));
+        String action = getIntent().getAction();
+        if(!TextUtils.isEmpty(action) && action.equalsIgnoreCase(ACTION_SHOW_ONGOING)) {
+            Toast.makeText(this, "Show on going screen here", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -234,6 +242,7 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
 
     @OnClick(R.id.btnSchedule)
     public void onScheduleClicked() {
+        NotificationProvider.getInstance().showNotification(this, "323");
         Intent intent = new Intent(this, ScheduleActivity.class);
         startActivity(intent);
     }
@@ -251,7 +260,6 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
             mSubscription.clear();
         super.onDestroy();
     }
-
 
 //    public void sampleLoadJsonData() {
 //        mSubscription.add(
