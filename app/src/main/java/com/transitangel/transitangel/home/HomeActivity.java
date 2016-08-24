@@ -1,11 +1,15 @@
 package com.transitangel.transitangel.home;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
@@ -119,6 +123,8 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
         return super.onOptionsItemSelected(item);
     }
 
+
+
     private void executeSampleAPICalls() {
 
         Stop caltrainStop = CaltrainTransitManager.getSharedInstance().getNearestStop(37.401438, -121.9252457);
@@ -174,17 +180,17 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
             }
         });
 
-        LocationManager.getSharedInstance().getCurrentLocation(this, new LocationManager.LocationResponseHandler() {
-            @Override
-            public void OnLocationReceived(boolean isSuccess, LatLng latLng) {
-                if ( isSuccess ) {
-                    Log.d("Latitude Longitue",latLng.toString());
-                    testHandleOnLocationReceived(isSuccess,latLng);
-                }
-            }
-        });
+//        LocationManager.getSharedInstance().getCurrentLocation(this, new LocationManager.LocationResponseHandler() {
+//            @Override
+//            public void OnLocationReceived(boolean isSuccess, LatLng latLng) {
+//                if ( isSuccess ) {
+//                    Log.d("Latitude Longitue",latLng.toString());
+//                    testHandleOnLocationReceived(isSuccess,latLng);
+//                }
+//            }
+//        });
 
-//        LocationManager.getSharedInstance().getLocationUpdates(this);
+        LocationManager.getSharedInstance().getLocationUpdates(this);
 
 
 
@@ -263,7 +269,28 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
         super.onResume();
         // Avoid issue that recycler view gets automatic focus on start of the app.
         nsvContent.scrollTo(0, 0);
+
+        //setup brodcast receiver
+        IntentFilter intentFilter = new IntentFilter(LocationManager.BROADCAST_ACTION);
+        LocalBroadcastManager.getInstance(this).registerReceiver(locationUpdatesReceiver,intentFilter);
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(locationUpdatesReceiver);
+    }
+
+    private BroadcastReceiver locationUpdatesReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null ) {
+                double latitude = intent.getDoubleExtra("Latitude",0.0);
+                double longitude = intent.getDoubleExtra("Longitude",0.0);
+                Log.d("Location Update","Update received");
+            }
+        }
+    };
 
     @Override
     protected void onDestroy() {

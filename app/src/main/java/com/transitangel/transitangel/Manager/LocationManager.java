@@ -3,10 +3,12 @@ package com.transitangel.transitangel.Manager;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -26,7 +28,7 @@ public class LocationManager implements com.google.android.gms.location.Location
 
     public static final int GET_LOCATION_REQUEST_CODE  = 100;
     public static final int GET_UPDATES_LOCATION_REQUEST_CODE  = 105;
-
+    public static final String BROADCAST_ACTION = "LocationManager.LocationUpdates";
 
 
     private GoogleApiClient mGoogleApiClient;
@@ -189,7 +191,15 @@ public class LocationManager implements com.google.android.gms.location.Location
                 Double.toString(location.getLongitude());
         // You can now create a LatLng Object for use with maps
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        //do broadcast
+
+        //TODO decide if we want to broadcast nearest stop instead?
+        //create intent
+        Intent intent = new Intent(BROADCAST_ACTION);
+        intent.putExtra("Latitude",latLng.latitude);
+        intent.putExtra("Longitude",latLng.longitude);
+        //send broadcast
+        LocalBroadcastManager.getInstance(mApplicationContext).sendBroadcast(intent);
+
     }
 
 }
