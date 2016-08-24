@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
@@ -16,16 +14,20 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.model.LatLng;
 import com.transitangel.transitangel.utils.PermissionUtils;
 
 /**
  * Created by vidhurvoora on 8/21/16.
  */
-public class LocationManager implements GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener,ActivityCompat.OnRequestPermissionsResultCallback ,LocationSource.OnLocationChangedListener{
+public class LocationManager implements com.google.android.gms.location.LocationListener{
 
     private static LocationManager sInstance;
+
+    public static final int GET_LOCATION_REQUEST_CODE  = 100;
+    public static final int GET_UPDATES_LOCATION_REQUEST_CODE  = 105;
+
+
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
@@ -47,15 +49,78 @@ public class LocationManager implements GoogleApiClient.ConnectionCallbacks,Goog
 
     public void setup(Context context) {
         mApplicationContext = context;
-        GoogleApiClient.Builder client = new GoogleApiClient.Builder(sInstance.mApplicationContext);
+    }
 
+    public interface LocationResponseHandler {
+        public void OnLocationReceived (boolean isSuccess, LatLng latLng);
+    }
 
-       mGoogleApiClient =  client.addApi(LocationServices.API)
-                .addConnectionCallbacks(sInstance)
-                .addOnConnectionFailedListener(sInstance).build();
+    private GoogleApiClient.ConnectionCallbacks getLocationListener =
+            new GoogleApiClient.ConnectionCallbacks() {
+                @Override
+                public void onConnected(Bundle bundle) {
+                    getLocationConnectHandle();
+                }
 
-        start();
+                @Override
+                public void onConnectionSuspended(int i) {
 
+                }
+            };
+
+    private GoogleApiClient.ConnectionCallbacks locationUpdatesListener =
+            new GoogleApiClient.ConnectionCallbacks() {
+                @Override
+                public void onConnected(Bundle bundle) {
+                    getLocationUpdatesHandle();
+                }
+
+                @Override
+                public void onConnectionSuspended(int i) {
+
+                }
+            };
+
+    private GoogleApiClient.OnConnectionFailedListener connectionFailedListener =
+            new GoogleApiClient.OnConnectionFailedListener() {
+                @Override
+                public void onConnectionFailed(ConnectionResult connectionResult) {
+
+                }
+            };
+
+    private void getLocationConnectHandle() {
+        // Get last known recent location.
+        if (ActivityCompat.checkSelfPermission(activityContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(activityContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if ( activityContext instanceof Activity ) {
+                PermissionUtils.requestPermission(Manifest.permission.ACCESS_FINE_LOCATION,GET_LOCATION_REQUEST_CODE,(Activity)activityContext);
+            }
+            else {
+                // throw new IllegalArgumentException("Context not activity");
+                activityLocationResponseHandler.OnLocationReceived(false,null);
+            }
+        }
+        else {
+
+            Location mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            // Note that this can be NULL if last location isn't already known.
+            if (mCurrentLocation != null) {
+                // Print current location if not null
+                Log.d("DEBUG", "current location: " + mCurrentLocation.toString());
+                LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+                activityLocationResponseHandler.OnLocationReceived(true, latLng);
+            }
+        }
+    }
+
+    private void connectWithCallbacks(GoogleApiClient.ConnectionCallbacks callbacks) {
+        mGoogleApiClient = new GoogleApiClient.Builder(sInstance.mApplicationContext)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(callbacks)
+                .addOnConnectionFailedListener(connectionFailedListener)
+                .build();
+        mGoogleApiClient.connect();
     }
 
 
@@ -74,86 +139,46 @@ public class LocationManager implements GoogleApiClient.ConnectionCallbacks,Goog
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
-        if ( requestCode == 100 && activityContext != null && activityLocationResponseHandler != null) {
-            getCurrentLocation(activityContext,activityLocationResponseHandler);
-        }
-    }
 
     public void getCurrentLocation(Context context,LocationResponseHandler handler) {
         activityContext = context;
         activityLocationResponseHandler = handler;
 
-        if (!mGoogleApiClient.isConnected()) {
-            start();
-        }
+        connectWithCallbacks(getLocationListener);
 
-        // Get last known recent location.
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if ( context instanceof Activity ) {
-                PermissionUtils.requestPermission(Manifest.permission.ACCESS_FINE_LOCATION,100,(Activity)context);
-            }
-            else {
-               // throw new IllegalArgumentException("Context not activity");
-                handler.OnLocationReceived(false,null);
-            }
-        }
-        else {
-
-            Location mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            // Note that this can be NULL if last location isn't already known.
-            if (mCurrentLocation != null) {
-                // Print current location if not null
-                Log.d("DEBUG", "current location: " + mCurrentLocation.toString());
-                LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-                handler.OnLocationReceived(true, latLng);
-            }
-        }
-
-
-
-
-        // Begin polling for new location updates.
-        //startLocationUpdates(context);
     }
 
     // Trigger new location updates at interval
-    protected void startLocationUpdates(Context context) {
-        // Create the location request
-        mLocationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(UPDATE_INTERVAL)
-                .setFastestInterval(FASTEST_INTERVAL);
+    public void getLocationUpdates(Context context) {
+        activityContext = context;
+        connectWithCallbacks(locationUpdatesListener);
+    }
+
+    private void getLocationUpdatesHandle() {
+
         // Request location updates
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if ( context instanceof Activity ) {
-                PermissionUtils.requestPermission(Manifest.permission.ACCESS_FINE_LOCATION,100,(Activity)context);
+        if (ActivityCompat.checkSelfPermission(activityContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(activityContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if ( activityContext instanceof Activity ) {
+                PermissionUtils.requestPermission(Manifest.permission.ACCESS_FINE_LOCATION,GET_UPDATES_LOCATION_REQUEST_CODE,(Activity)activityContext);
             }
             else {
                 throw new IllegalArgumentException("Context not activity");
             }
         }
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
-                mLocationRequest, (LocationListener) this);
-    }
+        else {
+            // Create the location request
+            mLocationRequest = LocationRequest.create()
+                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                    .setInterval(UPDATE_INTERVAL)
+                    .setFastestInterval(FASTEST_INTERVAL);
 
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        Log.d("Connected","Api client connected");
-        getCurrentLocation(activityContext,activityLocationResponseHandler);
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        if (i == CAUSE_SERVICE_DISCONNECTED) {
-
-        } else if (i == CAUSE_NETWORK_LOST) {
-           //do what
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
+                    mLocationRequest, (LocationListener) this);
         }
+
+
     }
 
     @Override
@@ -167,8 +192,4 @@ public class LocationManager implements GoogleApiClient.ConnectionCallbacks,Goog
         //do broadcast
     }
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
 }

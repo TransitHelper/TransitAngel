@@ -22,7 +22,6 @@ import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
 import com.transitangel.transitangel.Manager.GeofenceManager;
 import com.transitangel.transitangel.Manager.LocationManager;
-import com.transitangel.transitangel.Manager.LocationResponseHandler;
 import com.transitangel.transitangel.Manager.TrafficNewsAlertResponseHandler;
 import com.transitangel.transitangel.Manager.TransitManager;
 import com.transitangel.transitangel.Manager.TweetAlertResponseHandler;
@@ -175,32 +174,17 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
             }
         });
 
-        LocationManager.getSharedInstance().getCurrentLocation(this, new LocationResponseHandler() {
+        LocationManager.getSharedInstance().getCurrentLocation(this, new LocationManager.LocationResponseHandler() {
             @Override
             public void OnLocationReceived(boolean isSuccess, LatLng latLng) {
                 if ( isSuccess ) {
                     Log.d("Latitude Longitue",latLng.toString());
-
-                    TrainStop trainStop = new TrainStop();
-                    trainStop.setLatitude(Double.toString(latLng.latitude));
-                    trainStop.setLongitude(Double.toString(latLng.longitude));
-                    trainStop.setName("Test Geofence");
-                    TrainStopFence fence = new TrainStopFence(trainStop,15);
-
-                    GeofenceManager.getSharedInstance().addGeofence(getApplicationContext(), fence, new GeofenceManager.GeofenceManagerListener() {
-                        @Override
-                        public void onGeofencesUpdated() {
-                            Log.d("Fence Updated","Here");
-                        }
-
-                        @Override
-                        public void onError() {
-                            Log.d("Error","Error adding fence");
-                        }
-                    });
+                    testHandleOnLocationReceived(isSuccess,latLng);
                 }
             }
         });
+
+//        LocationManager.getSharedInstance().getLocationUpdates(this);
 
 
 
@@ -225,6 +209,42 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
 //        trips = TransitManager.getSharedInstance().fetchRecentTripList();
 //        Log.d("Trips",trips.toString());
 
+    }
+
+    private void testHandleOnLocationReceived(boolean isSuccess, LatLng latLng) {
+        TrainStop trainStop = new TrainStop();
+        trainStop.setLatitude(Double.toString(latLng.latitude));
+        trainStop.setLongitude(Double.toString(latLng.longitude));
+        trainStop.setName("Test Geofence");
+        TrainStopFence fence = new TrainStopFence(trainStop,15);
+
+        GeofenceManager.getSharedInstance().addGeofence(getApplicationContext(), fence, new GeofenceManager.GeofenceManagerListener() {
+            @Override
+            public void onGeofencesUpdated() {
+                Log.d("Fence Updated","Here");
+            }
+
+            @Override
+            public void onError() {
+                Log.d("Error","Error adding fence");
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+        if ( requestCode == LocationManager.GET_LOCATION_REQUEST_CODE) {
+            LocationManager.getSharedInstance().getCurrentLocation(this, new LocationManager.LocationResponseHandler() {
+                @Override
+                public void OnLocationReceived(boolean isSuccess, LatLng latLng) {
+                    testHandleOnLocationReceived(isSuccess,latLng);
+                }
+            });
+        }
+        else if ( requestCode == LocationManager.GET_UPDATES_LOCATION_REQUEST_CODE ) {
+            LocationManager.getSharedInstance().getLocationUpdates(this);
+        }
     }
 
     @OnClick(R.id.fabStartTrip)
