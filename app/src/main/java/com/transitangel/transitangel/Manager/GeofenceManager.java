@@ -102,7 +102,7 @@ public class GeofenceManager {
             new GoogleApiClient.ConnectionCallbacks() {
                 @Override
                 public void onConnected(Bundle bundle) {
-
+                    removeGeofenceOnConnectHandle();
                 }
 
                 @Override
