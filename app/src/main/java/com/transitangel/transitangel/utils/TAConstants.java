@@ -21,6 +21,8 @@ public class TAConstants {
             ,BART_SFIA_BAYPT
     }
 
+    public static String SharedPrefGeofences = "SHARED_PREFS_GEOFENCES";
+
 
 
 }

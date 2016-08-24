@@ -25,6 +25,8 @@
         <activity android:name=".LocationActivity" />
         <activity android:name=".schedule.ScheduleActivity" />
         <activity android:name=".details.DetailsActivity"></activity>
+
+        <service android:name=".Intent.TransitIntentService"/>
     </application>
 
 </manifest>

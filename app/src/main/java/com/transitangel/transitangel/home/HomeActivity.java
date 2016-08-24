@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.model.LatLng;
 import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
+import com.transitangel.transitangel.Manager.GeofenceManager;
 import com.transitangel.transitangel.Manager.LocationManager;
 import com.transitangel.transitangel.Manager.LocationResponseHandler;
 import com.transitangel.transitangel.Manager.TrafficNewsAlertResponseHandler;
@@ -32,6 +33,8 @@ import com.transitangel.transitangel.model.Transit.Service;
 import com.transitangel.transitangel.model.Transit.Stop;
 import com.transitangel.transitangel.model.Transit.TrafficNewsAlert;
 import com.transitangel.transitangel.model.Transit.Train;
+import com.transitangel.transitangel.model.Transit.TrainStop;
+import com.transitangel.transitangel.model.Transit.TrainStopFence;
 import com.transitangel.transitangel.model.Transit.Tweet;
 import com.transitangel.transitangel.model.sampleJsonModel;
 import com.transitangel.transitangel.schedule.ScheduleActivity;
@@ -177,9 +180,31 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
             public void OnLocationReceived(boolean isSuccess, LatLng latLng) {
                 if ( isSuccess ) {
                     Log.d("Latitude Longitue",latLng.toString());
+
+                    TrainStop trainStop = new TrainStop();
+                    trainStop.setLatitude(Double.toString(latLng.latitude));
+                    trainStop.setLongitude(Double.toString(latLng.longitude));
+                    trainStop.setName("Test Geofence");
+                    TrainStopFence fence = new TrainStopFence(trainStop,15);
+
+                    GeofenceManager.getSharedInstance().addGeofence(getApplicationContext(), fence, new GeofenceManager.GeofenceManagerListener() {
+                        @Override
+                        public void onGeofencesUpdated() {
+                            Log.d("Fence Updated","Here");
+                        }
+
+                        @Override
+                        public void onError() {
+                            Log.d("Error","Error adding fence");
+                        }
+                    });
                 }
             }
         });
+
+
+
+
 
         //sample recents
 //        ArrayList<Trip> recents = TransitManager.getSharedInstance().fetchRecentSearchList();
