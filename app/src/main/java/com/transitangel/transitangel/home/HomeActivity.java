@@ -235,12 +235,12 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
         GeofenceManager.getSharedInstance().addGeofence(getApplicationContext(), fence, new GeofenceManager.GeofenceManagerListener() {
             @Override
             public void onGeofencesUpdated() {
-                Log.d("Fence Updated","Here");
+                Log.d("Fence Updated", "Here");
             }
 
             @Override
             public void onError() {
-                Log.d("Error","Error adding fence");
+                Log.d("Error", "Error adding fence");
             }
         });
     }
@@ -268,7 +268,7 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
 
     @OnClick(R.id.btnSchedule)
     public void onScheduleClicked() {
-        NotificationProvider.getInstance().showNotification(this, "323");
+        NotificationProvider.getInstance().showTripStartedNotification(this, "323");
         Intent intent = new Intent(this, ScheduleActivity.class);
         startActivity(intent);
     }
@@ -281,7 +281,7 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
 
         //setup brodcast receiver
         IntentFilter intentFilter = new IntentFilter(LocationManager.BROADCAST_ACTION);
-        LocalBroadcastManager.getInstance(this).registerReceiver(locationUpdatesReceiver,intentFilter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(locationUpdatesReceiver, intentFilter);
     }
 
     @Override
