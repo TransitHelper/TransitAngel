@@ -58,6 +58,7 @@ import rx.subscriptions.CompositeSubscription;
 public class HomeActivity extends AppCompatActivity implements ShowNotificationListener {
 
     public static final String ACTION_SHOW_ONGOING = "ACTION_SHOW_ONGOING";
+    public static final String ACTION_TRIP_CANCELLED = "ACTION_TRIP_CANCELLED";
 
     @BindView(R.id.tvTitle)
     TextView tvTitle;
@@ -108,8 +109,12 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
         // Hack to avoid recycler view scrolling to middle.
         nsvContent.post(() -> nsvContent.scrollTo(0, 0));
         String action = getIntent().getAction();
-        if(!TextUtils.isEmpty(action) && action.equalsIgnoreCase(ACTION_SHOW_ONGOING)) {
-            Toast.makeText(this, "Show on going screen here", Toast.LENGTH_LONG).show();
+        if(!TextUtils.isEmpty(action)) {
+            if(action.equalsIgnoreCase(ACTION_SHOW_ONGOING)) {
+                Toast.makeText(this, "Show on going screen here.", Toast.LENGTH_LONG).show();
+            } else if (action.equalsIgnoreCase(ACTION_TRIP_CANCELLED)) {
+                Toast.makeText(this, "Show on cancelled trip clicked.", Toast.LENGTH_LONG).show();
+            }
         }
     }
 

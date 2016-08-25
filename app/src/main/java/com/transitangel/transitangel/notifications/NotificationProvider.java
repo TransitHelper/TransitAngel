@@ -16,7 +16,9 @@ import com.transitangel.transitangel.home.HomeActivity;
  */
 public class NotificationProvider {
 
-    private static final int NOTIFICATION_ID = 200;
+    private static final int NOTIFICATION_ONGOING_ID = 200;
+    private static final int NOTIFICATION_DISMISS_ID = 201;
+    private static final int NOTIFICATION_BIG_TEXT = 202;
     private static NotificationProvider INSTANCE;
 
     public static NotificationProvider getInstance() {
@@ -37,7 +39,7 @@ public class NotificationProvider {
         String title = "Train enroute";
 
         // Set details from the ongoing trip
-        String conentTitle = "Train is sheduled to arrive at 8:30am";
+        String contentTitle = "Train is scheduled to arrive at 8:30am";
 
         Intent showTrip = new Intent(context, HomeActivity.class);
         showTrip.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -48,7 +50,7 @@ public class NotificationProvider {
                 new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.train)
                 .setContentTitle(title)
-                .setContentText(conentTitle)
+                .setContentText(contentTitle)
                 .setDefaults(NotificationCompat.DEFAULT_ALL) // Required to show like phone call notifications
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setOngoing(true) // This will make it stick to the top.
@@ -56,15 +58,37 @@ public class NotificationProvider {
                 .setContentIntent(piShowTrip);// Dismissed the notification.
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(NOTIFICATION_ID, notification.build());
+        notificationManager.notify(NOTIFICATION_ONGOING_ID, notification.build());
     }
 
     private NotificationProvider() {
     }
 
-    public void dismissNotification(Context context) {
+    public void dismissOnGoingNotification(Context context) {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.cancel(NOTIFICATION_ID);
+        notificationManager.cancel(NOTIFICATION_ONGOING_ID);
+
+        // Get the train details:
+        String title = "Trip cancelled";
+
+        // Set details from the ongoing trip
+        String contentTitle = "Transit from MTV to SFO has been cancelled";
+
+        Intent onDismissIntent = new Intent(context, HomeActivity.class);
+        onDismissIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        onDismissIntent.setAction(HomeActivity.ACTION_TRIP_CANCELLED);
+
+        PendingIntent piOnDismiss = PendingIntent.getActivity(context, 1, onDismissIntent, 0);
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(context)
+                        .setSmallIcon(R.drawable.train)
+                        .setContentTitle(title)
+                        .setContentText(contentTitle)
+                        .setContentIntent(piOnDismiss)
+                        .setTicker(contentTitle)
+                        .setAutoCancel(true);
+        notificationManager.notify(NOTIFICATION_DISMISS_ID, mBuilder.build());
     }
 
     public void showBigTextNotification(Context context, Intent intent, String title, String contentText) {
@@ -85,6 +109,7 @@ public class NotificationProvider {
                 .setPriority(android.support.v7.app.NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true)
                 .build();
-        notificationManager.notify(0, notification);
+
+        notificationManager.notify(NOTIFICATION_BIG_TEXT, notification);
     }
 }
