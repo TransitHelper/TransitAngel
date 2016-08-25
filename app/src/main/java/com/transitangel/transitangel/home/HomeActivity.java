@@ -1,5 +1,7 @@
 package com.transitangel.transitangel.home;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -29,10 +31,14 @@ import com.transitangel.transitangel.Manager.TransitLocationManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.api.TripHelperApiFactory;
 import com.transitangel.transitangel.api.TripHelplerRequestInterceptor;
+import com.transitangel.transitangel.details.AlarmBroadcastReceiver;
+import com.transitangel.transitangel.model.Transit.TrainStop;
 import com.transitangel.transitangel.model.sampleJsonModel;
 import com.transitangel.transitangel.notifications.NotificationProvider;
 import com.transitangel.transitangel.schedule.ScheduleActivity;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -44,6 +50,8 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
 
     public static final String ACTION_SHOW_ONGOING = "ACTION_SHOW_ONGOING";
     public static final String ACTION_TRIP_CANCELLED = "ACTION_TRIP_CANCELLED";
+    public static final int ALARM_REQUEST_CODE = 111;
+
 
     @BindView(R.id.tvTitle)
     TextView tvTitle;
@@ -140,7 +148,20 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
 
     @OnClick(R.id.fabStartTrip)
     public void onStartTripClicked() {
-        showSnackBar(clMainContent, "Start Trip!");
+        //Adding Geofence to the last trip
+        //TODO: based on user selected station add geofence
+        AddGeoFenceToSelectedStops();
+        //SetUp Alaram
+        AddAlarmToSelectedStops();
+        //Start Notification
+        TrainStop  trainStop = new TrainStop();
+        trainStop.setName("SFO");
+        trainStop.setStopId("323");
+        startTripNotification(trainStop);
+    }
+
+    private void startTripNotification(TrainStop trainStop) {
+        NotificationProvider.getInstance().showTripStartedNotification(this, trainStop.getStopId());
     }
 
     @OnClick(R.id.btnSchedule)
@@ -203,5 +224,39 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
     @Override
     public void showNotification(String text) {
         showSnackBar(clMainContent, text);
+    }
+
+    //Move it to schedule Activity
+    private void AddAlarmToSelectedStops() {
+        Intent intent = new Intent(this, AlarmBroadcastReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this.getApplicationContext(), ALARM_REQUEST_CODE, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, timestamp.getHours());
+        calendar.set(Calendar.MINUTE, timestamp.getMinutes());
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                pendingIntent);
+
+
+        Toast.makeText(this, "Alarm will vibrate at time specified",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    private void AddGeoFenceToSelectedStops() {
+//        TrainStopFence trainStopFence = new TrainStopFence(mStops.get(mStops.size() - 1), 15);
+//        GeofenceManager.getSharedInstance().addGeofence(this, trainStopFence, new GeofenceManager.GeofenceManagerListener() {
+//            @Override
+//            public void onGeofencesUpdated() {
+//                Log.d("Fence Added", "Here");
+//            }
+//
+//            @Override
+//            public void onError() {
+//                Log.d("Error", "Error adding fence");
+//            }
+//        });
     }
 }

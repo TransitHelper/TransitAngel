@@ -1,5 +1,7 @@
 package com.transitangel.transitangel.details;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -19,17 +22,25 @@ import android.widget.Toast;
 
 import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
+import com.transitangel.transitangel.Manager.GeofenceManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.model.Transit.Stop;
 import com.transitangel.transitangel.model.Transit.Train;
 import com.transitangel.transitangel.model.Transit.TrainStop;
+import com.transitangel.transitangel.model.Transit.TrainStopFence;
+import com.transitangel.transitangel.notifications.NotificationProvider;
 import com.transitangel.transitangel.search.StationsAdapter;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class DetailsActivity extends AppCompatActivity implements StationsAdapter.OnItemClickListener, SearchView.OnQueryTextListener {
 
@@ -40,6 +51,7 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     public static final String EXTRA_SERVICE = TAG + ".EXTRA_SERVICE";
     public static final String EXTRA_SERVICE_BART = TAG + ".EXTRA_SERVICE_BART";
     public static final String EXTRA_SERVICE_CALTRAIN = TAG + ".EXTRA_SERVICE_CALTRAIN";
+    public static final int ALARM_REQUEST_CODE = 111;
 
 
     @BindView(R.id.tvTitle)
@@ -69,14 +81,14 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         serviceType = getIntent().getStringExtra(EXTRA_SERVICE);
         train = getIntent().getParcelableExtra(EXTRA_TRAIN);
         mStops = train.getTrainStops();
-        if(EXTRA_SERVICE_CALTRAIN.equalsIgnoreCase(serviceType)) {
+        if (EXTRA_SERVICE_CALTRAIN.equalsIgnoreCase(serviceType)) {
             stopHashMap = CaltrainTransitManager.getSharedInstance().getStopLookup();
         } else {
             stopHashMap = BartTransitManager.getSharedInstance().getStopLookup();
         }
         setSupportActionBar(toolbar);
         tvTitle.setText("#" + train.getNumber());
-        tvTitle.setContentDescription("Train number " +  train.getNumber());
+        tvTitle.setContentDescription("Train number " + train.getNumber());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Create the recents adapter.
@@ -110,12 +122,12 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home) {
+        if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
-        } else if(item.getItemId() == R.id.action_favorite) {
+        } else if (item.getItemId() == R.id.action_favorite) {
             Toast.makeText(this, "Under developement", Toast.LENGTH_LONG).show();
-        } else if(item.getItemId() == R.id.action_alarm) {
+        } else if (item.getItemId() == R.id.action_alarm) {
             Toast.makeText(this, "Under developement", Toast.LENGTH_LONG).show();
         }
         return super.onOptionsItemSelected(item);
@@ -139,5 +151,60 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     public boolean onQueryTextChange(String newText) {
         adapter.setFilter(newText);
         return false;
+    }
+
+    @OnClick(R.id.fabStartTrip)
+    public void startTrip() {
+        //Adding Geofence to the last trip
+        //TODO: based on user selected station add geofence
+        addGeoFenceToSelectedStops();
+        //SetUp Alaram
+        addAlarmToSelectedStops();
+        //Start Notification
+        startOnGoingNotification();
+
+    }
+
+    private void startOnGoingNotification() {
+        TrainStop lastStop = mStops.get(mStops.size() - 1);
+        NotificationProvider.getInstance().showTripStartedNotification(this, lastStop.getStopId());
+    }
+
+    private void addAlarmToSelectedStops() {
+        Intent intent = new Intent(this, AlarmBroadcastReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this.getApplicationContext(), ALARM_REQUEST_CODE, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        TrainStop lastStop = mStops.get(mStops.size() - 1);
+        final Timestamp timestamp =
+                Timestamp.valueOf(
+                        new SimpleDateFormat("yyyy-MM-dd ")
+                                .format(new Date())
+                                .concat(lastStop.getArrrivalTime())
+                );
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, timestamp.getHours());
+        calendar.set(Calendar.MINUTE, timestamp.getMinutes()-5);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                pendingIntent);
+
+        Toast.makeText(this, "Alarm will vibrate at time specified",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    private void addGeoFenceToSelectedStops() {
+        TrainStopFence trainStopFence = new TrainStopFence(mStops.get(mStops.size() - 1), 15);
+        GeofenceManager.getSharedInstance().addGeofence(this, trainStopFence, new GeofenceManager.GeofenceManagerListener() {
+            @Override
+            public void onGeofencesUpdated() {
+                Log.d("Fence Added", "Here");
+            }
+
+            @Override
+            public void onError() {
+                Log.d("Error", "Error adding fence");
+            }
+        });
     }
 }
