@@ -24,30 +24,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.transitangel.transitangel.Manager.BartTransitManager;
-import com.transitangel.transitangel.Manager.CaltrainTransitManager;
-import com.transitangel.transitangel.Manager.GeofenceManager;
-import com.transitangel.transitangel.Manager.LocationManager;
-import com.transitangel.transitangel.Manager.TrafficNewsAlertResponseHandler;
-import com.transitangel.transitangel.Manager.TransitManager;
-import com.transitangel.transitangel.Manager.TweetAlertResponseHandler;
+import com.transitangel.transitangel.Manager.TestManager;
+import com.transitangel.transitangel.Manager.TransitLocationManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.api.TripHelperApiFactory;
 import com.transitangel.transitangel.api.TripHelplerRequestInterceptor;
-import com.transitangel.transitangel.model.Transit.Service;
-import com.transitangel.transitangel.model.Transit.Stop;
-import com.transitangel.transitangel.model.Transit.TrafficNewsAlert;
-import com.transitangel.transitangel.model.Transit.Train;
-import com.transitangel.transitangel.model.Transit.TrainStop;
-import com.transitangel.transitangel.model.Transit.TrainStopFence;
-import com.transitangel.transitangel.model.Transit.Tweet;
 import com.transitangel.transitangel.model.sampleJsonModel;
 import com.transitangel.transitangel.notifications.NotificationProvider;
 import com.transitangel.transitangel.schedule.ScheduleActivity;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -85,10 +70,7 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
         ButterKnife.bind(this);
         init();
         mTripHelperApiFactory = new TripHelperApiFactory(new TripHelplerRequestInterceptor(this));
-        executeSampleAPICalls();
-        //fetch trains arriving at a certain destination within a certain duration
-        ArrayList<Train> arrivingTrains = CaltrainTransitManager.getSharedInstance().fetchTrainsArrivingAtDestination("70011", 3);
-        Log.d("Trains arriving station", arrivingTrains.toString());
+        TestManager.getSharedInstance().executeSampleAPICalls();
     }
 
     private void init() {
@@ -138,131 +120,21 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
 
 
 
-    private void executeSampleAPICalls() {
 
-        Stop caltrainStop = CaltrainTransitManager.getSharedInstance().getNearestStop(37.401438, -121.9252457);
-        Stop bartStop = BartTransitManager.getSharedInstance().getNearestStop(37.401438, -121.9252457);
-
-        //get all the services limited,local and babybullet
-        ArrayList<Service> services = CaltrainTransitManager.getSharedInstance().getServices();
-
-        //get all the stops
-        ArrayList<Stop> stops = CaltrainTransitManager.getSharedInstance().getStops();
-        //get hashmap for faster lookup of stop if you have stop id
-        HashMap<String, Stop> stopHashMap = CaltrainTransitManager.getSharedInstance().getStopLookup();
-        Log.d("Services", services.toString());
-        Log.d("Stops", stops.toString());
-
-        //fetch trains from SF to Santa Clara
-        //Note: currently ignores the leaving after parameter and also ignore weekday/weekend
-
-        //fetch trains arriving at a certain destination within a certain duration
-        ArrayList<Train> arrivingTrains = CaltrainTransitManager.getSharedInstance().fetchTrainsArrivingAtDestination("70011", 3);
-        Log.d("Trains arriving station", arrivingTrains.toString());
-
-        //bart stops
-        ArrayList<Stop> bartStops = BartTransitManager.getSharedInstance().getStops();
-        Log.d("Bart Stops", bartStops.toString());
-        //bart services
-        ArrayList<Service> bartServices = BartTransitManager.getSharedInstance().getServices();
-        Log.d("Bart Services", bartServices.toString());
-        // fetch trains from Fremont to Daly City
-        //last boolean to include all trains irrespective of that day time or not
-        ArrayList<Train> bartTrains = BartTransitManager.getSharedInstance().fetchTrains("12018519", "12018513", -1, new Date(), true);
-        Log.d("Fremont to DalyCity", bartTrains.toString());
-        ArrayList<Train> arrivingBartTrains = BartTransitManager.getSharedInstance().fetchTrainsArrivingAtDestination("12018519", 4);
-        Log.d("Bart arriving fremont", arrivingBartTrains.toString());
-
-        //fetch news alerts
-        TransitManager.getSharedInstance().fetchLatestTrafficNewsAlerts(new TrafficNewsAlertResponseHandler() {
-            @Override
-            public void onNewsAlertsReceived(boolean isSuccess, ArrayList<TrafficNewsAlert> trafficNewsAlerts) {
-                if (isSuccess) {
-                    Log.d("Traffic News Alerts", trafficNewsAlerts.toString());
-                }
-            }
-        });
-
-        //fetch tweets
-        TransitManager.getSharedInstance().fetchTweetAlerts(new TweetAlertResponseHandler() {
-            @Override
-            public void onTweetsReceived(boolean isSuccess, ArrayList<Tweet> tweetAlerts) {
-                if (isSuccess) {
-                    Log.d("Tweet alerts", tweetAlerts.toString());
-                }
-            }
-        });
-
-//        LocationManager.getSharedInstance().getCurrentLocation(this, new LocationManager.LocationResponseHandler() {
-//            @Override
-//            public void OnLocationReceived(boolean isSuccess, LatLng latLng) {
-//                if ( isSuccess ) {
-//                    Log.d("Latitude Longitue",latLng.toString());
-//                    testHandleOnLocationReceived(isSuccess,latLng);
-//                }
-//            }
-//        });
-
-        LocationManager.getSharedInstance().getLocationUpdates(this);
-
-
-
-
-
-        //sample recents
-//        ArrayList<Trip> recents = TransitManager.getSharedInstance().fetchRecentSearchList();
-//        Trip trip = new Trip();
-//        trip.setFromStop(bartStops.get(3));
-//        trip.setToStop(bartStops.get(5));
-//        trip.setDate(new Date());
-//        TransitManager.getSharedInstance().saveRecentSearch(trip);
-//        recents = TransitManager.getSharedInstance().fetchRecentSearchList();
-//        Log.d("Recents",recents.toString());
-//       //sample trips
-//        ArrayList<Trip> trips = TransitManager.getSharedInstance().fetchRecentTripList();
-//        Trip trip2 = new Trip();
-//        trip2.setFromStop(stops.get(0));
-//        trip2.setToStop(stops.get(5));
-//        trip2.setDate(new Date());
-//        TransitManager.getSharedInstance().saveRecentTrip(trip2);
-//        trips = TransitManager.getSharedInstance().fetchRecentTripList();
-//        Log.d("Trips",trips.toString());
-
-    }
-
-    private void testHandleOnLocationReceived(boolean isSuccess, LatLng latLng) {
-        TrainStop trainStop = new TrainStop();
-        trainStop.setLatitude(Double.toString(latLng.latitude));
-        trainStop.setLongitude(Double.toString(latLng.longitude));
-        trainStop.setName("Test Geofence");
-        TrainStopFence fence = new TrainStopFence(trainStop,15);
-
-        GeofenceManager.getSharedInstance().addGeofence(getApplicationContext(), fence, new GeofenceManager.GeofenceManagerListener() {
-            @Override
-            public void onGeofencesUpdated() {
-                Log.d("Fence Updated", "Here");
-            }
-
-            @Override
-            public void onError() {
-                Log.d("Error", "Error adding fence");
-            }
-        });
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
-        if ( requestCode == LocationManager.GET_LOCATION_REQUEST_CODE) {
-            LocationManager.getSharedInstance().getCurrentLocation(this, new LocationManager.LocationResponseHandler() {
+        if ( requestCode == TransitLocationManager.GET_LOCATION_REQUEST_CODE) {
+            TransitLocationManager.getSharedInstance().getCurrentLocation(this, new TransitLocationManager.LocationResponseHandler() {
                 @Override
                 public void OnLocationReceived(boolean isSuccess, LatLng latLng) {
-                    testHandleOnLocationReceived(isSuccess,latLng);
+                    //testHandleOnLocationReceived(isSuccess,latLng);
                 }
             });
         }
-        else if ( requestCode == LocationManager.GET_UPDATES_LOCATION_REQUEST_CODE ) {
-            LocationManager.getSharedInstance().getLocationUpdates(this);
+        else if ( requestCode == TransitLocationManager.GET_UPDATES_LOCATION_REQUEST_CODE ) {
+            TransitLocationManager.getSharedInstance().getLocationUpdates(this);
         }
     }
 
@@ -285,7 +157,7 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
         nsvContent.scrollTo(0, 0);
 
         //setup brodcast receiver
-        IntentFilter intentFilter = new IntentFilter(LocationManager.BROADCAST_ACTION);
+        IntentFilter intentFilter = new IntentFilter(TransitLocationManager.BROADCAST_ACTION);
         LocalBroadcastManager.getInstance(this).registerReceiver(locationUpdatesReceiver, intentFilter);
     }
 
@@ -302,6 +174,7 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
                 double latitude = intent.getDoubleExtra("Latitude",0.0);
                 double longitude = intent.getDoubleExtra("Longitude",0.0);
                 Log.d("Location Update","Update received");
+                TransitLocationManager.getSharedInstance().stop();
             }
         }
     };
@@ -313,17 +186,7 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
         super.onDestroy();
     }
 
-//    public void sampleLoadJsonData() {
-//        mSubscription.add(
-//                mTripHelperApiFactory.getApiForJson(TAConstants.TRANSIT_TYPE.CALTRAIN).getJsonStationInfo()
-//                .subscribeOn(Schedulers.newThread())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .unsubscribeOn(Schedulers.io())
-//                .subscribe(response -> handleResult(response),
-//                        throwable -> handleError(throwable))
-//        );
-//
-//    }
+
 
     private void handleError(Throwable throwable) {
         throwable.printStackTrace();

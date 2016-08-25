@@ -5,7 +5,7 @@ import android.app.Application;
 import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
 import com.transitangel.transitangel.Manager.GeofenceManager;
-import com.transitangel.transitangel.Manager.LocationManager;
+import com.transitangel.transitangel.Manager.TransitLocationManager;
 import com.transitangel.transitangel.Manager.TransitManager;
 
 /**
@@ -19,7 +19,7 @@ public class TransitAngelApplication extends Application {
          TransitManager.getSharedInstance().setup(this);
          CaltrainTransitManager.getSharedInstance().setup(this);
          BartTransitManager.getSharedInstance().setup(this);
-         LocationManager.getSharedInstance().setup(this);
+         TransitLocationManager.getSharedInstance().setup(this);
          GeofenceManager.getSharedInstance().setup(this);
     }
 }

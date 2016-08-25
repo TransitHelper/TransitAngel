@@ -20,6 +20,8 @@ public class TrainStopFence implements Comparable {
         this.radius = radius *1000.0f; //in km
     }
 
+    public static final long GeoFenceExpirationTime = 3*3600000; // 3hours ?
+
     public TrainStop getTrainStop() {
         return trainStop;
     }
@@ -46,13 +48,16 @@ public class TrainStopFence implements Comparable {
 
     //currently set the transition type as enter and dwell
     //set to never expire -TODO double check if this is what we want
+    //TODO check if we want to do only enter , or entery and dwell , or enter, exist ,dwell
+    //TODO check what will be the ideal radius
     public Geofence geofence() {
         fenceId = UUID.randomUUID().toString();
         return new Geofence.Builder()
                 .setRequestId(fenceId)
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
                 .setCircularRegion(trainStop.getLatitude(), trainStop.getLongitude(), radius)
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                //.setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .setExpirationDuration(GeoFenceExpirationTime)
                 .build();
     }
 

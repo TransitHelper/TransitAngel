@@ -6,7 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -22,13 +25,13 @@ import com.transitangel.transitangel.utils.PermissionUtils;
 /**
  * Created by vidhurvoora on 8/21/16.
  */
-public class LocationManager implements com.google.android.gms.location.LocationListener{
+public class TransitLocationManager implements com.google.android.gms.location.LocationListener{
 
-    private static LocationManager sInstance;
+    private static TransitLocationManager sInstance;
 
     public static final int GET_LOCATION_REQUEST_CODE  = 100;
     public static final int GET_UPDATES_LOCATION_REQUEST_CODE  = 105;
-    public static final String BROADCAST_ACTION = "LocationManager.LocationUpdates";
+    public static final String BROADCAST_ACTION = "TransitLocationManager.LocationUpdates";
 
 
     private GoogleApiClient mGoogleApiClient;
@@ -41,9 +44,9 @@ public class LocationManager implements com.google.android.gms.location.Location
     protected Context activityContext;
     protected LocationResponseHandler activityLocationResponseHandler;
 
-    public static synchronized LocationManager getSharedInstance() {
+    public static synchronized TransitLocationManager getSharedInstance() {
         if ( sInstance == null ) {
-            sInstance = new LocationManager();
+            sInstance = new TransitLocationManager();
 
         }
         return sInstance;
@@ -136,7 +139,7 @@ public class LocationManager implements com.google.android.gms.location.Location
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, (LocationListener) this);
 
         // only stop if it's connected, otherwise we crash
-        if (mGoogleApiClient != null) {
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
     }
@@ -200,6 +203,43 @@ public class LocationManager implements com.google.android.gms.location.Location
         //send broadcast
         LocalBroadcastManager.getInstance(mApplicationContext).sendBroadcast(intent);
 
+    }
+
+    //reference:http://stackoverflow.com/questions/10311834/how-to-check-if-location-services-are-enabled
+    public boolean isLocationModeEnabled() {
+        int locationMode = 0;
+        String locationProviders;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            try {
+                locationMode = Settings.Secure.getInt(mApplicationContext.getContentResolver(), Settings.Secure.LOCATION_MODE);
+
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
+
+        }else{
+            locationProviders = Settings.Secure.getString(mApplicationContext.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+            return !(locationProviders.isEmpty());
+        }
+    }
+
+    public boolean isLocationAccessible() {
+        LocationManager lm = (LocationManager)mApplicationContext.getSystemService(Context.LOCATION_SERVICE);
+        boolean gps_enabled = false;
+        boolean network_enabled = false;
+
+        try {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch(Exception ex) {}
+
+        try {
+            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch(Exception ex) {}
+
+        return (gps_enabled && network_enabled);
     }
 
 }
