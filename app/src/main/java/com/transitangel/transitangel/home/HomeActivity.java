@@ -1,11 +1,15 @@
 package com.transitangel.transitangel.home;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +28,6 @@ import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
 import com.transitangel.transitangel.Manager.GeofenceManager;
 import com.transitangel.transitangel.Manager.LocationManager;
-import com.transitangel.transitangel.Manager.LocationResponseHandler;
 import com.transitangel.transitangel.Manager.TrafficNewsAlertResponseHandler;
 import com.transitangel.transitangel.Manager.TransitManager;
 import com.transitangel.transitangel.Manager.TweetAlertResponseHandler;
@@ -128,6 +131,8 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
         return super.onOptionsItemSelected(item);
     }
 
+
+
     private void executeSampleAPICalls() {
 
         Stop caltrainStop = CaltrainTransitManager.getSharedInstance().getNearestStop(37.401438, -121.9252457);
@@ -183,32 +188,17 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
             }
         });
 
-        LocationManager.getSharedInstance().getCurrentLocation(this, new LocationResponseHandler() {
-            @Override
-            public void OnLocationReceived(boolean isSuccess, LatLng latLng) {
-                if ( isSuccess ) {
-                    Log.d("Latitude Longitue",latLng.toString());
+//        LocationManager.getSharedInstance().getCurrentLocation(this, new LocationManager.LocationResponseHandler() {
+//            @Override
+//            public void OnLocationReceived(boolean isSuccess, LatLng latLng) {
+//                if ( isSuccess ) {
+//                    Log.d("Latitude Longitue",latLng.toString());
+//                    testHandleOnLocationReceived(isSuccess,latLng);
+//                }
+//            }
+//        });
 
-                    TrainStop trainStop = new TrainStop();
-                    trainStop.setLatitude(Double.toString(latLng.latitude));
-                    trainStop.setLongitude(Double.toString(latLng.longitude));
-                    trainStop.setName("Test Geofence");
-                    TrainStopFence fence = new TrainStopFence(trainStop,15);
-
-                    GeofenceManager.getSharedInstance().addGeofence(getApplicationContext(), fence, new GeofenceManager.GeofenceManagerListener() {
-                        @Override
-                        public void onGeofencesUpdated() {
-                            Log.d("Fence Updated","Here");
-                        }
-
-                        @Override
-                        public void onError() {
-                            Log.d("Error","Error adding fence");
-                        }
-                    });
-                }
-            }
-        });
+        LocationManager.getSharedInstance().getLocationUpdates(this);
 
 
 
@@ -235,6 +225,42 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
 
     }
 
+    private void testHandleOnLocationReceived(boolean isSuccess, LatLng latLng) {
+        TrainStop trainStop = new TrainStop();
+        trainStop.setLatitude(Double.toString(latLng.latitude));
+        trainStop.setLongitude(Double.toString(latLng.longitude));
+        trainStop.setName("Test Geofence");
+        TrainStopFence fence = new TrainStopFence(trainStop,15);
+
+        GeofenceManager.getSharedInstance().addGeofence(getApplicationContext(), fence, new GeofenceManager.GeofenceManagerListener() {
+            @Override
+            public void onGeofencesUpdated() {
+                Log.d("Fence Updated","Here");
+            }
+
+            @Override
+            public void onError() {
+                Log.d("Error","Error adding fence");
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+        if ( requestCode == LocationManager.GET_LOCATION_REQUEST_CODE) {
+            LocationManager.getSharedInstance().getCurrentLocation(this, new LocationManager.LocationResponseHandler() {
+                @Override
+                public void OnLocationReceived(boolean isSuccess, LatLng latLng) {
+                    testHandleOnLocationReceived(isSuccess,latLng);
+                }
+            });
+        }
+        else if ( requestCode == LocationManager.GET_UPDATES_LOCATION_REQUEST_CODE ) {
+            LocationManager.getSharedInstance().getLocationUpdates(this);
+        }
+    }
+
     @OnClick(R.id.fabStartTrip)
     public void onStartTripClicked() {
         showSnackBar(clMainContent, "Start Trip!");
@@ -252,7 +278,28 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
         super.onResume();
         // Avoid issue that recycler view gets automatic focus on start of the app.
         nsvContent.scrollTo(0, 0);
+
+        //setup brodcast receiver
+        IntentFilter intentFilter = new IntentFilter(LocationManager.BROADCAST_ACTION);
+        LocalBroadcastManager.getInstance(this).registerReceiver(locationUpdatesReceiver,intentFilter);
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(locationUpdatesReceiver);
+    }
+
+    private BroadcastReceiver locationUpdatesReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null ) {
+                double latitude = intent.getDoubleExtra("Latitude",0.0);
+                double longitude = intent.getDoubleExtra("Longitude",0.0);
+                Log.d("Location Update","Update received");
+            }
+        }
+    };
 
     @Override
     protected void onDestroy() {
