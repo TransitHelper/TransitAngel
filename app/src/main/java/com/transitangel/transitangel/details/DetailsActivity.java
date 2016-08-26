@@ -24,6 +24,7 @@ import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
 import com.transitangel.transitangel.Manager.GeofenceManager;
 import com.transitangel.transitangel.Manager.PrefManager;
+import com.transitangel.transitangel.Manager.TransitManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.model.Transit.Stop;
 import com.transitangel.transitangel.model.Transit.Train;
@@ -199,6 +200,9 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
 
         //Start Notification
         startOnGoingNotification(trip);
+
+        //save to the recent trips
+        TransitManager.getSharedInstance().saveRecentTrip(trip);
 
     }
 
