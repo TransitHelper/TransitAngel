@@ -12,6 +12,7 @@ import java.util.ArrayList;
 /**
  * Created by vidhurvoora on 8/19/16.
  */
+
 public class Train implements Parcelable {
     String number;
     String name;
@@ -28,6 +29,10 @@ public class Train implements Parcelable {
             TrainStop trainStop = new TrainStop(trainStopObj);
             trainStops.add(trainStop);
         }
+    }
+
+    public Train(){
+
     }
 
     public String getNumber() {

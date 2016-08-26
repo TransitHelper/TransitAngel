@@ -1,6 +1,7 @@
 package com.transitangel.transitangel.Manager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -10,6 +11,8 @@ import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.transitangel.transitangel.R;
+import com.transitangel.transitangel.home.HomeActivity;
 import com.transitangel.transitangel.model.Transit.Line;
 import com.transitangel.transitangel.model.Transit.Service;
 import com.transitangel.transitangel.model.Transit.Stop;
@@ -55,7 +58,7 @@ public class TransitManager {
     public ArrayList<Service> mServices;
 
     public static synchronized TransitManager getSharedInstance() {
-        if ( sInstance == null ) {
+        if (sInstance == null) {
             sInstance = new TransitManager();
 
         }
@@ -68,13 +71,12 @@ public class TransitManager {
 
     public RequestParams getBaseParams() {
         RequestParams baseParams = new RequestParams();
-        baseParams.put("api_key",apiKey);
-        baseParams.put("format","json");
-        if ( mTransitType == TAConstants.TRANSIT_TYPE.BART) {
-            baseParams.put("operator_id","BART");
-        }
-        else if ( ( mTransitType == TAConstants.TRANSIT_TYPE.CALTRAIN)) {
-            baseParams.put("operator_id","Caltrain");
+        baseParams.put("api_key", apiKey);
+        baseParams.put("format", "json");
+        if (mTransitType == TAConstants.TRANSIT_TYPE.BART) {
+            baseParams.put("operator_id", "BART");
+        } else if ((mTransitType == TAConstants.TRANSIT_TYPE.CALTRAIN)) {
+            baseParams.put("operator_id", "Caltrain");
         }
 
         return baseParams;
@@ -82,7 +84,7 @@ public class TransitManager {
 
     protected ArrayList<Line> fetchLineArrFromJson(JSONArray lineArr) throws JSONException {
         ArrayList<Line> lines = new ArrayList<Line>();
-        for (int i=0;i<lineArr.length();i++){
+        for (int i = 0; i < lineArr.length(); i++) {
             JSONObject lineObj = lineArr.getJSONObject(i);
             Line line = new Line(lineObj);
             lines.add(line);
@@ -92,7 +94,7 @@ public class TransitManager {
 
     protected ArrayList<Stop> fetchStopArrFromJson(JSONArray stopArr) throws JSONException {
         ArrayList<Stop> stops = new ArrayList<Stop>();
-        for (int i=0;i<stopArr.length();i++){
+        for (int i = 0; i < stopArr.length(); i++) {
             JSONObject stopObj = stopArr.getJSONObject(i);
             Stop stop = new Stop(stopObj);
             stops.add(stop);
@@ -100,26 +102,26 @@ public class TransitManager {
         return stops;
     }
 
-    public void fetchLines(LineResponseHandler handler){
+    public void fetchLines(LineResponseHandler handler) {
         String lineUrl = apiBaseUrl + "/lines";
-        httpClient.get(lineUrl,getBaseParams(), new JsonHttpResponseHandler(){
+        httpClient.get(lineUrl, getBaseParams(), new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                Log.d("JSON response",response.toString());
+                Log.d("JSON response", response.toString());
                 try {
                     JSONArray lineArr = response.getJSONArray(0);
                     ArrayList<Line> lines = fetchLineArrFromJson(lineArr);
-                    handler.OnLinesResponseReceived(true,lines);
+                    handler.OnLinesResponseReceived(true, lines);
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    handler.OnLinesResponseReceived(false,null);
+                    handler.OnLinesResponseReceived(false, null);
                 }
 
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                handler.OnLinesResponseReceived(false,null);
+                handler.OnLinesResponseReceived(false, null);
             }
         });
     }
@@ -128,14 +130,14 @@ public class TransitManager {
 
         String newsUrl = "https://proxy-prod.511.org/api-proxy/api/v1/traffic/news/";
 
-        httpClient.get(newsUrl, new JsonHttpResponseHandler(){
+        httpClient.get(newsUrl, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.d("JSON response",response.toString());
+                Log.d("JSON response", response.toString());
                 try {
                     JSONArray newsArr = response.getJSONArray("News");
                     ArrayList<TrafficNewsAlert> trafficNewsAlerts = new ArrayList<TrafficNewsAlert>();
-                    for (int i = 0; i< newsArr.length(); i++ ) {
+                    for (int i = 0; i < newsArr.length(); i++) {
                         JSONObject newsObj = newsArr.getJSONObject(i);
                         TrafficNewsAlert trafficNewsAlert = new TrafficNewsAlert(newsObj);
                         trafficNewsAlerts.add(trafficNewsAlert);
@@ -145,14 +147,14 @@ public class TransitManager {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    handler.onNewsAlertsReceived(false,null);
+                    handler.onNewsAlertsReceived(false, null);
                 }
 
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                handler.onNewsAlertsReceived(false,null);
+                handler.onNewsAlertsReceived(false, null);
             }
         });
     }
@@ -161,14 +163,14 @@ public class TransitManager {
 
         String newsUrl = "https://proxy-prod.511.org/api-proxy/api/v1/common/twitter/";
 
-        httpClient.get(newsUrl, new JsonHttpResponseHandler(){
+        httpClient.get(newsUrl, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
                 try {
                     JSONArray tweetsArr = response.getJSONArray("Timeline");
                     ArrayList<Tweet> tweetAlerts = new ArrayList<Tweet>();
-                    for (int i = 0; i< tweetsArr.length(); i++ ) {
+                    for (int i = 0; i < tweetsArr.length(); i++) {
                         JSONObject tweetObj = tweetsArr.getJSONObject(i);
                         Tweet tweet = new Tweet(tweetObj);
                         tweetAlerts.add(tweet);
@@ -191,26 +193,26 @@ public class TransitManager {
     }
 
 
-    public void fetchStops(StopResponseHandler handler){
+    public void fetchStops(StopResponseHandler handler) {
         String stopUrl = apiBaseUrl + "/stops";
-        httpClient.get(stopUrl,getBaseParams(), new JsonHttpResponseHandler(){
+        httpClient.get(stopUrl, getBaseParams(), new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
 
                     JSONArray stopArr = response.getJSONObject("Contents").getJSONObject("dataObjects").getJSONArray("ScheduledStopPoint");
                     ArrayList<Stop> stops = fetchStopArrFromJson(stopArr);
-                    handler.OnStopsResponseReceived(true,stops);
+                    handler.OnStopsResponseReceived(true, stops);
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    handler.OnStopsResponseReceived(false,null);
+                    handler.OnStopsResponseReceived(false, null);
                 }
 
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                handler.OnStopsResponseReceived(false,null);
+                handler.OnStopsResponseReceived(false, null);
             }
         });
     }
@@ -259,11 +261,11 @@ public class TransitManager {
         return null;
     }
 
-    protected void populateServices(ArrayList<String> filenames,ArrayList<TAConstants.SERVICE_TYPE> serviceTypes) {
+    protected void populateServices(ArrayList<String> filenames, ArrayList<TAConstants.SERVICE_TYPE> serviceTypes) {
         try {
             mServices = new ArrayList<Service>();
 
-            int i= 0;
+            int i = 0;
             for (String filename : filenames) {
                 String jsonString = loadJSONFromAsset(filename);
                 JSONObject serviceObj = new JSONObject(jsonString);
@@ -303,10 +305,9 @@ public class TransitManager {
             String day = new SimpleDateFormat("EE").format(leavingAfter);
 
             ArrayList<Train> trainList = new ArrayList<Train>();
-            if ( day.contains("Sat") || day.contains("Sun")) {
+            if (day.contains("Sat") || day.contains("Sun")) {
                 trainList = service.getWeekendTrains();
-            }
-            else {
+            } else {
                 trainList = service.getWeekendTrains();
             }
 
@@ -332,7 +333,7 @@ public class TransitManager {
                             && toStop != null
                             && fromStop.getStopOrder() < toStop.getStopOrder()) {
 
-                        if ( shouldIncludeAllTrainsForThatDay) {
+                        if (shouldIncludeAllTrainsForThatDay) {
                             trains.add(train);
 
                             if (limit > 0 && trains.size() == limit) {
@@ -341,8 +342,7 @@ public class TransitManager {
                             //reset the from stop and to stop to avoid duplicates
                             fromStop = null;
                             toStop = null;
-                        }
-                        else {
+                        } else {
                             //matches our list of train
                             //check if arrival time is greater than the from time
                             String arrivalTimeStr = fromStop.getArrrivalTime();
@@ -395,10 +395,9 @@ public class TransitManager {
             String day = new SimpleDateFormat("EE").format(departOnOrBefore);
 
             ArrayList<Train> trainList = new ArrayList<Train>();
-            if ( day.contains("Sat") || day.contains("Sun")) {
+            if (day.contains("Sat") || day.contains("Sun")) {
                 trainList = service.getWeekendTrains();
-            }
-            else {
+            } else {
                 trainList = service.getWeekendTrains();
             }
 
@@ -412,7 +411,7 @@ public class TransitManager {
                 // and check if the fromStopOrder < toStopOrder
                 int count = 0;
                 for (TrainStop trainStop : trainStopList) {
-                    count ++;
+                    count++;
                     //should not be the last stop
                     if (trainStop.getStopId().equals(toStopId) && trainStopList.size() != count) {
                         toStop = trainStop;
@@ -466,10 +465,9 @@ public class TransitManager {
             String day = new SimpleDateFormat("EE").format(arrivingOnOrBefore);
 
             ArrayList<Train> trainList = new ArrayList<Train>();
-            if ( day.contains("Sat") || day.contains("Sun")) {
+            if (day.contains("Sat") || day.contains("Sun")) {
                 trainList = service.getWeekendTrains();
-            }
-            else {
+            } else {
                 trainList = service.getWeekendTrains();
             }
 
@@ -521,62 +519,61 @@ public class TransitManager {
     private ArrayList<Trip> fetchSavedItems(TAConstants.SAVED_PREF_TYPE prefType) {
 
         Gson gson = new Gson();
-        Type type = new TypeToken<ArrayList<Trip>>(){}.getType();
+        Type type = new TypeToken<ArrayList<Trip>>() {
+        }.getType();
         SharedPreferences itemPref = PreferenceManager.getDefaultSharedPreferences(mApplicationContext);
         String itemJSON;
-        if ( prefType == TAConstants.SAVED_PREF_TYPE.RECENT_SEARCH) {
-            itemJSON  = itemPref.getString("recents","");
+        if (prefType == TAConstants.SAVED_PREF_TYPE.RECENT_SEARCH) {
+            itemJSON = itemPref.getString("recents", "");
+        } else {
+            itemJSON = itemPref.getString("trips", "");
         }
-        else {
-            itemJSON = itemPref.getString("trips","");
-        }
-        ArrayList<Trip> items = gson.fromJson(itemJSON,type);
+        ArrayList<Trip> items = gson.fromJson(itemJSON, type);
         return items;
     }
 
-    private void saveItem(Trip trip,TAConstants.SAVED_PREF_TYPE prefType) {
+    private void saveItem(Trip trip, TAConstants.SAVED_PREF_TYPE prefType) {
         SharedPreferences itemPref = PreferenceManager.getDefaultSharedPreferences(mApplicationContext);
         SharedPreferences.Editor prefsEditor = itemPref.edit();
         //fetch recents
 
         String existingItemStr;
-        if (prefType == TAConstants.SAVED_PREF_TYPE.RECENT_SEARCH ) {
-          existingItemStr  = itemPref.getString("recents","");
-        }
-        else {
-            existingItemStr  = itemPref.getString("trips","");
+        if (prefType == TAConstants.SAVED_PREF_TYPE.RECENT_SEARCH) {
+            existingItemStr = itemPref.getString("recents", "");
+        } else {
+            existingItemStr = itemPref.getString("trips", "");
         }
 
-        Type type = new TypeToken<ArrayList<Trip>>(){}.getType();
+        Type type = new TypeToken<ArrayList<Trip>>() {
+        }.getType();
         Gson gson = new Gson();
-        ArrayList<Trip> items = gson.fromJson(existingItemStr,type);
-        if ( items == null ) {
+        ArrayList<Trip> items = gson.fromJson(existingItemStr, type);
+        if (items == null) {
             items = new ArrayList<Trip>();
         }
-        if ( items.size() ==  10 ) {
+        if (items.size() == 10) {
             //remove the last element
-            items.remove(items.size()-1);
+            items.remove(items.size() - 1);
         }
 
         //add as first element
         //TODO check for duplicates
-        if ( !items.contains(trip)) {
-            items.add(0,trip);
+        if (!items.contains(trip)) {
+            items.add(0, trip);
         }
 
-        String newItemsStr = gson.toJson(items,type);
-        if (prefType == TAConstants.SAVED_PREF_TYPE.RECENT_SEARCH ) {
-            prefsEditor.putString("recents",newItemsStr);
-        }
-        else {
-            prefsEditor.putString("trips",newItemsStr);
+        String newItemsStr = gson.toJson(items, type);
+        if (prefType == TAConstants.SAVED_PREF_TYPE.RECENT_SEARCH) {
+            prefsEditor.putString("recents", newItemsStr);
+        } else {
+            prefsEditor.putString("trips", newItemsStr);
         }
         prefsEditor.commit();
     }
 
     //order/ remove duplicates
     public ArrayList<Trip> fetchRecentSearchList() {
-       return fetchSavedItems(TAConstants.SAVED_PREF_TYPE.RECENT_SEARCH);
+        return fetchSavedItems(TAConstants.SAVED_PREF_TYPE.RECENT_SEARCH);
     }
 
     public ArrayList<Trip> fetchRecentTripList() {
@@ -585,7 +582,7 @@ public class TransitManager {
 
 
     public void saveRecentSearch(Trip trip) {
-       saveItem(trip, TAConstants.SAVED_PREF_TYPE.RECENT_SEARCH);
+        saveItem(trip, TAConstants.SAVED_PREF_TYPE.RECENT_SEARCH);
     }
 
     public void saveRecentTrip(Trip trip) {
@@ -618,15 +615,14 @@ public class TransitManager {
         Stop nearestStop = null;
         double minDistance = 0;
 
-        for (Stop stop : stops ) {
+        for (Stop stop : stops) {
             double stopLat = Double.parseDouble(stop.getLatitude());
             double stopLon = Double.parseDouble(stop.getLongitude());
-            double distanceToStop = distance(lat,lon,stopLat,stopLon);
-            if ( nearestStop == null ) {
+            double distanceToStop = distance(lat, lon, stopLat, stopLon);
+            if (nearestStop == null) {
                 nearestStop = stop;
                 minDistance = distanceToStop;
-            }
-            else if ( distanceToStop < minDistance ) {
+            } else if (distanceToStop < minDistance) {
                 minDistance = distanceToStop;
                 nearestStop = stop;
             }
@@ -635,7 +631,46 @@ public class TransitManager {
         return nearestStop;
     }
 
-    public void addShortcut(Trip trip) {
+    public void createShortCut(Trip trip) {
 
+        if (trip == null)return;
+        //Adding shortcut for Home Activity
+        //on Home screen
+        Intent shortcutIntent = new Intent(mApplicationContext,
+                HomeActivity.class);
+        //TODO put trip as part of the intent?
+//        shortcutIntent.putExtra("FromStop", Parcels.wrap(trip.getFromStop()));
+//        shortcutIntent.putExtra("ToStop",Parcels.wrap(trip.getToStop()));
+//        if ( trip.getSelectedTrain() != null ) {
+//            shortcutIntent.putExtra("Train",Parcels.wrap(trip.getSelectedTrain()));
+//        }
+        String fromId = trip.getFromStop().getId();
+        String toId = trip.getToStop().getId();
+        shortcutIntent.putExtra("FromStopId",fromId);
+        shortcutIntent.putExtra("ToStopId",toId);
+        if (trip.getSelectedTrain() != null ) {
+            String trainNumber = trip.getSelectedTrain().getNumber();
+            shortcutIntent.putExtra("SelectedTrainNumber",trainNumber);
+        }
+
+        shortcutIntent.setAction(Intent.ACTION_MAIN);
+
+        Intent addIntent = new Intent();
+        String fromStation = trip.getFromStop().getName();
+        String shortFrom = fromStation.substring(0,3);
+        String toStation = trip.getToStop().getName();
+        String shortTo = toStation.substring(0,3);
+        String shortcutName = shortFrom + " -> " + shortTo;
+        addIntent
+                .putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+        addIntent.putExtra("duplicate", false); // no duplicates
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, shortcutName);
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
+                Intent.ShortcutIconResource.fromContext(mApplicationContext,
+                        R.drawable.train));
+
+        addIntent
+                .setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+        mApplicationContext.sendBroadcast(addIntent);
     }
 }
