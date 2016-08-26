@@ -632,17 +632,39 @@ public class TransitManager {
     }
 
     public void createShortCut(Trip trip) {
+
+        if (trip == null)return;
         //Adding shortcut for Home Activity
         //on Home screen
         Intent shortcutIntent = new Intent(mApplicationContext,
                 HomeActivity.class);
         //TODO put trip as part of the intent?
+//        shortcutIntent.putExtra("FromStop", Parcels.wrap(trip.getFromStop()));
+//        shortcutIntent.putExtra("ToStop",Parcels.wrap(trip.getToStop()));
+//        if ( trip.getSelectedTrain() != null ) {
+//            shortcutIntent.putExtra("Train",Parcels.wrap(trip.getSelectedTrain()));
+//        }
+        String fromId = trip.getFromStop().getId();
+        String toId = trip.getToStop().getId();
+        shortcutIntent.putExtra("FromStopId",fromId);
+        shortcutIntent.putExtra("ToStopId",toId);
+        if (trip.getSelectedTrain() != null ) {
+            String trainNumber = trip.getSelectedTrain().getNumber();
+            shortcutIntent.putExtra("SelectedTrainNumber",trainNumber);
+        }
+
         shortcutIntent.setAction(Intent.ACTION_MAIN);
 
         Intent addIntent = new Intent();
+        String fromStation = trip.getFromStop().getName();
+        String shortFrom = fromStation.substring(0,3);
+        String toStation = trip.getToStop().getName();
+        String shortTo = toStation.substring(0,3);
+        String shortcutName = shortFrom + " -> " + shortTo;
         addIntent
                 .putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Angel Trip - ");
+        addIntent.putExtra("duplicate", false); // no duplicates
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, shortcutName);
         addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
                 Intent.ShortcutIconResource.fromContext(mApplicationContext,
                         R.drawable.train));

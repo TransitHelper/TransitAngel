@@ -79,6 +79,7 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
         init();
         mTripHelperApiFactory = new TripHelperApiFactory(new TripHelplerRequestInterceptor(this));
         TestManager.getSharedInstance().executeSampleAPICalls();
+
     }
 
     private void init() {

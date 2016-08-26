@@ -48,7 +48,10 @@ public class TestManager {
 
         ArrayList<Stop>caltrainStops = CaltrainTransitManager.getSharedInstance().getLocalStops();
 
-        TransitManager.getSharedInstance().createShortCut();
+//       ArrayList<Trip> recents =  TransitManager.getSharedInstance().fetchRecentSearchList();
+//        if ( recents.size() > 0 ) {
+//            TransitManager.getSharedInstance().createShortCut(recents.get(0));
+//        }
 
         //fetch trains from SF to Santa Clara
         //Note: currently ignores the leaving after parameter and also ignore weekday/weekend

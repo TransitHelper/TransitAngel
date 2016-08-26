@@ -1,15 +1,22 @@
 package com.transitangel.transitangel.model.Transit;
 
+import org.parceler.Parcel;
+
 import java.util.Date;
 /**
  * Created by vidhurvoora on 8/20/16.
  */
+@Parcel
 public class Trip {
     Stop fromStop;
     Stop toStop;
     Train selectedTrain;
     Date date;
     boolean isFavorite;
+
+    public Trip() {
+
+    }
 
     public Stop getFromStop() {
         return fromStop;
