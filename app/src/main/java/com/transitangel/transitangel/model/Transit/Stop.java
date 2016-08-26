@@ -17,21 +17,35 @@ public class Stop implements Parcelable {
 
     public Stop(JSONObject stopObj) throws JSONException {
         this.id = stopObj.getString("id");
-        String name = stopObj.getString("Name");
-        //name clean up
+        this.name = getFormatedName(stopObj.getString("Name"));
+        this.longitude = stopObj.getJSONObject("Location").getString("Longitude");
+        this.latitude = stopObj.getJSONObject("Location").getString("Latitude");
+    }
+
+
+    private String getFormatedName(String name) {
         if ( name.contains("CALTRAIN - ")) {
             name = name.replace("CALTRAIN - ","");
         }
         else if (name.contains("BART ")) {
             name = name.replace("BART ","");
         }
-        this.name = name;
-        this.longitude = stopObj.getJSONObject("Location").getString("Longitude");
-        this.latitude = stopObj.getJSONObject("Location").getString("Latitude");
+
+        String[] splitName = name.split(" ");
+        name = "";
+        for (String namePart : splitName) {
+            // Ignore the station string.
+            if (!namePart.equalsIgnoreCase("station")) {
+                name += namePart.substring(0, 1).toUpperCase() + namePart.substring(1).toLowerCase() + " ";
+            }
+        }
+
+        // Remove any extra space.
+        name = name.trim();
+        return name;
     }
 
     public Stop() {
-
     }
 
     public String getId() {

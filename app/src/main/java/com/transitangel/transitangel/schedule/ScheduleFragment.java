@@ -244,6 +244,8 @@ public class ScheduleFragment extends Fragment implements ScheduleRecyclerAdapte
             intent.putExtra(DetailsActivity.EXTRA_SERVICE, DetailsActivity.EXTRA_SERVICE_CALTRAIN);
         }
         intent.putExtra(DetailsActivity.EXTRA_TRAIN, mRecentItems.get(position).getTrain());
+        intent.putExtra(DetailsActivity.EXTRA_FROM_STATION, mFromStationId);
+        intent.putExtra(DetailsActivity.EXTRA_TO_STATION, mToStationId);
         getActivity().startActivityForResult(intent, RESULT_DETAILS, null);
     }
 }

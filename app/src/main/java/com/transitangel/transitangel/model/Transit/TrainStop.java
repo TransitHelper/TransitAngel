@@ -74,52 +74,6 @@ public class TrainStop implements Parcelable {
         return Double.parseDouble(latitude);
     }
 
-    public String getLongitudeStr() {
-        return longitude;
-    }
-
-    public String getLatitudeStr() {
-        return latitude;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.stopId);
-        dest.writeString(this.arrrivalTime);
-        dest.writeString(this.departureTime);
-        dest.writeString(this.stopOrder);
-        dest.writeString(this.name);
-        dest.writeString(this.latitude);
-        dest.writeString(this.longitude);
-    }
-
-    protected TrainStop(Parcel in) {
-        this.stopId = in.readString();
-        this.arrrivalTime = in.readString();
-        this.departureTime = in.readString();
-        this.stopOrder = in.readString();
-        this.name = in.readString();
-        this.latitude = in.readString();
-        this.longitude = in.readString();
-    }
-
-    public static final Parcelable.Creator<TrainStop> CREATOR = new Parcelable.Creator<TrainStop>() {
-        @Override
-        public TrainStop createFromParcel(Parcel source) {
-            return new TrainStop(source);
-        }
-
-        @Override
-        public TrainStop[] newArray(int size) {
-            return new TrainStop[size];
-        }
-    };
-
     public void setStopId(String stopId) {
         this.stopId = stopId;
     }
@@ -147,4 +101,51 @@ public class TrainStop implements Parcelable {
     public void setLatitude(String latitude) {
         this.latitude = latitude;
     }
+
+
+    public String getLongitudeStr() {
+        return longitude;
+    }
+
+    public String getLatitudeStr() {
+        return latitude;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.stopId);
+        dest.writeString(this.arrrivalTime);
+        dest.writeString(this.departureTime);
+        dest.writeString(this.stopOrder);
+        dest.writeString(this.name);
+        dest.writeString(this.longitude);
+        dest.writeString(this.latitude);
+    }
+
+    protected TrainStop(Parcel in) {
+        this.stopId = in.readString();
+        this.arrrivalTime = in.readString();
+        this.departureTime = in.readString();
+        this.stopOrder = in.readString();
+        this.name = in.readString();
+        this.longitude = in.readString();
+        this.latitude = in.readString();
+    }
+
+    public static final Creator<TrainStop> CREATOR = new Creator<TrainStop>() {
+        @Override
+        public TrainStop createFromParcel(Parcel source) {
+            return new TrainStop(source);
+        }
+
+        @Override
+        public TrainStop[] newArray(int size) {
+            return new TrainStop[size];
+        }
+    };
 }
