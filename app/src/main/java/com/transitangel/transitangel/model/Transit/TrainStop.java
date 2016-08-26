@@ -74,6 +74,14 @@ public class TrainStop implements Parcelable {
         return Double.parseDouble(latitude);
     }
 
+    public String getLongitudeStr() {
+        return longitude;
+    }
+
+    public String getLatitudeStr() {
+        return latitude;
+    }
+
     @Override
     public int describeContents() {
         return 0;

@@ -6,6 +6,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.transitangel.transitangel.model.Transit.Service;
 import com.transitangel.transitangel.model.Transit.Stop;
 import com.transitangel.transitangel.model.Transit.Train;
+import com.transitangel.transitangel.model.Transit.TrainStop;
 import com.transitangel.transitangel.utils.TAConstants;
 
 import java.util.ArrayList;
@@ -15,6 +16,37 @@ public class CaltrainTransitManager extends TransitManager {
 
     private static CaltrainTransitManager sInstance;
 
+    private ArrayList<String> sortedStopIds = new ArrayList<String>(){{
+        add("70011");
+        add("70021");
+        add("70031");
+        add("70042");
+        add("70052");
+        add("70062");
+        add("70081");
+        add("70091");
+        add("70101");
+        add("70111");
+        add("70122");
+        add("70131");
+        add("70141");
+        add("70161");
+        add("70172");
+        add("70191");
+        add("70201");
+        add("70211");
+        add("70221");
+        add("70231");
+        add("70242");
+        add("70251");
+        add("70262");
+        add("70271");
+        add("70281");
+        add("70292");
+        add("70301");
+        add("70311");
+        add("70322");
+    }};
 
     public static synchronized CaltrainTransitManager getSharedInstance() {
         if (sInstance == null) {
@@ -49,24 +81,30 @@ public class CaltrainTransitManager extends TransitManager {
     public ArrayList<Stop> getStops() {
         //load the json from files
         ArrayList<Stop> stops =  getStops("Caltrain_Stops.json");
-        ArrayList<Stop> stopsWithoutDuplicates = new ArrayList<Stop>();
-       for (Stop originalStop : stops ) {
-           if ( stopsWithoutDuplicates.size() == 0 ) {
-               stopsWithoutDuplicates.add(originalStop);
-           }
-           else {
-               Boolean alreadyContains = false;
-               for ( Stop stop: stopsWithoutDuplicates ) {
-                   if ( stop.getName().equals(originalStop.getName())) {
-                       alreadyContains = true;
-                   }
-               }
-               if ( !alreadyContains ) {
-                   stopsWithoutDuplicates.add(originalStop);
-               }
-           }
-       }
-        return stopsWithoutDuplicates;
+        ArrayList<Stop> orderedStops = new ArrayList<Stop>();
+        for (String stopId : sortedStopIds) {
+            orderedStops.add(mStopLookup.get(stopId));
+        }
+        return orderedStops;
+
+//        ArrayList<Stop> stopsWithoutDuplicates = new ArrayList<Stop>();
+//       for (Stop originalStop : stops ) {
+//           if ( stopsWithoutDuplicates.size() == 0 ) {
+//               stopsWithoutDuplicates.add(originalStop);
+//           }
+//           else {
+//               Boolean alreadyContains = false;
+//               for ( Stop stop: stopsWithoutDuplicates ) {
+//                   if ( stop.getName().equals(originalStop.getName())) {
+//                       alreadyContains = true;
+//                   }
+//               }
+//               if ( !alreadyContains ) {
+//                   stopsWithoutDuplicates.add(originalStop);
+//               }
+//           }
+//       }
+//        return stopsWithoutDuplicates;
     }
 
 
@@ -102,6 +140,13 @@ public class CaltrainTransitManager extends TransitManager {
         );
     }
 
+    public ArrayList<Train> fetchTrainsDepartingFromStation(
+            String toStopId //to station
+            , int hourLimit //
+    ) {
+        return fetchTrainsDepartingFromStation(toStopId,hourLimit,getServices());
+    }
+
     public ArrayList<Service> getServices() {
         if (mServices == null) {
             populateServices();
@@ -111,6 +156,39 @@ public class CaltrainTransitManager extends TransitManager {
 
     public Stop getNearestStop(double lat, double lon) {
         return  getNearestStop(lat,lon,getStops());
+    }
+
+    //gets a local train stop and converts all the trainstop to stop
+    public ArrayList<Stop> getLocalStops() {
+        ArrayList<Stop> stops = new ArrayList<>();
+        ArrayList<Train> localTrains = getLocalTrains();
+        if (localTrains.size() > 0) {
+           ArrayList<TrainStop> localTrainStops  =  localTrains.get(0).getTrainStops();
+           for (TrainStop trainStop : localTrainStops) {
+               Stop stop = new Stop();
+               stop.setId(trainStop.getStopId());
+               stop.setName(trainStop.getName());
+               stop.setLatitude(trainStop.getLatitudeStr());
+               stop.setLongitude(trainStop.getLongitudeStr());
+               stops.add(stop);
+           }
+        }
+        return stops;
+    }
+
+    public ArrayList<Train> getLocalTrains() {
+        if (mServices == null) {
+            populateServices();
+        }
+        ArrayList<Train> localTrains = new ArrayList<>();
+        for (Service service : mServices) {
+            if (service.getServiceType() == TAConstants.SERVICE_TYPE.CALTRAIN_LOCAL) {
+                localTrains.addAll(service.getWeekdayTrains());
+                localTrains.addAll(service.getWeekendTrains());
+                return localTrains;
+            }
+        }
+        return localTrains;
     }
 
 }

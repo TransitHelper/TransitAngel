@@ -30,6 +30,10 @@ public class Stop implements Parcelable {
         this.latitude = stopObj.getJSONObject("Location").getString("Latitude");
     }
 
+    public Stop() {
+
+    }
+
     public String getId() {
         return id;
     }
@@ -83,4 +87,20 @@ public class Stop implements Parcelable {
             return new Stop[size];
         }
     };
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
 }
