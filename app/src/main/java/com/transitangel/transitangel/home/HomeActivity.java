@@ -166,7 +166,7 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
 
     @OnClick(R.id.fabStartTrip)
     public void onStartTripClicked() {
-
+        // TODO: Need to add start trip integration here.
     }
 
     @OnClick(R.id.btnSchedule)

@@ -373,6 +373,74 @@ public class TransitManager {
         return trains;
     }
 
+
+    protected ArrayList<Train> fetchTrainsDepartingFromStation(
+            String toStopId //to station
+            , int hourLimit //
+            , ArrayList<Service> trainServices
+    ) {
+        Calendar cal = Calendar.getInstance(); // creates calendar
+        cal.setTime(new Date()); // sets calendar time/date
+        cal.add(Calendar.HOUR_OF_DAY, hourLimit); //adds the hour
+        Date departOnOrBefore = cal.getTime();
+        ArrayList<Train> trains = new ArrayList<Train>();
+
+        Date departAfter = new Date(); //the train should depart after now
+
+        //foreach service
+        ArrayList<Service> services = trainServices;
+        for (Service service : services) {
+            //fetch the trains
+            //check if weekday or weekend.
+            String day = new SimpleDateFormat("EE").format(departOnOrBefore);
+
+            ArrayList<Train> trainList = new ArrayList<Train>();
+            if ( day.contains("Sat") || day.contains("Sun")) {
+                trainList = service.getWeekendTrains();
+            }
+            else {
+                trainList = service.getWeekendTrains();
+            }
+
+            for (Train train : trainList) {
+
+                TrainStop toStop = null;
+
+                ArrayList<TrainStop> trainStopList = train.getTrainStops();
+
+                //check if the train has the fromStopId and toStopId
+                // and check if the fromStopOrder < toStopOrder
+                int count = 0;
+                for (TrainStop trainStop : trainStopList) {
+                    count ++;
+                    //should not be the last stop
+                    if (trainStop.getStopId().equals(toStopId) && trainStopList.size() != count) {
+                        toStop = trainStop;
+
+                        //get arrival time
+                        String departureTime = toStop.getDepartureTime();
+                        String[] parts = departureTime.split(":");
+                        Calendar departCal = Calendar.getInstance();
+                        departCal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(parts[0]));
+                        departCal.set(Calendar.MINUTE, Integer.parseInt(parts[1]));
+                        Date departTime = departCal.getTime();
+
+                        //TODO we need to know if it is a northbound or southbound
+                        if (departTime.before(departOnOrBefore)
+                                && departTime.after(departAfter)
+                                ) {
+                            trains.add(train);
+                        }
+
+                    }
+                }
+            }
+        }
+
+        //return train list
+        return trains;
+    }
+
     //Given a destination and the hour limit, fetch all the trains which will arrive at the destination
     //within that hour limit
     //TODO missed an important part, we need to know if it is north bound or south bound.
@@ -567,4 +635,7 @@ public class TransitManager {
         return nearestStop;
     }
 
+    public void addShortcut(Trip trip) {
+
+    }
 }

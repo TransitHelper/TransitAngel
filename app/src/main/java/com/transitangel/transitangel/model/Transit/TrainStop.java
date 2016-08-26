@@ -103,6 +103,14 @@ public class TrainStop implements Parcelable {
     }
 
 
+    public String getLongitudeStr() {
+        return longitude;
+    }
+
+    public String getLatitudeStr() {
+        return latitude;
+    }
+
     @Override
     public int describeContents() {
         return 0;

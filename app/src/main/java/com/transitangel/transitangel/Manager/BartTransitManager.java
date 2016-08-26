@@ -95,6 +95,13 @@ public class BartTransitManager extends TransitManager {
         );
     }
 
+    public ArrayList<Train> fetchTrainsDepartingFromStation(
+            String toStopId //to station
+            , int hourLimit //
+    ) {
+        return fetchTrainsDepartingFromStation(toStopId,hourLimit,getServices());
+    }
+
     public ArrayList<Service> getServices() {
         if (mServices == null) {
             populateServices();
