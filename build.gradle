@@ -24,6 +24,8 @@ allprojects {
         maven {
             url 'http://jenkins-android.inside.xero.com:8081/repository/android/'
         }
+        maven { url "http://dl.bintray.com/pixplicity/maven" }
+
     }
 }
 

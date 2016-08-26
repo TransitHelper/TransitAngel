@@ -190,6 +190,7 @@ public class GeofenceManager {
 
             @Override
             public void onResult(Status status) {
+                Log.d(TAG, "geo fence result");
                 if (status.isSuccess()) {
                     // 4. If successful, save the geofence
                     saveGeofence();

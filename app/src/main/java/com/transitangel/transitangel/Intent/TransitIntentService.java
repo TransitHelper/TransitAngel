@@ -34,6 +34,7 @@ public class TransitIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        Log.d(TAG, "Got geo fence callback");
         prefs = getApplicationContext().getSharedPreferences(
                 TAConstants.SharedPrefGeofences, Context.MODE_PRIVATE);
         gson = new Gson();

@@ -35,7 +35,7 @@ public class TestManager {
         return sInstance;
     }
 
-    public void executeSampleAPICalls() {
+    public void executeSampleAPICalls(Context context) {
 
         Stop caltrainStop = CaltrainTransitManager.getSharedInstance().getNearestStop(37.401438, -121.9252457);
         Stop bartStop = BartTransitManager.getSharedInstance().getNearestStop(37.401438, -121.9252457);
@@ -90,7 +90,7 @@ public class TestManager {
             }
         });
 
-//        TransitLocationManager.getSharedInstance().getCurrentLocation(this, new TransitLocationManager.LocationResponseHandler() {
+//        TransitLocationManager.getSharedInstance().getCurrentLocation(context, new TransitLocationManager.LocationResponseHandler() {
 //            @Override
 //            public void OnLocationReceived(boolean isSuccess, LatLng latLng) {
 //                if ( isSuccess ) {
@@ -133,8 +133,7 @@ public class TestManager {
         trainStop.setLatitude(Double.toString(latLng.latitude));
         trainStop.setLongitude(Double.toString(latLng.longitude));
         trainStop.setName("Test Geofence");
-        TrainStopFence fence = new TrainStopFence(trainStop,15);
-
+        TrainStopFence fence = new TrainStopFence(trainStop);
         GeofenceManager.getSharedInstance().addGeofence(mApplicationContext, fence, new GeofenceManager.GeofenceManagerListener() {
             @Override
             public void onGeofencesUpdated() {

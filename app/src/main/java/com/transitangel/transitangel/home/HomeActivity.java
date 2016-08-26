@@ -26,16 +26,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.transitangel.transitangel.Manager.TestManager;
+import com.transitangel.transitangel.Manager.PrefManager;
 import com.transitangel.transitangel.Manager.TransitLocationManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.api.TripHelperApiFactory;
 import com.transitangel.transitangel.api.TripHelplerRequestInterceptor;
 import com.transitangel.transitangel.details.AlarmBroadcastReceiver;
-import com.transitangel.transitangel.model.Transit.TrainStop;
+import com.transitangel.transitangel.details.DetailsActivity;
+import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.model.sampleJsonModel;
-import com.transitangel.transitangel.notifications.NotificationProvider;
 import com.transitangel.transitangel.schedule.ScheduleActivity;
+import com.transitangel.transitangel.utils.TAConstants;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -78,7 +79,7 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
         ButterKnife.bind(this);
         init();
         mTripHelperApiFactory = new TripHelperApiFactory(new TripHelplerRequestInterceptor(this));
-        TestManager.getSharedInstance().executeSampleAPICalls();
+//        TestManager.getSharedInstance().executeSampleAPICalls(this);
     }
 
     private void init() {
@@ -102,9 +103,26 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
         if(!TextUtils.isEmpty(action)) {
             if(action.equalsIgnoreCase(ACTION_SHOW_ONGOING)) {
                 Toast.makeText(this, "Show on going screen here.", Toast.LENGTH_LONG).show();
+                launchOnGoingScreen();
             } else if (action.equalsIgnoreCase(ACTION_TRIP_CANCELLED)) {
                 Toast.makeText(this, "Show on cancelled trip clicked.", Toast.LENGTH_LONG).show();
             }
+        }
+    }
+
+    private void launchOnGoingScreen() {
+        Trip trip = PrefManager.getOnGoingTrip();
+        if(trip != null) {
+            Intent intent = new Intent(this, DetailsActivity.class);
+            if (trip.getType() == TAConstants.TRANSIT_TYPE.BART) {
+                intent.putExtra(DetailsActivity.EXTRA_SERVICE, DetailsActivity.EXTRA_SERVICE_BART);
+            } else {
+                intent.putExtra(DetailsActivity.EXTRA_SERVICE, DetailsActivity.EXTRA_SERVICE_CALTRAIN);
+            }
+            intent.putExtra(DetailsActivity.EXTRA_TRAIN, trip.getSelectedTrain());
+            intent.putExtra(DetailsActivity.EXTRA_FROM_STATION, trip.getFromStop().getId());
+            intent.putExtra(DetailsActivity.EXTRA_TO_STATION, trip.getToStop().getId());
+            startActivity(intent);
         }
     }
 
@@ -148,25 +166,11 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
 
     @OnClick(R.id.fabStartTrip)
     public void onStartTripClicked() {
-        //Adding Geofence to the last trip
-        //TODO: based on user selected station add geofence
-        AddGeoFenceToSelectedStops();
-        //SetUp Alaram
-        AddAlarmToSelectedStops();
-        //Start Notification
-        TrainStop  trainStop = new TrainStop();
-        trainStop.setName("SFO");
-        trainStop.setStopId("323");
-        startTripNotification(trainStop);
-    }
 
-    private void startTripNotification(TrainStop trainStop) {
-        NotificationProvider.getInstance().showTripStartedNotification(this, trainStop.getStopId());
     }
 
     @OnClick(R.id.btnSchedule)
     public void onScheduleClicked() {
-        NotificationProvider.getInstance().showTripStartedNotification(this, "323");
         Intent intent = new Intent(this, ScheduleActivity.class);
         startActivity(intent);
     }
