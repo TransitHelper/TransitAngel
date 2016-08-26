@@ -162,12 +162,14 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
     }
 
     private void startTripNotification(TrainStop trainStop) {
+        //TODO: based on user selected station add geofence
+       // addGeoFenceToSelectedStops();
+        AddAlarmToSelectedStops();
         NotificationProvider.getInstance().showTripStartedNotification(this, trainStop.getStopId());
     }
 
     @OnClick(R.id.btnSchedule)
     public void onScheduleClicked() {
-        NotificationProvider.getInstance().showTripStartedNotification(this, "323");
         Intent intent = new Intent(this, ScheduleActivity.class);
         startActivity(intent);
     }
