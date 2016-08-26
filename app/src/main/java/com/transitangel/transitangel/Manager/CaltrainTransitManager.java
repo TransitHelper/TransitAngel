@@ -11,6 +11,7 @@ import com.transitangel.transitangel.utils.TAConstants;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 public class CaltrainTransitManager extends TransitManager {
 
@@ -105,6 +106,13 @@ public class CaltrainTransitManager extends TransitManager {
 //           }
 //       }
 //        return stopsWithoutDuplicates;
+    }
+
+    public HashMap<String, Stop> getStopLookup() {
+        if ( mStopLookup == null || mStopLookup.size() == 0 ) {
+            getStops();
+        }
+        return mStopLookup;
     }
 
 

@@ -509,10 +509,6 @@ public class TransitManager {
     }
 
 
-    public HashMap<String, Stop> getStopLookup() {
-        return mStopLookup;
-    }
-
     //save recents
 
     //order/ remove duplicates
