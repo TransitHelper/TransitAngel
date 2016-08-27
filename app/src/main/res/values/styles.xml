@@ -10,15 +10,23 @@
         <item name="tabPaddingStart">12dp</item>
         <item name="tabPaddingEnd">12dp</item>
     </style>
-    <style name="spinnerStyle">
-        <item name="android:background">@color/colorPrimary</item>
+
+    <style name="SearchTextStyle">
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">@dimen/text_title</item>
         <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/textview_rounded_corner</item>
     </style>
-    
-    <style name="homeButtom" parent="android:Widget.Button">
+
+    <style name="SearchLabelStyle">
+        <item name="android:textColor">@color/textPrimary</item>
+        <item name="android:textSize">@dimen/text_default</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">true</item>
+
     </style>
+
+    <style name="homeButtom" parent="android:Widget.Button"></style>
 
     <style name="ItemLabelStyle" parent="style/AppTheme">
         <item name="android:singleLine">true</item>
@@ -30,7 +38,7 @@
     </style>
 
     <style name="ItemSubLabelStyle" parent="style/ItemLabelStyle">
-        <item name="android:textColor">@color/color_control_normal</item>
+        <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textSize">@dimen/list_item_text_subtitle</item>
     </style>
 

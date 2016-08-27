@@ -16,6 +16,9 @@
 
     <!-- List -->
     <dimen name="list_item_text_title">@dimen/text_header</dimen>
-    <dimen name="list_item_text_subtitle">@dimen/text_title</dimen>
+    <dimen name="list_item_text_subtitle">@dimen/text_default</dimen>
+    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 
 </resources>

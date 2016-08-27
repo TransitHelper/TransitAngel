@@ -1,69 +1,101 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".schedule.ScheduleFragment">
 
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/from_label"
+        style="@style/SearchLabelStyle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/from_label"
-        android:textAllCaps="true"
-        android:textSize="13sp"
-        android:textColor="@color/textSecondary"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="10dp"/>
+        android:layout_alignBottom="@+id/from_station"
+        android:layout_alignParentStart="true"
+        android:layout_margin="4dp"
+        android:layout_marginLeft="10dp"
+        android:gravity="left"
+        android:minWidth="45dp"
+        android:padding="4dp"
+        android:text="@string/from_label" />
+
     <TextView
         android:id="@+id/from_station"
-        style="@style/spinnerStyle"
-        android:layout_width="match_parent"
+        style="@style/SearchTextStyle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="13dp"
+        android:layout_toRightOf="@id/from_label"
         android:contentDescription="From Station"
-        android:dropDownWidth="wrap_content"
         android:gravity="center"
-        android:padding="8dp" />
-
-    <ImageButton
-        android:id="@+id/swap_station"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@android:color/white"
-        android:contentDescription="@string/CD_switch_button"
-        android:src="@drawable/ic_swap" />
+        android:minWidth="220dp"
+        android:padding="4dp" />
 
     <TextView
+        android:id="@+id/action_divider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/to_label"
-        android:textAllCaps="true"
-        android:textSize="13sp"
-        android:textColor="@color/textSecondary"
-        android:layout_marginTop="-2dp"
-        android:layout_marginLeft="10dp"/>
+        android:layout_alignEnd="@+id/from_station"
+        android:layout_below="@+id/from_label" />
+
+    <TextView
+        android:id="@+id/toStation"
+        style="@style/SearchLabelStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/action_divider"
+        android:layout_margin="4dp"
+        android:layout_marginLeft="10dp"
+        android:gravity="left"
+        android:minWidth="45dp"
+        android:padding="4dp"
+        android:text="@string/to_label" />
 
     <TextView
         android:id="@+id/to_station"
-        style="@style/spinnerStyle"
-        android:layout_width="match_parent"
+        style="@style/SearchTextStyle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="8dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_alignTop="@+id/toStation"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_toEndOf="@+id/toStation"
         android:contentDescription="Destination Station"
         android:gravity="center"
-        android:padding="8dp" />
+        android:minWidth="220dp"
+        android:padding="4dp" />
 
-    <android.support.v7.widget.RecyclerView
+    <ImageView
+        android:id="@+id/swap_station"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/from_label"
+        android:layout_toEndOf="@+id/from_station"
+        android:src="@mipmap/ic_action_action_swap_vert" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/to_station"
+        android:layout_margin="4dp"
+        android:background="@color/list_divider" />
+
+    <com.transitangel.transitangel.view.widget.EmptySupportingRecyclerView
         android:id="@+id/rvRecents"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_below="@id/divider"
         android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"/>
-</LinearLayout>
+        android:layout_marginTop="10dp" />
+
+    <ViewStub
+        android:id="@+id/empty_view_stub"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rvRecents"
+        android:layout="@layout/empty_view" />
+
+</RelativeLayout>

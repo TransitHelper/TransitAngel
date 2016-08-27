@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.view.ViewStub;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.transitangel.transitangel.Manager.BartTransitManager;
@@ -25,6 +25,8 @@ import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.model.scheduleItem;
 import com.transitangel.transitangel.search.SearchActivity;
 import com.transitangel.transitangel.utils.TAConstants;
+import com.transitangel.transitangel.view.RecyclerItemDecoration;
+import com.transitangel.transitangel.view.widget.EmptySupportingRecyclerView;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,9 +52,11 @@ public class ScheduleFragment extends Fragment implements ScheduleRecyclerAdapte
     @BindView(R.id.to_station)
     TextView mToStation;
     @BindView(R.id.swap_station)
-    ImageButton mSwapStationBtn;
+    ImageView mSwapStationBtn;
     @BindView(R.id.rvRecents)
-    RecyclerView mRecyclerView;
+    EmptySupportingRecyclerView mRecyclerView;
+    @BindView(R.id.empty_view_stub)
+    ViewStub mViewStub;
 
 
     private static final String ARG_TRANSIT_TYPE = "transit_type";
@@ -100,7 +104,13 @@ public class ScheduleFragment extends Fragment implements ScheduleRecyclerAdapte
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setNestedScrollingEnabled(true);
-//        mRecyclerView.addItemDecoration(new RecyclerItemDecoration(getContext(), R.drawable.recycler_view_divider));
+        mRecyclerView.addItemDecoration(new RecyclerItemDecoration(getContext(), R.drawable.recycler_view_divider));
+        View emptyView = mViewStub.inflate();
+        TextView textView=(TextView) emptyView.findViewById(R.id.text_empty_state_description);
+        textView.setText(R.string.empty_results);
+        ImageView icon=(ImageView) emptyView.findViewById(R.id.image_empty_state);
+        icon.setImageResource(R.mipmap.ic_train);
+        mRecyclerView.setEmptyView(emptyView);
         return view;
     }
 

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_train"
+        android:id="@+id/imageView" />
+
+    <TextView
+        android:id="@+id/train_description"
+        style="@style/ItemMainLabelStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:contentDescription="Train Name"
+        android:text="@string/app_name"
+        android:layout_toEndOf="@+id/imageView" />
+
+    <TextView
+        android:id="@+id/train_departure_time"
+        style="@style/ItemSubLabelStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:contentDescription="Train arrives"
+        android:text="15mins"
+        android:layout_alignTop="@+id/journey_time"
+        android:layout_alignStart="@+id/train_description" />
+
+    <TextView
+        android:id="@+id/journey_time"
+        style="@style/ItemSubLabelStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/train_description"
+        android:layout_margin="8dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:text="1hr 55mins"
+        android:textColor="@color/textSpecialInfoColor" />
+</RelativeLayout>
