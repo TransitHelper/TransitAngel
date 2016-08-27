@@ -44,6 +44,7 @@ public class GeofenceManager {
 
     private List<TrainStopFence> trainStopFences;
     private List<TrainStopFence> trainStopFencesToRemove;
+    public static final int GEOFENCE_GET_FINE_LOC_REQ_CODE  = 200;
 
     private GeofenceManagerListener listener;
 
@@ -171,7 +172,7 @@ public class GeofenceManager {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             if ( context instanceof Activity) {
-                PermissionUtils.requestPermission(Manifest.permission.ACCESS_FINE_LOCATION,200,(Activity)context);
+                PermissionUtils.requestPermission(Manifest.permission.ACCESS_FINE_LOCATION,GEOFENCE_GET_FINE_LOC_REQ_CODE,(Activity)context);
             }
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -232,11 +233,21 @@ public class GeofenceManager {
     }
 
     public void addGeofence(Context context,TrainStopFence trainStopFence, GeofenceManagerListener listener) {
-        activityContext  = context;
-        this.trainStopFenceToAdd = trainStopFence;
-        this.geofenceToAdd = trainStopFence.geofence();
-        this.listener = listener;
-       connectWithCallbacks(connectionAddListener);
+        //make sure we have the permissions
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            if ( context instanceof Activity) {
+                PermissionUtils.requestPermission(Manifest.permission.ACCESS_FINE_LOCATION,GEOFENCE_GET_FINE_LOC_REQ_CODE,(Activity)context);
+            }
+        }
+        else {
+            activityContext  = context;
+            this.trainStopFenceToAdd = trainStopFence;
+            this.geofenceToAdd = trainStopFence.geofence();
+            this.listener = listener;
+            connectWithCallbacks(connectionAddListener);
+        }
+
     }
 
     //removes list of geofences

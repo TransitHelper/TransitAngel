@@ -77,6 +77,8 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     private String fromStation;
     private String toStation;
     private TAConstants.TRANSIT_TYPE type;
+    private TrainStop selectedStop;
+    private Trip selectedTrip;
 
     HashMap<String, Stop> stopHashMap = new HashMap<>();
 
@@ -191,13 +193,11 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
 
         //Adding Geofence to the last trip
         //TODO: based on user selected station add geofence
-        addGeoFenceToSelectedStops(lastStop);
+        addGeoFenceToSelectedStops(lastStop,trip);
 
+        //TODO check if we need to move the alarm calls and save recent trip to geofence callback?
         //SetUp Alaram
         addAlarmToSelectedStops(lastStop);
-
-        //Start Notification
-        startOnGoingNotification(trip);
 
         //save to the recent trips
         TransitManager.getSharedInstance().saveRecentTrip(trip);
@@ -229,13 +229,20 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
                 Toast.LENGTH_SHORT).show();
     }
 
-    private void addGeoFenceToSelectedStops(TrainStop lastStop) {
+    private void addGeoFenceToSelectedStops(TrainStop lastStop,Trip trip) {
         TrainStopFence trainStopFence = new TrainStopFence(lastStop);
+        selectedStop = lastStop;
+        selectedTrip = trip;
 
         GeofenceManager.getSharedInstance().addGeofence(this, trainStopFence, new GeofenceManager.GeofenceManagerListener() {
             @Override
             public void onGeofencesUpdated() {
+
                 Log.d("Fence Added", "Here");
+
+                //Start Notification
+                startOnGoingNotification(trip);
+
             }
 
             @Override
@@ -252,5 +259,14 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
             }
         }
         return null;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == GeofenceManager.GEOFENCE_GET_FINE_LOC_REQ_CODE ) {
+            if ( selectedStop != null && selectedTrip != null) {
+                addGeoFenceToSelectedStops(selectedStop,selectedTrip);
+            }
+        }
     }
 }
