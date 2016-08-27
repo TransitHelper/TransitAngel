@@ -11,9 +11,7 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,7 +22,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,7 +33,6 @@ import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.api.TripHelperApiFactory;
 import com.transitangel.transitangel.api.TripHelplerRequestInterceptor;
 import com.transitangel.transitangel.details.AlarmBroadcastReceiver;
-import com.transitangel.transitangel.details.DetailsActivity;
 import com.transitangel.transitangel.model.Transit.TrainStop;
 import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.model.sampleJsonModel;
@@ -51,7 +47,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit2.http.HEAD;
 import rx.subscriptions.CompositeSubscription;
 
 public class HomeActivity extends AppCompatActivity implements ShowNotificationListener {
@@ -129,8 +124,7 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
 
     private void setupOnGoingView() {
         ImageView imageView = (ImageView) mLayoutOnGoing.findViewById(R.id.on_going_icon);
-        // Need to replace this.
-        imageView.setImageResource(R.mipmap.ic_work);
+        imageView.setImageResource(R.mipmap.ic_current_trip);
         TextView textView = (TextView) mLayoutOnGoing.findViewById(R.id.on_going_trip_name);
         textView.setText("On Going Trip");
     }
@@ -180,7 +174,7 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
 
     private void setUpSavedTrips() {
         ImageView imageView = (ImageView) mLayoutFav.findViewById(R.id.place_item_icon);
-        imageView.setImageResource(R.mipmap.ic_action_alarm_set);
+        imageView.setImageResource(R.mipmap.ic_save);
         TextView textView = (TextView) mLayoutFav.findViewById(R.id.place_item_title);
         textView.setText("Saved Places");
         TextView textViewSet = (TextView) mLayoutFav.findViewById(R.id.set_place);
