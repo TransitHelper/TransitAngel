@@ -1,6 +1,7 @@
 package com.transitangel.transitangel.search;
 
 import android.content.Context;
+import android.support.annotation.IntDef;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -23,9 +24,18 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final int ITEM_TYPE_STATION_MIDDLE = 2;
     private static final int ITEM_TYPE_STATION_END = 3;
 
+    @IntDef({ITEM_DETAIL, ITEM_ONGOING})
+    public @interface ItemType{}
+
+    public static final int ITEM_DETAIL = 0;
+    public static final int ITEM_ONGOING = 1;
+
     private ArrayList<TrainStop> visibleStopsList;
     private ArrayList<TrainStop> allStopItemList;
     private HashMap<String, Stop> stopHashMap;
+
+    @ItemType private int itemType;
+
     private Context context;
 
     public interface OnItemClickListener {
@@ -34,11 +44,12 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private OnItemClickListener onItemClickListener;
 
-    public StationsAdapter(Context context, ArrayList<TrainStop> stationStopItemList, HashMap<String, Stop> stopHashMap) {
+    public StationsAdapter(Context context, ArrayList<TrainStop> stationStopItemList, HashMap<String, Stop> stopHashMap, @ItemType int itemType) {
         this.allStopItemList = stationStopItemList;
         this.visibleStopsList = new ArrayList<>(allStopItemList);
         this.stopHashMap = stopHashMap;
         this.context = context;
+        this.itemType = itemType;
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -49,14 +60,27 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         RecyclerView.ViewHolder viewHolder = null;
+        View view;
         if (viewType == ITEM_TYPE_STATION_MIDDLE) {
-            View view = inflater.inflate(R.layout.item_stop_first, parent, false);
+            if(itemType == ITEM_DETAIL) {
+                view = inflater.inflate(R.layout.item_stop_first, parent, false);
+            } else {
+                view = inflater.inflate(R.layout.item_ongoing, parent, false);
+            }
             viewHolder = new StationStopsViewHolder(view, onItemClickListener);
         } else if (viewType == ITEM_TYPE_STATION_START) {
-            View view = inflater.inflate(R.layout.item_stop_first, parent, false);
+            if(itemType == ITEM_DETAIL) {
+                view = inflater.inflate(R.layout.item_stop_first, parent, false);
+            } else {
+                view = inflater.inflate(R.layout.item_ongoing, parent, false);
+            }
             viewHolder = new StationStopsViewHolder(view, onItemClickListener);
         } else if (viewType == ITEM_TYPE_STATION_END) {
-            View view = inflater.inflate(R.layout.item_stop_first, parent, false);
+            if(itemType == ITEM_DETAIL) {
+                view = inflater.inflate(R.layout.item_stop_first, parent, false);
+            } else {
+                view = inflater.inflate(R.layout.item_ongoing, parent, false);
+            }
             viewHolder = new StationStopsViewHolder(view, onItemClickListener);
         }
         return viewHolder;

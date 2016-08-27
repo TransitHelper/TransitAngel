@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">TripAngel</string>
     <string name="contentdescription_lookup_schedule">Lookup Schedule</string>
+    <string name="contentdescription_on_going_trip">On Going Trip information</string>
     <string name="schedule">Schedule</string>
     <string name="recents">Recents</string>
     <string name="home_title">Home</string>

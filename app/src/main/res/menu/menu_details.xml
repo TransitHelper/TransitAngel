@@ -18,7 +18,7 @@
       <item android:id="@+id/action_alarm"
             android:orderInCategory="3"
             android:title="Alarm"
-            android:icon="@drawable/alarm_plus"
+            android:icon="@drawable/alarm_white"
             app:showAsAction="always"
             android:contentDescription="Add alarm to get alerted before departure."/>
 

@@ -110,9 +110,10 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         tvTitle.setText("#" + train.getNumber());
         tvTitle.setContentDescription("Train number " + train.getNumber());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(null);
 
         // Create the recents adapter.
-        adapter = new StationsAdapter(this, mStops, stopHashMap);
+        adapter = new StationsAdapter(this, mStops, stopHashMap, StationsAdapter.ITEM_DETAIL);
         rvStationList.setAdapter(adapter);
         rvStationList.setLayoutManager(new LinearLayoutManager(this));
         adapter.setOnItemClickListener(this);
@@ -155,10 +156,7 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
 
     @Override
     public void onItemClick(int position) {
-        Intent resultIntent = new Intent();
-//        resultIntent.putExtra(EXTRA_SELECTED_STATION, adapter.getItem(position));
-        setResult(RESULT_OK, resultIntent);
-        finish();
+        // TODO: Show details or something when the item is clicked.
     }
 
     @Override

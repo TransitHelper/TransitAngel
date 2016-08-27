@@ -11,6 +11,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.home.HomeActivity;
 import com.transitangel.transitangel.model.Transit.Trip;
+import com.transitangel.transitangel.utils.UiUtils;
 
 /**
  * author yogesh.shrivastava.
@@ -38,9 +39,8 @@ public class NotificationProvider {
 
         // Get the train details:
         String title = "Trip to " + trip.getToStop().getName();
-
         // Set details from the ongoing trip
-        String contentTitle = "Arrive at " + trip.getSelectedTrain().getTrainStop(trip.getToStop().getId()).getArrrivalTime();
+        String contentTitle = "Arrive at " + UiUtils.convert24TimeTo12hr(trip.getSelectedTrain().getTrainStop(trip.getToStop().getId()).getArrrivalTime());
 
         Intent showTrip = new Intent(context, HomeActivity.class);
         showTrip.setAction(HomeActivity.ACTION_SHOW_ONGOING);

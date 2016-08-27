@@ -28,7 +28,7 @@
         <activity android:name=".LocationActivity"/>
         <activity android:name=".schedule.ScheduleActivity"/>
         <activity android:name=".details.DetailsActivity"/>
-
+        <activity android:name=".ongoing.OnGoingActivity"/>
         <service android:name=".Intent.TransitIntentService"/>
         <service
             android:name=".notifications.DismissService"
