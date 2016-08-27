@@ -31,7 +31,7 @@ public class TestManager {
         return sInstance;
     }
 
-    public void executeSampleAPICalls() {
+    public void executeSampleAPICalls(Context context) {
 
         Stop caltrainStop = CaltrainTransitManager.getSharedInstance().getNearestStop(37.401438, -121.9252457);
         Stop bartStop = BartTransitManager.getSharedInstance().getNearestStop(37.401438, -121.9252457);
@@ -47,6 +47,11 @@ public class TestManager {
         Log.d("Stops", stops.toString());
 
         ArrayList<Stop>caltrainStops = CaltrainTransitManager.getSharedInstance().getLocalStops();
+
+//       ArrayList<Trip> recents =  TransitManager.getSharedInstance().fetchRecentSearchList();
+//        if ( recents.size() > 0 ) {
+//            TransitManager.getSharedInstance().createShortCut(recents.get(0));
+//        }
 
         //fetch trains from SF to Santa Clara
         //Note: currently ignores the leaving after parameter and also ignore weekday/weekend
@@ -93,7 +98,7 @@ public class TestManager {
 //            }
 //        });
 
-//        TransitLocationManager.getSharedInstance().getCurrentLocation(this, new TransitLocationManager.LocationResponseHandler() {
+//        TransitLocationManager.getSharedInstance().getCurrentLocation(context, new TransitLocationManager.LocationResponseHandler() {
 //            @Override
 //            public void OnLocationReceived(boolean isSuccess, LatLng latLng) {
 //                if ( isSuccess ) {
@@ -136,8 +141,7 @@ public class TestManager {
         trainStop.setLatitude(Double.toString(latLng.latitude));
         trainStop.setLongitude(Double.toString(latLng.longitude));
         trainStop.setName("Test Geofence");
-        TrainStopFence fence = new TrainStopFence(trainStop,15);
-
+        TrainStopFence fence = new TrainStopFence(trainStop);
         GeofenceManager.getSharedInstance().addGeofence(mApplicationContext, fence, new GeofenceManager.GeofenceManagerListener() {
             @Override
             public void onGeofencesUpdated() {

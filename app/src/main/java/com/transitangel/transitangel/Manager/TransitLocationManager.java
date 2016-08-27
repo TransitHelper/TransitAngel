@@ -47,7 +47,6 @@ public class TransitLocationManager implements com.google.android.gms.location.L
     public static synchronized TransitLocationManager getSharedInstance() {
         if ( sInstance == null ) {
             sInstance = new TransitLocationManager();
-
         }
         return sInstance;
     }

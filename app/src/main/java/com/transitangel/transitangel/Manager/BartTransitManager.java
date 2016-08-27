@@ -8,6 +8,7 @@ import com.transitangel.transitangel.utils.TAConstants;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * Created by vidhurvoora on 8/18/16.
@@ -27,6 +28,13 @@ public class BartTransitManager extends TransitManager {
     public ArrayList<Stop> getStops() {
         //load the json from files
         return getStops("Bart_Stops.json");
+    }
+
+    public HashMap<String, Stop> getStopLookup() {
+        if ( mStopLookup == null || mStopLookup.size() == 0 ) {
+            getStops();
+        }
+        return mStopLookup;
     }
 
     private void populateServices() {

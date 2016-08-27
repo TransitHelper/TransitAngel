@@ -12,6 +12,7 @@ import java.util.ArrayList;
 /**
  * Created by vidhurvoora on 8/19/16.
  */
+
 public class Train implements Parcelable {
     String number;
     String name;
@@ -30,6 +31,10 @@ public class Train implements Parcelable {
         }
     }
 
+    public Train(){
+
+    }
+
     public String getNumber() {
         return number;
     }
@@ -46,6 +51,16 @@ public class Train implements Parcelable {
         return trainStops;
     }
 
+    public TrainStop getTrainStop(String stopId) {
+        for(TrainStop trainStop: trainStops) {
+            if(trainStop.getStopId().equalsIgnoreCase(stopId)) {
+                return trainStop;
+            }
+        }
+        return null;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -56,18 +71,17 @@ public class Train implements Parcelable {
         dest.writeString(this.number);
         dest.writeString(this.name);
         dest.writeString(this.direction);
-        dest.writeList(this.trainStops);
+        dest.writeTypedList(this.trainStops);
     }
 
     protected Train(Parcel in) {
         this.number = in.readString();
         this.name = in.readString();
         this.direction = in.readString();
-        this.trainStops = new ArrayList<TrainStop>();
-        in.readList(this.trainStops, TrainStop.class.getClassLoader());
+        this.trainStops = in.createTypedArrayList(TrainStop.CREATOR);
     }
 
-    public static final Parcelable.Creator<Train> CREATOR = new Parcelable.Creator<Train>() {
+    public static final Creator<Train> CREATOR = new Creator<Train>() {
         @Override
         public Train createFromParcel(Parcel source) {
             return new Train(source);

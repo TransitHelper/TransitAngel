@@ -23,13 +23,18 @@ import android.widget.Toast;
 import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
 import com.transitangel.transitangel.Manager.GeofenceManager;
+import com.transitangel.transitangel.Manager.PrefManager;
+import com.transitangel.transitangel.Manager.TransitManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.model.Transit.Stop;
 import com.transitangel.transitangel.model.Transit.Train;
 import com.transitangel.transitangel.model.Transit.TrainStop;
 import com.transitangel.transitangel.model.Transit.TrainStopFence;
+import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.notifications.NotificationProvider;
 import com.transitangel.transitangel.search.StationsAdapter;
+import com.transitangel.transitangel.utils.Preconditions;
+import com.transitangel.transitangel.utils.TAConstants;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -51,6 +56,8 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     public static final String EXTRA_SERVICE = TAG + ".EXTRA_SERVICE";
     public static final String EXTRA_SERVICE_BART = TAG + ".EXTRA_SERVICE_BART";
     public static final String EXTRA_SERVICE_CALTRAIN = TAG + ".EXTRA_SERVICE_CALTRAIN";
+    public static final String EXTRA_FROM_STATION = TAG + ".EXTRA_FROM_STATION";
+    public static final String EXTRA_TO_STATION = TAG + ".EXTRA_TO_STATION";
     public static final int ALARM_REQUEST_CODE = 111;
 
 
@@ -67,6 +74,10 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     private Train train;
     private StationsAdapter adapter;
     private String serviceType;
+    private String fromStation;
+    private String toStation;
+    private TAConstants.TRANSIT_TYPE type;
+
     HashMap<String, Stop> stopHashMap = new HashMap<>();
 
     @Override
@@ -80,10 +91,20 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     private void init() {
         serviceType = getIntent().getStringExtra(EXTRA_SERVICE);
         train = getIntent().getParcelableExtra(EXTRA_TRAIN);
+        fromStation = getIntent().getStringExtra(EXTRA_FROM_STATION);
+        toStation = getIntent().getStringExtra(EXTRA_TO_STATION);
+
+        Preconditions.checkNull(fromStation);
+        Preconditions.checkNull(toStation);
+        Preconditions.checkNull(serviceType);
+        Preconditions.checkNull(train);
+
         mStops = train.getTrainStops();
         if (EXTRA_SERVICE_CALTRAIN.equalsIgnoreCase(serviceType)) {
+            type = TAConstants.TRANSIT_TYPE.CALTRAIN;
             stopHashMap = CaltrainTransitManager.getSharedInstance().getStopLookup();
         } else {
+            type = TAConstants.TRANSIT_TYPE.BART;
             stopHashMap = BartTransitManager.getSharedInstance().getStopLookup();
         }
         setSupportActionBar(toolbar);
@@ -155,26 +176,44 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
 
     @OnClick(R.id.fabStartTrip)
     public void startTrip() {
+        TrainStop lastStop = getStopFromId(toStation);
+        if(lastStop == null) {
+            Toast.makeText(this, "No Valid to station found for the train", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // Add trip information in the Pref manager to keep track of it.
+        Trip trip = new Trip();
+        trip.setSelectedTrain(train);
+        trip.setFromStop(stopHashMap.get(fromStation));
+        trip.setToStop(stopHashMap.get(toStation));
+        trip.setDate(new Date());
+        trip.setType(type);
+        PrefManager.addOnGoingTrip(trip);
+
         //Adding Geofence to the last trip
         //TODO: based on user selected station add geofence
-        addGeoFenceToSelectedStops();
+        addGeoFenceToSelectedStops(lastStop);
+
         //SetUp Alaram
-        addAlarmToSelectedStops();
+        addAlarmToSelectedStops(lastStop);
+
         //Start Notification
-        startOnGoingNotification();
+        startOnGoingNotification(trip);
+
+        //save to the recent trips
+        TransitManager.getSharedInstance().saveRecentTrip(trip);
 
     }
 
-    private void startOnGoingNotification() {
-        TrainStop lastStop = mStops.get(mStops.size() - 1);
-        NotificationProvider.getInstance().showTripStartedNotification(this, lastStop.getStopId());
+    private void startOnGoingNotification(Trip trip) {
+        NotificationProvider.getInstance().showTripStartedNotification(this, trip);
     }
 
-    private void addAlarmToSelectedStops() {
+    private void addAlarmToSelectedStops(TrainStop lastStop) {
         Intent intent = new Intent(this, AlarmBroadcastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 this.getApplicationContext(), ALARM_REQUEST_CODE, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        TrainStop lastStop = mStops.get(mStops.size() - 1);
         final Timestamp timestamp =
                 Timestamp.valueOf(
                         new SimpleDateFormat("yyyy-MM-dd ")
@@ -188,13 +227,13 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 pendingIntent);
-
         Toast.makeText(this, "Alarm will vibrate at time specified",
                 Toast.LENGTH_SHORT).show();
     }
 
-    private void addGeoFenceToSelectedStops() {
-        TrainStopFence trainStopFence = new TrainStopFence(mStops.get(mStops.size() - 1), 15);
+    private void addGeoFenceToSelectedStops(TrainStop lastStop) {
+        TrainStopFence trainStopFence = new TrainStopFence(lastStop);
+
         GeofenceManager.getSharedInstance().addGeofence(this, trainStopFence, new GeofenceManager.GeofenceManagerListener() {
             @Override
             public void onGeofencesUpdated() {
@@ -203,8 +242,17 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
 
             @Override
             public void onError() {
-                Log.d("Error", "Error adding fence");
+                Toast.makeText(DetailsActivity.this, "Error while adding location, please check location services and try again", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    public TrainStop getStopFromId(String stopId) {
+        for(TrainStop trainStop: mStops) {
+            if(trainStop.getStopId().equalsIgnoreCase(stopId)) {
+                return trainStop;
+            }
+        }
+        return null;
     }
 }

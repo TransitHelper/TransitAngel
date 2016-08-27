@@ -27,13 +27,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.transitangel.transitangel.Manager.TestManager;
+import com.transitangel.transitangel.Manager.PrefManager;
 import com.transitangel.transitangel.Manager.TransitLocationManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.api.TripHelperApiFactory;
 import com.transitangel.transitangel.api.TripHelplerRequestInterceptor;
 import com.transitangel.transitangel.details.AlarmBroadcastReceiver;
+import com.transitangel.transitangel.details.DetailsActivity;
 import com.transitangel.transitangel.model.Transit.TrainStop;
+import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.model.sampleJsonModel;
 import com.transitangel.transitangel.notifications.NotificationProvider;
 import com.transitangel.transitangel.schedule.ScheduleActivity;
@@ -41,6 +43,7 @@ import com.transitangel.transitangel.utils.TAConstants;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -88,7 +91,7 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
         ButterKnife.bind(this);
         init();
         mTripHelperApiFactory = new TripHelperApiFactory(new TripHelplerRequestInterceptor(this));
-        TestManager.getSharedInstance().executeSampleAPICalls();
+//        TestManager.getSharedInstance().executeSampleAPICalls(this);
     }
 
     private void init() {
@@ -109,11 +112,13 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
         if (!TextUtils.isEmpty(action)) {
             if (action.equalsIgnoreCase(ACTION_SHOW_ONGOING)) {
                 Toast.makeText(this, "Show on going screen here.", Toast.LENGTH_LONG).show();
+                launchOnGoingScreen();
             } else if (action.equalsIgnoreCase(ACTION_TRIP_CANCELLED)) {
                 Toast.makeText(this, "Show on cancelled trip clicked.", Toast.LENGTH_LONG).show();
             }
         }
     }
+
 
     private void setUpGetMeWorkView() {
         ImageView imageView = (ImageView) mLayoutWork.findViewById(R.id.place_item_icon);
@@ -167,6 +172,23 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
         textViewSet.setVisibility(View.GONE);
     }
 
+    private void launchOnGoingScreen() {
+        Trip trip = PrefManager.getOnGoingTrip();
+        if (trip != null) {
+            Intent intent = new Intent(this, DetailsActivity.class);
+            if (trip.getType() == TAConstants.TRANSIT_TYPE.BART) {
+                intent.putExtra(DetailsActivity.EXTRA_SERVICE, DetailsActivity.EXTRA_SERVICE_BART);
+            } else {
+                intent.putExtra(DetailsActivity.EXTRA_SERVICE, DetailsActivity.EXTRA_SERVICE_CALTRAIN);
+            }
+            intent.putExtra(DetailsActivity.EXTRA_TRAIN, trip.getSelectedTrain());
+            intent.putExtra(DetailsActivity.EXTRA_FROM_STATION, trip.getFromStop().getId());
+            intent.putExtra(DetailsActivity.EXTRA_TO_STATION, trip.getToStop().getId());
+            startActivity(intent);
+        }
+
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -218,8 +240,16 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
     private void startTripNotification(TrainStop trainStop) {
         //TODO: based on user selected station add geofence
         // addGeoFenceToSelectedStops();
-        AddAlarmToSelectedStops();
-        NotificationProvider.getInstance().showTripStartedNotification(this, trainStop.getStopId());
+//        AddAlarmToSelectedStops();
+//        Trip trip = new Trip();
+//        trip.setSelectedTrain("323");
+//        trip.setFromStop(trainStop.getStopId());
+//        trip.setToStop(stopHashMap.get(toStation));
+//        trip.setDate(new Date());
+//        trip.setType(TAConstants.TRANSIT_TYPE.CALTRAIN);
+//        PrefManager.addOnGoingTrip(trip);
+//        NotificationProvider.getInstance().showTripStartedNotification(this, trainStop.getStopId());
+        // TODO: Need to add start trip integration here.
     }
 
     @OnClick(R.id.layout_search)

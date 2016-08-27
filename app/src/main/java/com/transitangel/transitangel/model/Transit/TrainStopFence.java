@@ -15,9 +15,13 @@ public class TrainStopFence implements Comparable {
     float radius;
     public String fenceId;
 
-    public TrainStopFence(TrainStop trainStop,float radius) {
+    public TrainStopFence(TrainStop trainStop) {
+        this(trainStop, 2.5f);
+    }
+
+    private TrainStopFence(TrainStop trainStop,float radiusKm) {
         this.trainStop = trainStop;
-        this.radius = radius *1000.0f; //in km
+        this.radius = radiusKm *1000.0f; //in km
     }
 
     public static final long GeoFenceExpirationTime = 3*3600000; // 3hours ?
