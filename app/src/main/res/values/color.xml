@@ -22,4 +22,30 @@
     <color name="list_divider">#84a1bb</color>
     <color name="red_caltrain">#A81C1C</color>
 
+    <color name="bg_activity_default">@android:color/white</color>
+    <color name="bg_secondary">#EDF3F9</color>
+
+    <!-- Buttons -->
+    <color name="btn_positive_normal">#008675</color>
+    <color name="btn_positive_pressed">#4ABDAE</color>
+    <color name="btn_negative_normal">#EF3A3F</color>
+    <color name="btn_negative_pressed">#ff8888</color>
+    <color name="btn_neutral_normal">#8A8A8A</color>
+    <color name="btn_neutral_pressed">#B0B0B0</color>
+    <color name="btn_edit_text">#8A8A8A</color>
+    <color name="btn_delete">#868686</color>
+
+    <!-- Text colors -->
+    <color name="text_primary">#54799B</color>
+    <color name="text_toolbar">@android:color/white</color>
+    <color name="text_dark">#1F3D59</color>
+    <color name="text_complimentary_normal">@android:color/white</color>
+    <color name="text_complimentary_disabled">#55ffffff</color>
+
+    <!-- Lists -->
+    <color name="home_card_inner_divider">#D5DDE3</color>
+    <color name="list_header_background">#F6F9FB</color>
+    <color name="list_header_text">#5B7E9F</color>
+    <!-- TAB -->
+    <color name="tab_indicator">#CCFFFFFF</color>
 </resources>

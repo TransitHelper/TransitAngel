@@ -22,6 +22,7 @@ public class TAConstants {
     }
 
     public static String SharedPrefGeofences = "SHARED_PREFS_GEOFENCES";
+    public static String HomeScreenSettings="HOME_SCREEN_SETTINGS";
 
 
 
