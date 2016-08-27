@@ -11,7 +11,9 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -22,6 +24,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,18 +40,18 @@ import com.transitangel.transitangel.details.DetailsActivity;
 import com.transitangel.transitangel.model.Transit.TrainStop;
 import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.model.sampleJsonModel;
-import com.transitangel.transitangel.notifications.NotificationProvider;
+import com.transitangel.transitangel.ongoing.OnGoingActivity;
 import com.transitangel.transitangel.schedule.ScheduleActivity;
 import com.transitangel.transitangel.utils.TAConstants;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.http.HEAD;
 import rx.subscriptions.CompositeSubscription;
 
 public class HomeActivity extends AppCompatActivity implements ShowNotificationListener {
@@ -72,6 +75,8 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
     FloatingActionButton fabAdd;
     @BindView(R.id.clMainContent)
     CoordinatorLayout clMainContent;
+    @BindView(R.id.layout_on_going)
+    ViewGroup mLayoutOnGoing;
     @BindView(R.id.layout_home)
     ViewGroup mLayoutHome;
     @BindView(R.id.layout_work)
@@ -80,6 +85,7 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
     ViewGroup mLayoutFav;
     @BindView(R.id.layout_search)
     ViewGroup mLayoutSearch;
+
 
     private TripHelperApiFactory mTripHelperApiFactory;
     private CompositeSubscription mSubscription = new CompositeSubscription();
@@ -101,6 +107,7 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
         getSupportActionBar().setIcon(R.mipmap.ic_launcher);
         nsvContent.setFillViewport(true);
         mSharedPreference = getApplicationContext().getSharedPreferences(TAConstants.SharedPrefGeofences, Context.MODE_PRIVATE);
+        setupOnGoingView();
         setupSearchView();
         setUpGetMeHomeView();
         setUpGetMeWorkView();
@@ -108,6 +115,7 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
 
         // Hack to avoid recycler view scrolling to middle.
         nsvContent.post(() -> nsvContent.scrollTo(0, 0));
+
         String action = getIntent().getAction();
         if (!TextUtils.isEmpty(action)) {
             if (action.equalsIgnoreCase(ACTION_SHOW_ONGOING)) {
@@ -117,6 +125,14 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
                 Toast.makeText(this, "Show on cancelled trip clicked.", Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    private void setupOnGoingView() {
+        ImageView imageView = (ImageView) mLayoutOnGoing.findViewById(R.id.on_going_icon);
+        // Need to replace this.
+        imageView.setImageResource(R.mipmap.ic_work);
+        TextView textView = (TextView) mLayoutOnGoing.findViewById(R.id.on_going_trip_name);
+        textView.setText("On Going Trip");
     }
 
 
@@ -174,17 +190,19 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
 
     private void launchOnGoingScreen() {
         Trip trip = PrefManager.getOnGoingTrip();
-        if (trip != null) {
-            Intent intent = new Intent(this, DetailsActivity.class);
+        if(trip != null) {
+            Intent intent = new Intent(this, OnGoingActivity.class);
             if (trip.getType() == TAConstants.TRANSIT_TYPE.BART) {
-                intent.putExtra(DetailsActivity.EXTRA_SERVICE, DetailsActivity.EXTRA_SERVICE_BART);
+                intent.putExtra(OnGoingActivity.EXTRA_SERVICE, OnGoingActivity.EXTRA_SERVICE_BART);
             } else {
-                intent.putExtra(DetailsActivity.EXTRA_SERVICE, DetailsActivity.EXTRA_SERVICE_CALTRAIN);
+                intent.putExtra(OnGoingActivity.EXTRA_SERVICE, OnGoingActivity.EXTRA_SERVICE_CALTRAIN);
             }
-            intent.putExtra(DetailsActivity.EXTRA_TRAIN, trip.getSelectedTrain());
-            intent.putExtra(DetailsActivity.EXTRA_FROM_STATION, trip.getFromStop().getId());
-            intent.putExtra(DetailsActivity.EXTRA_TO_STATION, trip.getToStop().getId());
+            intent.putExtra(OnGoingActivity.EXTRA_TRAIN, trip.getSelectedTrain());
+            intent.putExtra(OnGoingActivity.EXTRA_FROM_STATION, trip.getFromStop().getId());
+            intent.putExtra(OnGoingActivity.EXTRA_TO_STATION, trip.getToStop().getId());
             startActivity(intent);
+        } else {
+            Toast.makeText(this, "No trip information found", Toast.LENGTH_LONG).show();
         }
 
     }
@@ -203,14 +221,11 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
             onScheduleClicked();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-
         if (requestCode == TransitLocationManager.GET_LOCATION_REQUEST_CODE) {
             TransitLocationManager.getSharedInstance().getCurrentLocation(this, new TransitLocationManager.LocationResponseHandler() {
                 @Override
@@ -221,6 +236,11 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
         } else if (requestCode == TransitLocationManager.GET_UPDATES_LOCATION_REQUEST_CODE) {
             TransitLocationManager.getSharedInstance().getLocationUpdates(this);
         }
+    }
+
+    @OnClick(R.id.layout_on_going)
+    public void onGoingClicked() {
+        launchOnGoingScreen();
     }
 
     @OnClick(R.id.fabStartTrip)
@@ -250,6 +270,7 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
 //        PrefManager.addOnGoingTrip(trip);
 //        NotificationProvider.getInstance().showTripStartedNotification(this, trainStop.getStopId());
         // TODO: Need to add start trip integration here.
+        // TODO: After starting a trip we need to remove the older one.
     }
 
     @OnClick(R.id.layout_search)
@@ -267,6 +288,14 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
         //setup brodcast receiver
         IntentFilter intentFilter = new IntentFilter(TransitLocationManager.BROADCAST_ACTION);
         LocalBroadcastManager.getInstance(this).registerReceiver(locationUpdatesReceiver, intentFilter);
+
+        // Set ongoing if there is a trip.
+        Trip trip = PrefManager.getOnGoingTrip();
+        if(trip != null) {
+            mLayoutOnGoing.setVisibility(View.VISIBLE);
+        } else {
+            mLayoutOnGoing.setVisibility(View.GONE);
+        }
     }
 
     @Override
