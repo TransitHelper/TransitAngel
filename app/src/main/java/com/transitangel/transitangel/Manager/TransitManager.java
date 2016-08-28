@@ -349,8 +349,10 @@ public class TransitManager {
                             String arrivalTimeStr = fromStop.getArrrivalTime();
                             String[] parts = arrivalTimeStr.split(":");
                             Calendar cal = Calendar.getInstance();
+                            cal.setTime(leavingAfter);
                             cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(parts[0]));
                             cal.set(Calendar.MINUTE, Integer.parseInt(parts[1]));
+
                             Date arrivalTime = cal.getTime();
                             //add only if the arrival time is after the leavingAfter time
                             if (arrivalTime.after(leavingAfter)) {
