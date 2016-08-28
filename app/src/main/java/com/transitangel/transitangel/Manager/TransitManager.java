@@ -515,6 +515,7 @@ public class TransitManager {
     //order/ remove duplicates
     private ArrayList<Trip> fetchSavedItems(TAConstants.SAVED_PREF_TYPE prefType) {
 
+        ArrayList<Trip> savedItems = new ArrayList<>();
         Gson gson = new Gson();
         Type type = new TypeToken<ArrayList<Trip>>() {
         }.getType();
@@ -526,7 +527,11 @@ public class TransitManager {
             itemJSON = itemPref.getString("trips", "");
         }
         ArrayList<Trip> items = gson.fromJson(itemJSON, type);
-        return items;
+        if ( items != null ) {
+            savedItems.addAll(items);
+        }
+
+        return savedItems;
     }
 
     private void saveItem(Trip trip, TAConstants.SAVED_PREF_TYPE prefType) {
