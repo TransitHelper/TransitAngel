@@ -14,8 +14,8 @@
 
     <!--ContentDescription-->
     <string name="CD_switch_button">Switch from and to station</string>
-    <string name="from_label">From </string>
-    <string name="to_label">To </string>
+    <string name="from_label">From</string>
+    <string name="to_label">To</string>
     <string name="Notification.Text">We\'re at %1$s!!!</string>
     <string name="Notification.Title">Train Stop Arrived</string>
     <string name="cancel_trip_notification">Cancel Trip</string>
