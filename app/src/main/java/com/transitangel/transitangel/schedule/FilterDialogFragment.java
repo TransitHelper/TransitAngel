@@ -16,12 +16,12 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.transitangel.transitangel.R;
+import com.transitangel.transitangel.utils.TAConstants;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,18 +40,20 @@ public class FilterDialogFragment extends DialogFragment
     private String mTimeFormat = "HH:mm";
     private static Calendar calendar = Calendar.getInstance();
     private static Context mContext;
+    private static TAConstants.TRANSIT_TYPE mTransitType;
 
-    public static FilterDialogFragment newInstance(Context context, FilterChangedListener filterChangedListener) {
+    public static FilterDialogFragment newInstance(Context context, FilterChangedListener filterChangedListener, TAConstants.TRANSIT_TYPE type) {
         FilterDialogFragment newDialogFragment = new FilterDialogFragment();
         mContext = context;
         mFilterChanged = filterChangedListener;
         Bundle args = new Bundle();
         newDialogFragment.setArguments(args);
+        mTransitType = type;
         return newDialogFragment;
     }
 
     public interface FilterChangedListener {
-        void onFilterChanged(Calendar cal);
+        void onFilterChanged(Calendar cal, TAConstants.TRANSIT_TYPE type);
     }
 
     @Override
@@ -61,11 +63,9 @@ public class FilterDialogFragment extends DialogFragment
         View container = inflater.inflate(R.layout.filter, null);
         ButterKnife.bind(this, container);
         DateFormat df = new SimpleDateFormat(mDateFormat);
-        df.setTimeZone(TimeZone.getTimeZone("PST"));
         String date = df.format(calendar.getTime());
         mSelectDate.setText(date);
         DateFormat tf = new SimpleDateFormat(mTimeFormat);
-        tf.setTimeZone(TimeZone.getTimeZone("PST"));
         mSelectTime.setText(tf.format(calendar.getTime()));
         View view = inflater.inflate(R.layout.dialog_custom_title, null);
         builder.setCustomTitle(view);
@@ -74,7 +74,7 @@ public class FilterDialogFragment extends DialogFragment
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                mFilterChanged.onFilterChanged(calendar);
+                mFilterChanged.onFilterChanged(calendar,mTransitType);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -125,7 +125,7 @@ public class FilterDialogFragment extends DialogFragment
 
     @NonNull
     public static Calendar getMidnightInUTC(@NonNull Calendar calendar) {
-        GregorianCalendar cal = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
+        GregorianCalendar cal = new GregorianCalendar();
         cal.set(Calendar.YEAR, calendar.get(Calendar.YEAR));
         cal.set(Calendar.MONTH, calendar.get(Calendar.MONTH));
         cal.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH));
@@ -133,14 +133,13 @@ public class FilterDialogFragment extends DialogFragment
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
-
         return cal;
     }
 
     @Override
-    public void onTimeSet(TimePicker timePicker, int hour, int minute) {
-        mSelectTime.setText(hour + ":" + minute);
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
+    public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
+        mSelectTime.setText(hourOfDay + ":" + minute);
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         calendar.set(Calendar.MINUTE, minute);
     }
 
@@ -150,7 +149,6 @@ public class FilterDialogFragment extends DialogFragment
         calendar.set(Calendar.MONTH, monthOfYear);
         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         DateFormat df = new SimpleDateFormat(mDateFormat);
-        df.setTimeZone(TimeZone.getTimeZone("PST"));
         String date = df.format(calendar.getTime());
         mSelectDate.setText(date);
     }

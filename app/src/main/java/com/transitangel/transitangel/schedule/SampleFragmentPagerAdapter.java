@@ -24,7 +24,7 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
         if (position == 0)
             return ScheduleFragment.newInstance(TAConstants.TRANSIT_TYPE.CALTRAIN);
         else
-            return ScheduleFragment.newInstance(TAConstants.TRANSIT_TYPE.BART);
+            return BartScheduleFragment.newInstance(TAConstants.TRANSIT_TYPE.BART);
     }
 
     @Override
