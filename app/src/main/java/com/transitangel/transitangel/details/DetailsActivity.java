@@ -151,8 +151,6 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
             return true;
         } else if (item.getItemId() == R.id.action_favorite) {
             Toast.makeText(this, "Under developement", Toast.LENGTH_LONG).show();
-        } else if (item.getItemId() == R.id.action_alarm) {
-            Toast.makeText(this, "Under developement", Toast.LENGTH_LONG).show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -177,7 +175,7 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     @OnClick(R.id.fabStartTrip)
     public void startTrip() {
         TrainStop lastStop = getStopFromId(toStation);
-        if(lastStop == null) {
+        if (lastStop == null) {
             Toast.makeText(this, "No Valid to station found for the train", Toast.LENGTH_LONG).show();
             return;
         }
@@ -193,7 +191,7 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
 
         //Adding Geofence to the last trip
         //TODO: based on user selected station add geofence
-        addGeoFenceToSelectedStops(lastStop,trip);
+        addGeoFenceToSelectedStops(lastStop, trip);
 
         //TODO check if we need to move the alarm calls and save recent trip to geofence callback?
         //SetUp Alaram
@@ -221,15 +219,13 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, timestamp.getHours());
-        calendar.set(Calendar.MINUTE, timestamp.getMinutes()-5);
+        calendar.set(Calendar.MINUTE, timestamp.getMinutes() - 5);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 pendingIntent);
-        Toast.makeText(this, "Alarm will vibrate at time specified",
-                Toast.LENGTH_SHORT).show();
     }
 
-    private void addGeoFenceToSelectedStops(TrainStop lastStop,Trip trip) {
+    private void addGeoFenceToSelectedStops(TrainStop lastStop, Trip trip) {
         TrainStopFence trainStopFence = new TrainStopFence(lastStop);
         selectedStop = lastStop;
         selectedTrip = trip;
@@ -239,8 +235,6 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
             public void onGeofencesUpdated() {
 
                 Log.d("Fence Added", "Here");
-
-                //Start Notification
                 startOnGoingNotification(trip);
 
             }
@@ -253,8 +247,8 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     }
 
     public TrainStop getStopFromId(String stopId) {
-        for(TrainStop trainStop: mStops) {
-            if(trainStop.getStopId().equalsIgnoreCase(stopId)) {
+        for (TrainStop trainStop : mStops) {
+            if (trainStop.getStopId().equalsIgnoreCase(stopId)) {
                 return trainStop;
             }
         }
@@ -263,9 +257,9 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == GeofenceManager.GEOFENCE_GET_FINE_LOC_REQ_CODE ) {
-            if ( selectedStop != null && selectedTrip != null) {
-                addGeoFenceToSelectedStops(selectedStop,selectedTrip);
+        if (requestCode == GeofenceManager.GEOFENCE_GET_FINE_LOC_REQ_CODE) {
+            if (selectedStop != null && selectedTrip != null) {
+                addGeoFenceToSelectedStops(selectedStop, selectedTrip);
             }
         }
     }

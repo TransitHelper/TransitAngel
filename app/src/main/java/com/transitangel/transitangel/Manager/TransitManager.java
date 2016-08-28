@@ -23,7 +23,6 @@ import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.model.Transit.Tweet;
 import com.transitangel.transitangel.utils.TAConstants;
 
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -529,7 +528,7 @@ public class TransitManager {
             itemJSON = itemPref.getString("trips", "");
         }
         ArrayList<Trip> items = gson.fromJson(itemJSON, type);
-        if ( items != null ) {
+        if (items != null) {
             savedItems.addAll(items);
         }
 
@@ -584,11 +583,18 @@ public class TransitManager {
         return fetchSavedItems(TAConstants.SAVED_PREF_TYPE.RECENT_TRIP);
     }
 
+    public Trip fetchRecentTrip() {
+        ArrayList<Trip> list = fetchSavedItems(TAConstants.SAVED_PREF_TYPE.RECENT_TRIP);
+        if (!list.isEmpty())
+            return list.get(0);
+        return null;
+    }
+
     public Trip fetchTripFromId(String tripId) {
 
         //search recent searches
         ArrayList<Trip> recents = fetchRecentSearchList();
-        for ( Trip recent : recents ) {
+        for (Trip recent : recents) {
             if (recent.getTripId().equalsIgnoreCase(tripId)) {
                 return recent;
             }
@@ -596,7 +602,7 @@ public class TransitManager {
 
         //search recent trips
         ArrayList<Trip> trips = fetchRecentTripList();
-        for (Trip trip: trips) {
+        for (Trip trip : trips) {
             if (trip.getTripId().equalsIgnoreCase(tripId)) {
                 return trip;
             }
@@ -614,7 +620,7 @@ public class TransitManager {
         saveItem(trip, TAConstants.SAVED_PREF_TYPE.RECENT_TRIP);
     }
 
-    private void deleteRecentItem(String tripId ,TAConstants.SAVED_PREF_TYPE prefType ) {
+    private void deleteRecentItem(String tripId, TAConstants.SAVED_PREF_TYPE prefType) {
 
         SharedPreferences itemPref = PreferenceManager.getDefaultSharedPreferences(mApplicationContext);
         SharedPreferences.Editor prefsEditor = itemPref.edit();
@@ -635,8 +641,8 @@ public class TransitManager {
             items = new ArrayList<Trip>();
         }
 
-        for (Trip item : items ) {
-            if ( item.getTripId().equalsIgnoreCase(tripId)) {
+        for (Trip item : items) {
+            if (item.getTripId().equalsIgnoreCase(tripId)) {
                 items.remove(item);
                 String newItemsStr = gson.toJson(items, type);
                 if (prefType == TAConstants.SAVED_PREF_TYPE.RECENT_SEARCH) {
@@ -648,12 +654,12 @@ public class TransitManager {
                 break;
             }
         }
-     }
+    }
 
     //Not optimized but works for now
     public void deleteTrip(String tripId) {
-        deleteRecentItem(tripId,TAConstants.SAVED_PREF_TYPE.RECENT_TRIP);
-        deleteRecentItem(tripId,TAConstants.SAVED_PREF_TYPE.RECENT_SEARCH);
+        deleteRecentItem(tripId, TAConstants.SAVED_PREF_TYPE.RECENT_TRIP);
+        deleteRecentItem(tripId, TAConstants.SAVED_PREF_TYPE.RECENT_SEARCH);
     }
 
     //ref:http://stackoverflow.com/questions/8383863/how-can-find-nearest-place-from-current-location-from-given-data
@@ -698,7 +704,7 @@ public class TransitManager {
         return nearestStop;
     }
 
-    public ArrayList<TrainStop> getNearestStops (double lat,double lon,ArrayList<TrainStop> stops ) {
+    public ArrayList<TrainStop> getNearestStops(double lat, double lon, ArrayList<TrainStop> stops) {
         TrainStop nearestStop = null;
         TrainStop secondNearestStop = null;
         double minDistance = 0;
@@ -715,14 +721,13 @@ public class TransitManager {
             } else if (distanceToStop < minDistance) {
                 minDistance = distanceToStop;
                 nearestStop = stop;
-            } else if ( secondNearestStop == null ) {
+            } else if (secondNearestStop == null) {
                 secondNearestStop = stop;
                 double distanceToSeondNearestStop = distance(lat, lon, stopLat, stopLon);
                 secondMinDistance = distanceToSeondNearestStop;
-            }
-            else {
+            } else {
                 double distanceToSeondNearestStop = distance(lat, lon, stopLat, stopLon);
-                if ( distanceToSeondNearestStop < secondMinDistance ) {
+                if (distanceToSeondNearestStop < secondMinDistance) {
                     secondNearestStop = stop;
                 }
             }
@@ -735,21 +740,21 @@ public class TransitManager {
 
     public void createShortCut(Trip trip) {
 
-        if (trip == null)return;
+        if (trip == null) return;
         //Adding shortcut for Home Activity
         //on Home screen
         Intent shortcutIntent = new Intent(mApplicationContext,
                 HomeActivity.class);
         String tripId = trip.getTripId();
-        shortcutIntent.putExtra("tripId",tripId);
+        shortcutIntent.putExtra("tripId", tripId);
 
         shortcutIntent.setAction(Intent.ACTION_MAIN);
 
         Intent addIntent = new Intent();
         String fromStation = trip.getFromStop().getName();
-        String shortFrom = fromStation.substring(0,3);
+        String shortFrom = fromStation.substring(0, 3);
         String toStation = trip.getToStop().getName();
-        String shortTo = toStation.substring(0,3);
+        String shortTo = toStation.substring(0, 3);
         String shortcutName = shortFrom + " -> " + shortTo;
         addIntent
                 .putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
