@@ -8,12 +8,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,24 +23,24 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.transitangel.transitangel.Intent.ShakerService;
 import com.transitangel.transitangel.Manager.PrefManager;
 import com.transitangel.transitangel.Manager.TransitLocationManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.api.TripHelperApiFactory;
 import com.transitangel.transitangel.api.TripHelplerRequestInterceptor;
 import com.transitangel.transitangel.details.AlarmBroadcastReceiver;
-import com.transitangel.transitangel.details.DetailsActivity;
 import com.transitangel.transitangel.model.Transit.TrainStop;
 import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.model.sampleJsonModel;
 import com.transitangel.transitangel.ongoing.OnGoingActivity;
 import com.transitangel.transitangel.schedule.ScheduleActivity;
+import com.transitangel.transitangel.utils.ShakeListener;
 import com.transitangel.transitangel.utils.TAConstants;
 
 import java.sql.Timestamp;
@@ -51,10 +50,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit2.http.HEAD;
 import rx.subscriptions.CompositeSubscription;
 
-public class HomeActivity extends AppCompatActivity implements ShowNotificationListener {
+public class HomeActivity extends AppCompatActivity implements ShowNotificationListener,ShakeListener.Callback {
 
     public static final String ACTION_SHOW_ONGOING = "ACTION_SHOW_ONGOING";
     public static final String ACTION_TRIP_CANCELLED = "ACTION_TRIP_CANCELLED";
@@ -98,6 +96,9 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
         init();
         mTripHelperApiFactory = new TripHelperApiFactory(new TripHelplerRequestInterceptor(this));
 //        TestManager.getSharedInstance().executeSampleAPICalls(this);
+        //ShakeListener shakeListener = new ShakeListener(this,3,100,this);
+        Intent intent = new Intent(this,ShakerService.class);
+        startService(intent);
     }
 
     private void init() {
@@ -373,5 +374,18 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
 //                Log.d("Error", "Error adding fence");
 //            }
 //        });
+    }
+
+    @Override
+    public void shakingStarted() {
+        Log.d("Shaking","Started");
+    }
+
+    @Override
+    public void shakingStopped() {
+        Log.d("Shaking","Stopped");
+        final Vibrator vibe = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+        vibe.vibrate(100);
+        Toast.makeText(this,"Shaked!!",Toast.LENGTH_SHORT);
     }
 }

@@ -23,6 +23,7 @@ import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.model.Transit.Tweet;
 import com.transitangel.transitangel.utils.TAConstants;
 
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
