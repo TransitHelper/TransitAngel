@@ -1,25 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" >
-    <item android:id="@+id/action_search"
-          android:orderInCategory="1"
-          android:title="Search"
-          android:hint="Search Station Name"
-          android:icon="@drawable/search"
-          app:showAsAction="always"
-          app:actionViewClass="android.support.v7.widget.SearchView" />
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_search"
+        android:hint="Search Station Name"
+        android:icon="@drawable/search"
+        android:orderInCategory="1"
+        android:title="Search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="always" />
 
-      <item android:id="@+id/action_favorite"
-            android:orderInCategory="2"
-            android:title="Favorite"
-            android:icon="@drawable/star"
-            app:showAsAction="always"
-            android:contentDescription="Add trains to favorite."/>
+    <item
+        android:id="@+id/action_favorite"
+        android:contentDescription="Add trains to favorite."
+        android:icon="@drawable/star"
+        android:orderInCategory="2"
+        android:title="Favorite"
+        app:showAsAction="always" />
 
-      <item android:id="@+id/action_alarm"
-            android:orderInCategory="3"
-            android:title="Alarm"
-            android:icon="@drawable/alarm_white"
-            app:showAsAction="always"
-            android:contentDescription="Add alarm to get alerted before departure."/>
+    <item
+        android:id="@+id/action_alarm"
+        android:contentDescription="Add alarm to get alerted before Arrival."
+        android:icon="@drawable/alarm_white"
+        android:orderInCategory="3"
+        android:title="Alarm"
+        app:showAsAction="always" />
 
 </menu>

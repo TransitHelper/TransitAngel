@@ -309,7 +309,7 @@ public class TransitManager {
             if (day.contains("Sat") || day.contains("Sun")) {
                 trainList = service.getWeekendTrains();
             } else {
-                trainList = service.getWeekendTrains();
+                trainList = service.getWeekdayTrains();
             }
 
             for (Train train : trainList) {
@@ -399,7 +399,7 @@ public class TransitManager {
             if (day.contains("Sat") || day.contains("Sun")) {
                 trainList = service.getWeekendTrains();
             } else {
-                trainList = service.getWeekendTrains();
+                trainList = service.getWeekdayTrains();
             }
 
             for (Train train : trainList) {

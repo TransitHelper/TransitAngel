@@ -21,7 +21,7 @@
         android:layout_alignBottom="@+id/tvStopName"/>
 
     <ImageView
-        android:id="@+id/vCircleIcon"
+        android:id="@+id/stopIcon"
         android:layout_width="18dp"
         android:layout_height="18dp"
         android:src="@drawable/checkbox_blank_circle_outline"

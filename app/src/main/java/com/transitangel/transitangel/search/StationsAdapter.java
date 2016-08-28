@@ -106,10 +106,12 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             case ITEM_TYPE_STATION_START:
                 viewHolder.tvStopName.setText(stopHashMap.get(visibleStopsList.get(position).getStopId()).getName());
                 viewHolder.tvStopTime.setText(visibleStopsList.get(position).getDepartureTime());
+                viewHolder.mStopIcon.setImageResource(R.mipmap.ic_train_caltrain);
                 break;
             case ITEM_TYPE_STATION_END:
                 viewHolder.tvStopName.setText(stopHashMap.get(visibleStopsList.get(position).getStopId()).getName());
                 viewHolder.tvStopTime.setText(visibleStopsList.get(position).getDepartureTime());
+                viewHolder.mStopIcon.setImageResource(R.mipmap.ic_cal_dest);
                 break;
             case ITEM_TYPE_STATION_MIDDLE:
             default:
