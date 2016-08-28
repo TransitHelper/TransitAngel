@@ -628,6 +628,41 @@ public class TransitManager {
         return nearestStop;
     }
 
+    public ArrayList<TrainStop> getNearestStops (double lat,double lon,ArrayList<TrainStop> stops ) {
+        TrainStop nearestStop = null;
+        TrainStop secondNearestStop = null;
+        double minDistance = 0;
+        double secondMinDistance = 0;
+        ArrayList<TrainStop> closestTwoStops = new ArrayList<TrainStop>();
+
+        for (TrainStop stop : stops) {
+            double stopLat = stop.getLatitude();
+            double stopLon = stop.getLongitude();
+            double distanceToStop = distance(lat, lon, stopLat, stopLon);
+            if (nearestStop == null) {
+                nearestStop = stop;
+                minDistance = distanceToStop;
+            } else if (distanceToStop < minDistance) {
+                minDistance = distanceToStop;
+                nearestStop = stop;
+            } else if ( secondNearestStop == null ) {
+                secondNearestStop = stop;
+                double distanceToSeondNearestStop = distance(lat, lon, stopLat, stopLon);
+                secondMinDistance = distanceToSeondNearestStop;
+            }
+            else {
+                double distanceToSeondNearestStop = distance(lat, lon, stopLat, stopLon);
+                if ( distanceToSeondNearestStop < secondMinDistance ) {
+                    secondNearestStop = stop;
+                }
+            }
+        }
+
+        closestTwoStops.add(nearestStop);
+        closestTwoStops.add(secondNearestStop);
+        return closestTwoStops;
+    }
+
     public void createShortCut(Trip trip) {
 
         if (trip == null)return;
