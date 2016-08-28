@@ -9,6 +9,7 @@ import android.util.Log;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 import com.google.gson.Gson;
+import com.transitangel.transitangel.Manager.GeofenceManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.home.HomeActivity;
 import com.transitangel.transitangel.model.Transit.TrainStopFence;
@@ -72,17 +73,39 @@ public class TransitIntentService extends IntentService {
         // 1. Outer loop over all geofenceIds
         for (String geofenceId : geofenceIds) {
             String geofenceName = "";
-
+            TrainStopFence trainStopFence = null;
             // 2, Loop over all geofence keys in prefs and retrieve NamedGeofence from SharedPreferences
             Map<String, ?> keys = prefs.getAll();
             for (Map.Entry<String, ?> entry : keys.entrySet()) {
                 String jsonString = prefs.getString(entry.getKey(), null);
-                TrainStopFence trainStopFence = gson.fromJson(jsonString, TrainStopFence.class);
+                trainStopFence = gson.fromJson(jsonString, TrainStopFence.class);
                 if (trainStopFence.getFenceId().equals(geofenceId)) {
                     geofenceName = trainStopFence.getTrainStop().getName();
                     break;
                 }
             }
+
+            if ( trainStopFence != null ) {
+                //TODO decide proper notification name
+                String notificationContent = "Entered " + trainStopFence.getTrainStop().getName();
+                NotificationProvider.getInstance().updateTripStartedNotification(this,notificationContent);
+
+                //remove that geofence
+                ArrayList<TrainStopFence> fenceToRemove = new ArrayList<>();
+                fenceToRemove.add(trainStopFence);
+                GeofenceManager.getSharedInstance().removeGeofences(fenceToRemove, new GeofenceManager.GeofenceManagerListener() {
+                    @Override
+                    public void onGeofencesUpdated() {
+                        //successfully removed
+                    }
+
+                    @Override
+                    public void onError() {
+                        //TODO determine what todo
+                    }
+                });
+            }
+
 
             String contextText = String.format(this.getResources().getString(R.string.Notification_Text), geofenceName);
 

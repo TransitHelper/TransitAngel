@@ -38,4 +38,5 @@
 
     <!-- TAB -->
     <color name="tab_indicator">#CCFFFFFF</color>
+    <color name="black_shadow">#33000000</color>
 </resources>

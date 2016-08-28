@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/colorPrimary">
+    <TextView
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/search_title"
+        android:gravity="center_vertical"
+        android:background="@drawable/search_background"
+        android:drawableLeft="@drawable/search_gray"
+        android:drawablePadding="10dp"
+        android:layout_margin="10dp"
+        android:elevation="3dp"/>
+</LinearLayout>
