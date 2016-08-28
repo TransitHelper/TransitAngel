@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
+import com.transitangel.transitangel.Manager.GeofenceManager;
 import com.transitangel.transitangel.Manager.PrefManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.home.HomeActivity;
@@ -129,6 +130,19 @@ public class NotificationProvider {
 
         //remove the ongoing trip
         PrefManager.removeOnGoingTrip();
+
+        //remove all geofences
+        GeofenceManager.getSharedInstance().removeAllGeofences(new GeofenceManager.GeofenceManagerListener() {
+            @Override
+            public void onGeofencesUpdated() {
+                //succesfully removed
+            }
+
+            @Override
+            public void onError() {
+                //Error determine what to do
+            }
+        });
     }
 
     public void showBigTextNotification(Context context, Intent intent, String title, String contentText) {
