@@ -8,6 +8,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
@@ -29,6 +32,7 @@ import com.transitangel.transitangel.view.RecyclerItemDecoration;
 import com.transitangel.transitangel.view.widget.EmptySupportingRecyclerView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +41,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ScheduleFragment extends Fragment implements ScheduleRecyclerAdapter.OnItemClickListener {
+public class ScheduleFragment extends Fragment
+        implements ScheduleRecyclerAdapter.OnItemClickListener,
+        FilterDialogFragment.FilterChangedListener {
 
     private static final int RESULT_SEARCH_FROM = 1;
     private static final int RESULT_SEARCH_TO = 2;
@@ -67,6 +73,8 @@ public class ScheduleFragment extends Fragment implements ScheduleRecyclerAdapte
     List<scheduleItem> mRecentItems = new ArrayList<>();
     ScheduleRecyclerAdapter mRecyclerViewAdapter;
     HashMap<String, Stop> stopHashMap = new HashMap<>();
+    static Calendar mCalendar = Calendar.getInstance();
+
     public ScheduleFragment() {
         // Required empty public constructor
     }
@@ -82,6 +90,7 @@ public class ScheduleFragment extends Fragment implements ScheduleRecyclerAdapte
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
             mTRANSITType = (TAConstants.TRANSIT_TYPE) getArguments().getSerializable(ARG_TRANSIT_TYPE);
         }
@@ -106,9 +115,9 @@ public class ScheduleFragment extends Fragment implements ScheduleRecyclerAdapte
         mRecyclerView.setNestedScrollingEnabled(true);
         mRecyclerView.addItemDecoration(new RecyclerItemDecoration(getContext(), R.drawable.recycler_view_divider));
         View emptyView = mViewStub.inflate();
-        TextView textView=(TextView) emptyView.findViewById(R.id.text_empty_state_description);
+        TextView textView = (TextView) emptyView.findViewById(R.id.text_empty_state_description);
         textView.setText(R.string.empty_results);
-        ImageView icon=(ImageView) emptyView.findViewById(R.id.image_empty_state);
+        ImageView icon = (ImageView) emptyView.findViewById(R.id.image_empty_state);
         icon.setImageResource(R.mipmap.ic_train);
         mRecyclerView.setEmptyView(emptyView);
         return view;
@@ -116,11 +125,12 @@ public class ScheduleFragment extends Fragment implements ScheduleRecyclerAdapte
 
     private void getTrainSchedule() {
         ArrayList<Train> trains = new ArrayList<>();
+        Date date = mCalendar.getTime();
         if (TAConstants.TRANSIT_TYPE.BART == mTRANSITType) {
-            trains = BartTransitManager.getSharedInstance().fetchTrains(mFromStationId, mToStationId, 5, new Date(), false);
+            trains = BartTransitManager.getSharedInstance().fetchTrains(mFromStationId, mToStationId, 5, date, false);
         } else {
             trains = CaltrainTransitManager.getSharedInstance().fetchTrains(mFromStationId, mToStationId,
-                    5, new Date(), false);
+                    5, date, false);
         }
         mRecentItems.clear();
         for (Train train : trains) {
@@ -144,7 +154,7 @@ public class ScheduleFragment extends Fragment implements ScheduleRecyclerAdapte
     @OnClick(R.id.to_station)
     protected void onToStationClick() {
         Intent intent = new Intent(getActivity(), SearchActivity.class);
-        if(mTRANSITType == TAConstants.TRANSIT_TYPE.BART) {
+        if (mTRANSITType == TAConstants.TRANSIT_TYPE.BART) {
             intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_BART);
         } else {
             intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_CALTRAIN);
@@ -156,7 +166,7 @@ public class ScheduleFragment extends Fragment implements ScheduleRecyclerAdapte
     @OnClick(R.id.from_station)
     protected void onFromStationClick() {
         Intent intent = new Intent(getActivity(), SearchActivity.class);
-        if(mTRANSITType == TAConstants.TRANSIT_TYPE.BART) {
+        if (mTRANSITType == TAConstants.TRANSIT_TYPE.BART) {
             intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_BART);
         } else {
             intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_CALTRAIN);
@@ -167,10 +177,9 @@ public class ScheduleFragment extends Fragment implements ScheduleRecyclerAdapte
 
     @OnClick(R.id.swap_station)
     protected void onSwapStationClick() {
-        //TODO: replace spinner with new screen
-        String mtemp = mFromStationId;
+        String temp = mFromStationId;
         mFromStationId = mToStationId;
-        mToStationId = mtemp;
+        mToStationId = temp;
         updateStationLabels(true);
     }
 
@@ -210,24 +219,17 @@ public class ScheduleFragment extends Fragment implements ScheduleRecyclerAdapte
         if (requestCode == RESULT_SEARCH_FROM) {
             if (resultCode == Activity.RESULT_OK) {
                 Stop stop = data.getParcelableExtra(SearchActivity.EXTRA_SELECTED_STATION);
-                if(stop != null) {
+                if (stop != null) {
                     mFromStationId = stop.getId();
-                    Log.d(TAG, "from station id: " + mFromStationId);
-                } else {
-                    Log.e(TAG, "Error while getting stop for from");
                 }
                 return;
             }
         }
-
         if (requestCode == RESULT_SEARCH_TO) {
             if (resultCode == Activity.RESULT_OK) {
                 Stop stop = data.getParcelableExtra(SearchActivity.EXTRA_SELECTED_STATION);
-                if(stop != null) {
+                if (stop != null) {
                     mToStationId = stop.getId();
-                    Log.d(TAG, "to station id: " + mToStationId);
-                } else {
-                    Log.e(TAG, "Error while getting stop for to");
                 }
                 return;
             }
@@ -246,9 +248,25 @@ public class ScheduleFragment extends Fragment implements ScheduleRecyclerAdapte
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_schedule2, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_filter) {
+            FilterDialogFragment editDialogFragment = FilterDialogFragment.newInstance(getContext(), this);
+            editDialogFragment.show(getActivity().getFragmentManager().beginTransaction(), "Filter");
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onItemClick(int position) {
         Intent intent = new Intent(getActivity(), DetailsActivity.class);
-        if(mTRANSITType == TAConstants.TRANSIT_TYPE.BART) {
+        if (mTRANSITType == TAConstants.TRANSIT_TYPE.BART) {
             intent.putExtra(DetailsActivity.EXTRA_SERVICE, DetailsActivity.EXTRA_SERVICE_BART);
         } else {
             intent.putExtra(DetailsActivity.EXTRA_SERVICE, DetailsActivity.EXTRA_SERVICE_CALTRAIN);
@@ -257,5 +275,12 @@ public class ScheduleFragment extends Fragment implements ScheduleRecyclerAdapte
         intent.putExtra(DetailsActivity.EXTRA_FROM_STATION, mFromStationId);
         intent.putExtra(DetailsActivity.EXTRA_TO_STATION, mToStationId);
         getActivity().startActivityForResult(intent, RESULT_DETAILS, null);
+    }
+
+
+    @Override
+    public void onFilterChanged(Calendar calendar) {
+        mCalendar = calendar;
+        refreshTrainSchedule();
     }
 }
