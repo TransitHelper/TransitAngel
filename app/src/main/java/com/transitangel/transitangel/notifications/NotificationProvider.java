@@ -106,8 +106,10 @@ public class NotificationProvider {
         // Get the train details:
         String title = "Trip cancelled";
 
+        Trip onGoingTrip = PrefManager.getOnGoingTrip();
         // Set details from the ongoing trip
-        String contentTitle = "Transit from MTV to SFO has been cancelled";
+        String contentTitle = "Transit from " + onGoingTrip.getFromStop().getName()
+        + " to " + onGoingTrip.getToStop().getName() + " has been cancelled";
 
         Intent onDismissIntent = new Intent(context, HomeActivity.class);
         onDismissIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -124,6 +126,9 @@ public class NotificationProvider {
                         .setTicker(contentTitle)
                         .setAutoCancel(true);
         notificationManager.notify(NOTIFICATION_DISMISS_ID, mBuilder.build());
+
+        //remove the ongoing trip
+        PrefManager.removeOnGoingTrip();
     }
 
     public void showBigTextNotification(Context context, Intent intent, String title, String contentText) {
