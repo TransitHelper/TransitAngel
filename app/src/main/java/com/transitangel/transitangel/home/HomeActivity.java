@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.transitangel.transitangel.Intent.ShakerService;
 import com.transitangel.transitangel.Manager.TransitLocationManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.api.TripHelperApiFactory;
@@ -53,6 +54,9 @@ public class HomeActivity extends AppCompatActivity {
         init();
         mTripHelperApiFactory = new TripHelperApiFactory(new TripHelplerRequestInterceptor(this));
 //        TestManager.getSharedInstance().executeSampleAPICalls(this);
+        Intent serviceIntent = new Intent(this, ShakerService.class);
+        startService(serviceIntent);
+
     }
 
     private void init() {
