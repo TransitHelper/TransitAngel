@@ -9,9 +9,11 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
+import com.transitangel.transitangel.Manager.PrefManager;
 import com.transitangel.transitangel.Manager.TransitLocationManager;
 import com.transitangel.transitangel.home.HomeActivity;
 import com.transitangel.transitangel.model.Transit.Stop;
+import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.notifications.NotificationProvider;
 import com.transitangel.transitangel.utils.Shaker;
 
@@ -39,8 +41,11 @@ public class ShakerService extends android.app.Service implements Shaker.OnShake
     @Override
     public void onShake() {
        Log.d("On Shake","Shake");
+        //get the location only if there is ongoing trip
+        Trip trip = PrefManager.getOnGoingTrip();
         if (TransitLocationManager.getSharedInstance().isLocationModeEnabled() &&
-                TransitLocationManager.getSharedInstance().isLocationAccessible() ) {
+                TransitLocationManager.getSharedInstance().isLocationAccessible() &&
+                PrefManager.getOnGoingTrip() != null) {
             TransitLocationManager.getSharedInstance().getCurrentLocation(this, new TransitLocationManager.LocationResponseHandler() {
                 @Override
                 public void OnLocationReceived(boolean isSuccess, LatLng latLng) {
@@ -50,12 +55,13 @@ public class ShakerService extends android.app.Service implements Shaker.OnShake
                         Stop stop = CaltrainTransitManager.getSharedInstance().getNearestStop(latLng.latitude,latLng.longitude);
 
                         //TODO determine exact content which goes here
-                        String contextText = "Your nearest stop is "+stop.getName();
+                        //Currently works only for Caltrain
+                        String contextText = "You are near "+stop.getName();
 
                         Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                        NotificationProvider.getInstance().showBigTextNotification(getApplicationContext(), intent, "Nearest Stop", contextText);
+                        NotificationProvider.getInstance().updateTripStartedNotification(getApplicationContext(),contextText);
                     }
                 }
             });

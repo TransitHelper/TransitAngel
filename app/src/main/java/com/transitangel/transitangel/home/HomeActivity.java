@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -40,7 +39,6 @@ import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.model.sampleJsonModel;
 import com.transitangel.transitangel.ongoing.OnGoingActivity;
 import com.transitangel.transitangel.schedule.ScheduleActivity;
-import com.transitangel.transitangel.utils.ShakeListener;
 import com.transitangel.transitangel.utils.TAConstants;
 
 import java.sql.Timestamp;
@@ -52,7 +50,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.subscriptions.CompositeSubscription;
 
-public class HomeActivity extends AppCompatActivity implements ShowNotificationListener,ShakeListener.Callback {
+public class HomeActivity extends AppCompatActivity implements ShowNotificationListener {
 
     public static final String ACTION_SHOW_ONGOING = "ACTION_SHOW_ONGOING";
     public static final String ACTION_TRIP_CANCELLED = "ACTION_TRIP_CANCELLED";
@@ -96,9 +94,9 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
         init();
         mTripHelperApiFactory = new TripHelperApiFactory(new TripHelplerRequestInterceptor(this));
 //        TestManager.getSharedInstance().executeSampleAPICalls(this);
-        //ShakeListener shakeListener = new ShakeListener(this,3,100,this);
-        Intent intent = new Intent(this,ShakerService.class);
-        startService(intent);
+        Intent serviceIntent = new Intent(this, ShakerService.class);
+        startService(serviceIntent);
+
     }
 
     private void init() {
@@ -375,16 +373,4 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
 //        });
     }
 
-    @Override
-    public void shakingStarted() {
-        Log.d("Shaking","Started");
-    }
-
-    @Override
-    public void shakingStopped() {
-        Log.d("Shaking","Stopped");
-        final Vibrator vibe = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
-        vibe.vibrate(100);
-        Toast.makeText(this,"Shaked!!",Toast.LENGTH_SHORT);
-    }
 }
