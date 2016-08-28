@@ -130,8 +130,7 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
 
     private void setupOnGoingView() {
         ImageView imageView = (ImageView) mLayoutOnGoing.findViewById(R.id.on_going_icon);
-        // Need to replace this.
-        imageView.setImageResource(R.mipmap.ic_work);
+        imageView.setImageResource(R.mipmap.ic_current_trip);
         TextView textView = (TextView) mLayoutOnGoing.findViewById(R.id.on_going_trip_name);
         textView.setText("On Going Trip");
     }
@@ -181,7 +180,7 @@ public class HomeActivity extends AppCompatActivity implements ShowNotificationL
 
     private void setUpSavedTrips() {
         ImageView imageView = (ImageView) mLayoutFav.findViewById(R.id.place_item_icon);
-        imageView.setImageResource(R.mipmap.ic_action_alarm_set);
+        imageView.setImageResource(R.mipmap.ic_save);
         TextView textView = (TextView) mLayoutFav.findViewById(R.id.place_item_title);
         textView.setText("Saved Places");
         TextView textViewSet = (TextView) mLayoutFav.findViewById(R.id.set_place);

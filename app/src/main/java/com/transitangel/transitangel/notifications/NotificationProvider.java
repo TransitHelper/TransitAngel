@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
+import com.transitangel.transitangel.Manager.PrefManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.home.HomeActivity;
 import com.transitangel.transitangel.model.Transit.Trip;
@@ -57,6 +58,39 @@ public class NotificationProvider {
                 .setOngoing(true) // This will make it stick to the top.
                 .addAction(R.drawable.close_notification, context.getString(R.string.cancel_trip_notification), piDismiss)// Dismissed the notification.
                 .setContentIntent(piShowTrip);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.notify(NOTIFICATION_ONGOING_ID, notification.build());
+    }
+
+
+    public void updateTripStartedNotification(Context context, String updateString) {
+        Trip trip = PrefManager.getOnGoingTrip();
+        Intent dismiss = new Intent(context, DismissService.class);
+        dismiss.setAction(DismissService.ACTION_DISMISS);
+        dismiss.putExtra(DismissService.EXTRA_TRIP_ID, trip.getTripId());
+        PendingIntent piDismiss = PendingIntent.getService(context, 0, dismiss, 0);
+
+        // Get the train details:
+        String title = "Trip to " + trip.getToStop().getName();
+        // Set details from the ongoing trip
+        String contentTitle = updateString;
+
+        Intent showTrip = new Intent(context, HomeActivity.class);
+        showTrip.setAction(HomeActivity.ACTION_SHOW_ONGOING);
+        showTrip.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        PendingIntent piShowTrip = PendingIntent.getActivity(context, 1, showTrip, PendingIntent.FLAG_CANCEL_CURRENT);
+        NotificationCompat.Builder notification =
+                new NotificationCompat.Builder(context)
+                        .setSmallIcon(R.drawable.train)
+                        .setContentTitle(title)
+                        .setContentText(contentTitle)
+                        .setDefaults(NotificationCompat.DEFAULT_ALL) // Required to show like phone call notifications
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setOngoing(true) // This will make it stick to the top.
+                        .addAction(R.drawable.close_notification, context.getString(R.string.cancel_trip_notification), piDismiss)// Dismissed the notification.
+                        .setContentIntent(piShowTrip);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(NOTIFICATION_ONGOING_ID, notification.build());
@@ -113,4 +147,5 @@ public class NotificationProvider {
 
         notificationManager.notify(NOTIFICATION_BIG_TEXT, notification);
     }
+    
 }

@@ -28,7 +28,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-
 public class SearchActivity extends AppCompatActivity implements SearchAdapter.OnItemClickListener, SearchView.OnQueryTextListener {
 
     private static final String TAG = SearchActivity.class.getSimpleName();
@@ -72,16 +71,16 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
         mode = getIntent().getIntExtra(EXTRA_MODE, MODE_TYPE_SEARCH);
         serviceType = getIntent().getStringExtra(EXTRA_SERVICE);
 
-        if(EXTRA_SERVICE_CALTRAIN.equalsIgnoreCase(serviceType)) {
+        if (EXTRA_SERVICE_CALTRAIN.equalsIgnoreCase(serviceType)) {
             mStops = CaltrainTransitManager.getSharedInstance().getStops();
         } else {
             mStops = BartTransitManager.getSharedInstance().getStops();
         }
 
         setSupportActionBar(toolbar);
-        if(mode == MODE_TYPE_DETAILS) {
+        if (mode == MODE_TYPE_DETAILS) {
             train = getIntent().getParcelableExtra(EXTRA_TRAIN_INFO);
-            if(train != null) {
+            if (train != null) {
                 tvTitle.setText("Train Details :" + train.getName());
             }
         } else {
@@ -121,7 +120,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home) {
+        if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
         }
