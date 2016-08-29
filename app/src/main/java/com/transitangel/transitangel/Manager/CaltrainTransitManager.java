@@ -2,6 +2,7 @@ package com.transitangel.transitangel.Manager;
 
 import android.content.Context;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.loopj.android.http.AsyncHttpClient;
 import com.transitangel.transitangel.model.Transit.Service;
 import com.transitangel.transitangel.model.Transit.Stop;
@@ -155,6 +156,7 @@ public class CaltrainTransitManager extends TransitManager {
         return fetchTrainsDepartingFromStation(toStopId,hourLimit,getServices());
     }
 
+
     public ArrayList<Service> getServices() {
         if (mServices == null) {
             populateServices();
@@ -165,6 +167,8 @@ public class CaltrainTransitManager extends TransitManager {
     public Stop getNearestStop(double lat, double lon) {
         return  getNearestStop(lat,lon,getStops());
     }
+
+
 
     //gets a local train stop and converts all the trainstop to stop
     public ArrayList<Stop> getLocalStops() {
@@ -199,4 +203,54 @@ public class CaltrainTransitManager extends TransitManager {
         return localTrains;
     }
 
+
+
+    public void fetchTrainsDepartingFromNearestStation(
+            Context context
+            , int hourLimit //
+            , TrainsDepartingFromStationResponseHandler handler
+    ) {
+        ArrayList<Train> departingTrains = new ArrayList<>();
+        getNearestStop(context, new NearestStopResponseHandler() {
+            @Override
+            public void nearestStop(boolean isSuccesss, Stop stop) {
+                if ( isSuccesss ) {
+                    ArrayList<Train> trains = fetchTrainsDepartingFromStation(stop.getId(),hourLimit,getServices());
+                    if ( trains != null ) {
+                        handler.trainsDeparting(true,trains);
+                    }
+                    else {
+                        handler.trainsDeparting(false,null);
+                    }
+                }
+                else {
+                    handler.trainsDeparting(false,null);
+                }
+            }
+        });
+
+
+    }
+
+    public  void getNearestStop(Context context,NearestStopResponseHandler handler) {
+        TransitLocationManager.getSharedInstance().getCurrentLocation(context, new TransitLocationManager.LocationResponseHandler() {
+            @Override
+            public void OnLocationReceived(boolean isSuccess, LatLng latLng) {
+                if ( isSuccess ) {
+                    Stop stop  = getNearestStop(latLng.latitude,latLng.longitude,getStops());
+                    if ( stop != null ) {
+                        handler.nearestStop(true,stop);
+                    }
+                    else {
+                        handler.nearestStop(false,null);
+                    }
+
+                }
+                else {
+                    handler.nearestStop(false,null);
+                }
+
+            }
+        });
+    }
 }

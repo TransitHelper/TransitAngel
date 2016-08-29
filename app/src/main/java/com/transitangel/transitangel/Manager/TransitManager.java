@@ -116,7 +116,6 @@ public class TransitManager {
                     e.printStackTrace();
                     handler.OnLinesResponseReceived(false, null);
                 }
-
             }
 
             @Override
@@ -767,5 +766,13 @@ public class TransitManager {
         addIntent
                 .setAction("com.android.launcher.action.INSTALL_SHORTCUT");
         mApplicationContext.sendBroadcast(addIntent);
+    }
+
+    public interface TrainsDepartingFromStationResponseHandler {
+        public void trainsDeparting(boolean isSuccess,ArrayList<Train> trains);
+    }
+
+    public interface NearestStopResponseHandler {
+        public void nearestStop(boolean isSuccess,Stop stop);
     }
 }
