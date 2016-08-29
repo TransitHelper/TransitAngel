@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import com.transitangel.transitangel.R;
+import com.transitangel.transitangel.utils.TAConstants;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,20 +26,35 @@ public class ScheduleActivity extends AppCompatActivity {
     @BindView(R.id.tvTitle)
     TextView mTitle;
     private SampleFragmentPagerAdapter fragmentPageAdapter;
+    public static final String FROM_STATION_ID = "from_station_id";
+    public static final String TO_STATION_ID = "to_station_id";
+    public static final String ARG_TRANSIT_TYPE = "transit_type";
+    private TAConstants.TRANSIT_TYPE mTransitType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule);
         ButterKnife.bind(this);
+        Bundle bundle = new Bundle();
+        bundle.putString
+                (ScheduleFragment.FROM_STATION_ID,
+                        getIntent().getStringExtra(FROM_STATION_ID));
+        bundle.putString(
+                ScheduleFragment.TO_STATION_ID,
+                getIntent().getStringExtra(TO_STATION_ID));
+        mTransitType = (TAConstants.TRANSIT_TYPE) getIntent().getSerializableExtra(ARG_TRANSIT_TYPE);
         setUpTitle();
-        setUpViewPager();
-    }
-
-    private void setUpViewPager() {
-        fragmentPageAdapter = new SampleFragmentPagerAdapter(getSupportFragmentManager());
+        fragmentPageAdapter = new SampleFragmentPagerAdapter(getSupportFragmentManager(), bundle);
         mViewPager.setAdapter(fragmentPageAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
+        if (mTransitType == TAConstants.TRANSIT_TYPE.BART) {
+            TabLayout.Tab tab = mTabLayout.getTabAt(1);
+            tab.select();
+        } else {
+            TabLayout.Tab tab = mTabLayout.getTabAt(0);
+            tab.select();
+        }
     }
 
     private void setUpTitle() {

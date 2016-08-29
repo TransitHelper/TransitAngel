@@ -1,5 +1,6 @@
 package com.transitangel.transitangel.schedule;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -9,9 +10,12 @@ import com.transitangel.transitangel.utils.TAConstants;
 public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
     final int PAGE_COUNT = 2;
     private String tabTitles[] = new String[]{"CalTrain", "Bart"};
+    private final Bundle fragmentBundle;
 
-    public SampleFragmentPagerAdapter(FragmentManager fm) {
+
+    public SampleFragmentPagerAdapter(FragmentManager fm, Bundle bundle) {
         super(fm);
+       fragmentBundle=bundle;
     }
 
     @Override
@@ -21,10 +25,16 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        if (position == 0)
-            return ScheduleFragment.newInstance(TAConstants.TRANSIT_TYPE.CALTRAIN);
-        else
-            return BartScheduleFragment.newInstance(TAConstants.TRANSIT_TYPE.BART);
+        if (position == 0) {
+            ScheduleFragment scheduleFragment=ScheduleFragment.newInstance(TAConstants.TRANSIT_TYPE.CALTRAIN);
+            scheduleFragment.setArguments(fragmentBundle);
+            return scheduleFragment;
+        }
+        else {
+            ScheduleFragment scheduleFragment=ScheduleFragment.newInstance(TAConstants.TRANSIT_TYPE.BART);
+            scheduleFragment.setArguments(fragmentBundle);
+            return scheduleFragment;
+        }
     }
 
     @Override
