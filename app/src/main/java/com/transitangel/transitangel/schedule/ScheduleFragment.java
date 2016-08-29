@@ -52,6 +52,7 @@ public class ScheduleFragment extends Fragment
     private static final int RESULT_DETAILS = 3;
     public static final String FROM_STATION_ID = "from_station_id";
     public static final String TO_STATION_ID = "to_station_id";
+    public static final String TRANSIT_TYPE="Transit_type";
 
     private static final String TAG = ScheduleFragment.class.getSimpleName();
     ProgressDialog mProgressDialog;
