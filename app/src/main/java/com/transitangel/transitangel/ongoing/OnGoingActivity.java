@@ -96,7 +96,7 @@ public class OnGoingActivity extends AppCompatActivity implements StationsAdapte
         getSupportActionBar().setTitle(null);
 
         // Create the recents adapter.
-        adapter = new StationsAdapter(this, mStops, stopHashMap, StationsAdapter.ITEM_ONGOING);
+        adapter = new StationsAdapter(this, mStops, StationsAdapter.ITEM_ONGOING);
         rvStationList.setAdapter(adapter);
         rvStationList.setLayoutManager(new LinearLayoutManager(this));
         adapter.setOnItemClickListener(this);

@@ -26,7 +26,7 @@ public class NotificationProvider {
     private static NotificationProvider INSTANCE;
 
     public static NotificationProvider getInstance() {
-        if(INSTANCE == null) {
+        if (INSTANCE == null) {
             INSTANCE = new NotificationProvider();
         }
         return INSTANCE;
@@ -51,14 +51,14 @@ public class NotificationProvider {
         PendingIntent piShowTrip = PendingIntent.getActivity(context, 1, showTrip, PendingIntent.FLAG_CANCEL_CURRENT);
         NotificationCompat.Builder notification =
                 new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.train)
-                .setContentTitle(title)
-                .setContentText(contentTitle)
-                .setDefaults(NotificationCompat.DEFAULT_ALL) // Required to show like phone call notifications
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setOngoing(true) // This will make it stick to the top.
-                .addAction(R.drawable.close_notification, context.getString(R.string.cancel_trip_notification), piDismiss)// Dismissed the notification.
-                .setContentIntent(piShowTrip);
+                        .setSmallIcon(R.drawable.train)
+                        .setContentTitle(title)
+                        .setContentText(contentTitle)
+                        .setDefaults(NotificationCompat.DEFAULT_ALL) // Required to show like phone call notifications
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setOngoing(true) // This will make it stick to the top.
+                        .addAction(R.drawable.close_notification, context.getString(R.string.cancel_trip_notification), piDismiss)// Dismissed the notification.
+                        .setContentIntent(piShowTrip);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(NOTIFICATION_ONGOING_ID, notification.build());
@@ -67,7 +67,7 @@ public class NotificationProvider {
 
     public void updateTripStartedNotification(Context context, String updateString) {
         Trip trip = PrefManager.getOnGoingTrip();
-        if ( trip == null ) {
+        if (trip == null) {
             return;
         }
 
@@ -108,7 +108,7 @@ public class NotificationProvider {
 
         Trip onGoingTrip = PrefManager.getOnGoingTrip();
         // Set details from the ongoing trip
-        if ( onGoingTrip == null ) {
+        if (onGoingTrip == null) {
             return;
         }
 
@@ -119,7 +119,7 @@ public class NotificationProvider {
         String title = "Trip cancelled";
 
         String contentTitle = "Transit from " + onGoingTrip.getFromStop().getName()
-        + " to " + onGoingTrip.getToStop().getName() + " has been cancelled";
+                + " to " + onGoingTrip.getToStop().getName() + " has been cancelled";
 
         Intent onDismissIntent = new Intent(context, HomeActivity.class);
         onDismissIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -152,6 +152,7 @@ public class NotificationProvider {
                 //Error determine what to do
             }
         });
+        removeCurrentTripAlarms(context);
     }
 
     public void showBigTextNotification(Context context, Intent intent, String title, String contentText) {
@@ -175,5 +176,22 @@ public class NotificationProvider {
 
         notificationManager.notify(NOTIFICATION_BIG_TEXT, notification);
     }
-    
+
+    private void removeCurrentTripAlarms(Context context) {
+//        try {
+//            Log.e("jevitha","insde");
+//            Type type = new TypeToken<List<PendingIntent>>() {}.getType();
+//            Gson gson = new Gson();
+//            String json = Prefs.getString(TAConstants.AlarmIntents, "");
+//            List<PendingIntent> intentList = gson.fromJson(json, type);
+//            for (PendingIntent intent : intentList
+//                    ) {
+//
+//                AlarmManager alarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
+//                alarmManager.cancel(intent);
+//            }
+//        } catch (Exception e) {
+//            Log.e(NotificationProvider.class.getSimpleName(), e.getMessage());
+//        }
+    }
 }

@@ -23,8 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.pixplicity.easyprefs.library.Prefs;
 import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
 import com.transitangel.transitangel.Manager.GeofenceManager;
@@ -38,17 +36,15 @@ import com.transitangel.transitangel.model.Transit.TrainStopFence;
 import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.notifications.NotificationProvider;
 import com.transitangel.transitangel.search.StationsAdapter;
+import com.transitangel.transitangel.utils.DateUtil;
 import com.transitangel.transitangel.utils.Preconditions;
 import com.transitangel.transitangel.utils.TAConstants;
 
-import java.lang.reflect.Type;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -123,7 +119,7 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         getSupportActionBar().setTitle(null);
 
         // Create the recents adapter.
-        adapter = new StationsAdapter(this, mStops, stopHashMap, StationsAdapter.ITEM_DETAIL);
+        adapter = new StationsAdapter(this, mStops, StationsAdapter.ITEM_DETAIL);
         rvStationList.setAdapter(adapter);
         rvStationList.setLayoutManager(new LinearLayoutManager(this));
         adapter.setOnItemClickListener(this);
@@ -202,14 +198,14 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setTitle("Your current Trip is not completed!")
                 .setMessage("Are you sure you want to start new trip")
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                .setPositiveButton("Start Trip", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         GeofenceManager.getSharedInstance().removeAllGeofences(getmGeofenceManagerListener());//Have not tested
                         RemoveCurrentTripAlarms();
                         startNewTrip();
                     }
                 })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // do nothing
                     }
@@ -219,15 +215,19 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     }
 
     private void RemoveCurrentTripAlarms() {
-        Type type = new TypeToken<List<PendingIntent>>() {}.getType();
-        Gson gson = new Gson();
-        String json = gson.toJson(mAlarmStops);
-        List<PendingIntent> intentList = gson.fromJson(json, type);
-        for (PendingIntent intent : intentList
-                ) {
-            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-            alarmManager.cancel(intent);
-        }
+//        try {
+//            Type type = new TypeToken<List<PendingIntent>>() {}.getType();
+//            Gson gson = new Gson();
+//            String json = Prefs.getString(TAConstants.AlarmIntents, "");
+//            List<PendingIntent> intentList = gson.fromJson(json, type);
+//            for (PendingIntent intent : intentList
+//                    ) {
+//                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+//                alarmManager.cancel(intent);
+//            }
+//        } catch (Exception e) {
+//            Log.e(TAG, e.getMessage());
+//        }
     }
 
     private void startNewTrip() {
@@ -239,6 +239,7 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         trip.setType(type);
         PrefManager.addOnGoingTrip(trip);
         addGeoFencesandAlarm(trip);
+        startOnGoingNotification(trip);
         TransitManager.getSharedInstance().saveRecentTrip(trip);
     }
 
@@ -248,16 +249,17 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
             int requestCode = ALARM_REQUEST_CODE + stop.getStopOrder();//find better way to do it
             addAlarmToSelectedStops(stop, requestCode);
         }
-        Gson gson = new Gson();
-        String json = gson.toJson(mAlarmStops);
-        Prefs.putString(TAConstants.AlarmIntents, json);
     }
 
     private void addGeoFenceToSelectedStops(TrainStop lastStop, Trip trip) {
-        TrainStopFence trainStopFence = new TrainStopFence(lastStop);
-        selectedStop = lastStop;
-        selectedTrip = trip;
-        GeofenceManager.getSharedInstance().addGeofence(this, trainStopFence, getmGeofenceManagerListener());
+        try {
+            TrainStopFence trainStopFence = new TrainStopFence(lastStop);
+            selectedStop = lastStop;
+            selectedTrip = trip;
+            GeofenceManager.getSharedInstance().addGeofence(this, trainStopFence, getmGeofenceManagerListener());
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
     }
 
     public GeofenceManager.GeofenceManagerListener getmGeofenceManagerListener() {
@@ -267,6 +269,7 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
                 public void onGeofencesUpdated() {
                     Log.e(DetailsActivity.class.getSimpleName(), "GeoFence Added");
                 }
+
                 @Override
                 public void onError() {
                     Toast.makeText(DetailsActivity.this, "Error while adding location, please check location services and try again", Toast.LENGTH_LONG).show();
@@ -284,11 +287,14 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
 
     private void addAlarmToSelectedStops(TrainStop lastStop, int requestCode) {
         Intent intent = new Intent(this, AlarmBroadcastReceiver.class);
+        Gson gson = new Gson();
+        String json = gson.toJson(lastStop);
+        intent.putExtra(AlarmBroadcastReceiver.ARG_STOP, json);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 this.getApplicationContext(), requestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        mPendingIntents.add(pendingIntent);
-        final Timestamp timestamp = getTimeStampFromString(lastStop.getArrrivalTime());
 
+        mPendingIntents.add(pendingIntent);
+        final Timestamp timestamp = DateUtil.getTimeStamp(lastStop.getArrrivalTime());
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, timestamp.getHours());
@@ -296,14 +302,6 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 pendingIntent);
-    }
-
-    private Timestamp getTimeStampFromString(String arrrivalTime) {
-        return Timestamp.valueOf(
-                new SimpleDateFormat("yyyy-MM-dd ")
-                        .format(new Date())
-                        .concat(arrrivalTime)
-        );
     }
 
     public TrainStop getStopFromId(String stopId) {

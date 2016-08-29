@@ -10,12 +10,12 @@ import android.widget.TextView;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.model.Transit.TrainStop;
 import com.transitangel.transitangel.model.scheduleItem;
+import com.transitangel.transitangel.utils.DateUtil;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -95,25 +95,17 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
             String info = item.getTrain().getNumber() + " " + item.getFrom() + "-" + item.getTo();
             String infoContent = "Train Number " + item.getTrain().getNumber() + " From " + item.getFrom() + " to " + item.getTo();
             mTrainInformation.setText(info);
-            final Timestamp timestamp =
-                    Timestamp.valueOf(
-                            new SimpleDateFormat("yyyy-MM-dd ")
-                                    .format(new Date())
-                                    .concat(item.getDepatureTime()));
+            final Timestamp timestamp =DateUtil.getTimeStamp(item.getDepatureTime());
             List<TrainStop> mTrainStop = item.getTrain().getTrainStops();
-            final Timestamp destinationArrivalTime =
-                    Timestamp.valueOf(
-                            new SimpleDateFormat("yyyy-MM-dd ")
-                                    .format(new Date())
-                                    .concat(mTrainStop.get(mTrainStop.size() - 1).getArrrivalTime()));
+            final Timestamp destinationArrivalTime =DateUtil.getTimeStamp(mTrainStop.get(mTrainStop.size() - 1).getArrrivalTime());
             String departureRelativeTime;
             final Timestamp filterTimeStamp = Timestamp.valueOf(
                     new SimpleDateFormat("yyyy-MM-dd ")
                             .format(mCalendar.getTime())
                             .concat(item.getDepatureTime()));
             if (filterTimeStamp.equals(timestamp)) {
-                departureRelativeTime = "In " + getRelativeTime(timestamp.getTime(), System.currentTimeMillis()) + "(" + dateFormat.format(timestamp) + ")";
-                infoContent += "In " + getRelativeTime(timestamp.getTime(), System.currentTimeMillis());
+                departureRelativeTime = "In " + DateUtil.getRelativeTime(timestamp.getTime(), System.currentTimeMillis()) + "(" + dateFormat.format(timestamp) + ")";
+                infoContent += "In " + DateUtil.getRelativeTime(timestamp.getTime(), System.currentTimeMillis());
             } else {
                 departureRelativeTime = "At " + dateFormat.format(timestamp);
                 infoContent += departureRelativeTime;
@@ -121,20 +113,8 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
             }
             mTrainArrivalTime.setText(departureRelativeTime);
             mTrainInformation.setContentDescription(infoContent);
-            mJourneyTime.setText(getRelativeTime(destinationArrivalTime.getTime(), timestamp.getTime()));
+            mJourneyTime.setText(DateUtil.getRelativeTime(destinationArrivalTime.getTime(), timestamp.getTime()));
             mJourneyTime.setContentDescription("Arrives destination at" + dateFormat.format(destinationArrivalTime.getTime()));
         }
     }
-
-    private String getRelativeTime(long time, long time2) {
-        //TODO: Try to get destination arrival date
-        long diff = time - time2;
-        long diffMinutes = diff / (60 * 1000) % 60;
-        long diffHours = diff / (60 * 60 * 1000) % 24;
-        if (diffHours < 0 || diffMinutes < 0)
-            return dateFormat.format(time);
-        else
-            return diffHours + "hr " + diffMinutes + "mins";
-    }
-
 }

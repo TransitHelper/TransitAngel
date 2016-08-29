@@ -77,7 +77,7 @@ public class LiveTripFragment extends Fragment implements StationsAdapter.OnItem
             }
 
             // Create the recents adapter.
-            adapter = new StationsAdapter(getActivity(), mStops, stopHashMap, StationsAdapter.ITEM_ONGOING);
+            adapter = new StationsAdapter(getActivity(), mStops, StationsAdapter.ITEM_ONGOING);
             rvStationList.setAdapter(adapter);
             rvStationList.setLayoutManager(new LinearLayoutManager(getActivity()));
             adapter.setOnItemClickListener(this);

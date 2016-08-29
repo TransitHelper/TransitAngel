@@ -12,11 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.transitangel.transitangel.R;
-import com.transitangel.transitangel.model.Transit.Stop;
 import com.transitangel.transitangel.model.Transit.TrainStop;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,7 +36,6 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private ArrayList<TrainStop> visibleStopsList;
     private ArrayList<TrainStop> allStopItemList;
-    private HashMap<String, Stop> stopHashMap;
     private OnItemClickListener onItemClickListener;
 
     @ItemType private int itemType;
@@ -51,10 +48,9 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onCheckBoxUnSelected(int position);
     }
 
-    public StationsAdapter(Context context, ArrayList<TrainStop> stationStopItemList, HashMap<String, Stop> stopHashMap, @ItemType int itemType) {
+    public StationsAdapter(Context context, ArrayList<TrainStop> stationStopItemList, @ItemType int itemType) {
         this.allStopItemList = stationStopItemList;
         this.visibleStopsList = new ArrayList<>(allStopItemList);
-        this.stopHashMap = stopHashMap;
         this.context = context;
         this.itemType = itemType;
     }
@@ -111,7 +107,7 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         // FUTURE USE TO SETUP THE ICONS ON SEARCH
         switch (getItemViewType(position)) {
             case ITEM_TYPE_STATION_START:
-                viewHolder.tvStopName.setText(stopHashMap.get(visibleStopsList.get(position).getStopId()).getName());
+                viewHolder.tvStopName.setText(visibleStopsList.get(position).getName());
                 viewHolder.tvStopTime.setText(visibleStopsList.get(position).getDepartureTime());
                 viewHolder.mStopIcon.setImageResource(R.mipmap.ic_train_caltrain);
                 if (itemType == ITEM_DETAIL) {
@@ -119,14 +115,14 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
                 break;
             case ITEM_TYPE_STATION_END:
-                viewHolder.tvStopName.setText(stopHashMap.get(visibleStopsList.get(position).getStopId()).getName());
+                viewHolder.tvStopName.setText(visibleStopsList.get(position).getName());
                 viewHolder.tvStopTime.setText(visibleStopsList.get(position).getDepartureTime());
                 viewHolder.mStopIcon.setImageResource(R.mipmap.ic_cal_dest);
                 viewHolder.mSetAlarm.setChecked(visibleStopsList.get(position).getNotify());
                 break;
             case ITEM_TYPE_STATION_MIDDLE:
             default:
-                viewHolder.tvStopName.setText(stopHashMap.get(visibleStopsList.get(position).getStopId()).getName());
+                viewHolder.tvStopName.setText(visibleStopsList.get(position).getName());
                 viewHolder.tvStopTime.setText(visibleStopsList.get(position).getDepartureTime());
                 viewHolder.mSetAlarm.setChecked(visibleStopsList.get(position).getNotify());
         }
@@ -149,7 +145,7 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
         visibleStopsList = new ArrayList<>();
         for (TrainStop item : allStopItemList) {
-            if (stopHashMap.get(item.getStopId()).getName().toLowerCase().contains(queryText)) {
+            if (item.getName().toLowerCase().contains(queryText)) {
                 visibleStopsList.add(item);
             }
         }
