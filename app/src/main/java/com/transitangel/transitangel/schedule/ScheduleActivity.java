@@ -60,6 +60,7 @@ public class ScheduleActivity extends AppCompatActivity {
     private void setUpTitle() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(null);
+        getSupportActionBar().setHomeButtonEnabled(true);
         mTitle.setText("Schedule");
     }
 
