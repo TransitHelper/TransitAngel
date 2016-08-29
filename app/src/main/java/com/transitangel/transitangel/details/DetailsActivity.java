@@ -83,6 +83,7 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     private Trip selectedTrip;
     private ArrayList<PendingIntent> mPendingIntents = new ArrayList<>();
     private ArrayList<TrainStop> mAlarmStops = new ArrayList<>();
+    private ArrayList<TrainStop>geofenceStops = new ArrayList<>();
     HashMap<String, Stop> stopHashMap = new HashMap<>();
 
     @Override
@@ -244,22 +245,39 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     }
 
     private void addGeoFencesandAlarm(Trip trip) {
+        geofenceStops = new ArrayList<>();
+        geofenceStops.addAll(mAlarmStops);
+        addGeoFenceToSelectedStops(trip);
         for (TrainStop stop : mAlarmStops) {
-            addGeoFenceToSelectedStops(stop, trip);
             int requestCode = ALARM_REQUEST_CODE + stop.getStopOrder();//find better way to do it
             addAlarmToSelectedStops(stop, requestCode);
         }
     }
 
-    private void addGeoFenceToSelectedStops(TrainStop lastStop, Trip trip) {
-        try {
-            TrainStopFence trainStopFence = new TrainStopFence(lastStop);
-            selectedStop = lastStop;
-            selectedTrip = trip;
-            GeofenceManager.getSharedInstance().addGeofence(this, trainStopFence, getmGeofenceManagerListener());
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
+    //recursively add geofence , add the next fence only when the fence has been updated
+    private void addGeoFenceToSelectedStops(Trip trip) {
+        if ( geofenceStops.size() > 0 ) {
+            try {
+                selectedStop = geofenceStops.get(0);
+                TrainStopFence trainStopFence = new TrainStopFence(selectedStop);
+                selectedTrip = trip;
+                GeofenceManager.getSharedInstance().addGeofence(this, trainStopFence, new GeofenceManager.GeofenceManagerListener() {
+                    @Override
+                    public void onGeofencesUpdated() {
+                        geofenceStops.remove(selectedStop);
+                        addGeoFenceToSelectedStops(selectedTrip);
+                    }
+
+                    @Override
+                    public void onError() {
+                        //do nothing?
+                    }
+                });
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage());
+            }
         }
+
     }
 
     public GeofenceManager.GeofenceManagerListener getmGeofenceManagerListener() {
@@ -316,7 +334,7 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == GeofenceManager.GEOFENCE_GET_FINE_LOC_REQ_CODE) {
             if (selectedStop != null && selectedTrip != null) {
-                addGeoFenceToSelectedStops(selectedStop, selectedTrip);
+                addGeoFenceToSelectedStops(selectedTrip);
             }
         }
     }

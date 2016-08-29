@@ -52,6 +52,7 @@ public class GeofenceManager {
 
     private Geofence geofenceToAdd;
     private TrainStopFence trainStopFenceToAdd;
+    private Boolean isRemoveGeofences = false;
 
 
 
@@ -82,12 +83,13 @@ public class GeofenceManager {
             new GoogleApiClient.ConnectionCallbacks() {
                 @Override
                 public void onConnected(Bundle bundle) {
+                    Log.d("Geofence ","On Connected");
                     addGeofenceOnConnectedHandle();
                 }
 
                 @Override
                 public void onConnectionSuspended(int i) {
-
+                    Log.d("Geofence ","Connection suspended");
                 }
             };
 
@@ -95,7 +97,7 @@ public class GeofenceManager {
             new GoogleApiClient.OnConnectionFailedListener() {
                 @Override
                 public void onConnectionFailed(ConnectionResult connectionResult) {
-
+                    Log.d("Geofence ","Connection failed");
                 }
             };
 
@@ -123,12 +125,23 @@ public class GeofenceManager {
     }
 
     private void connectWithCallbacks(GoogleApiClient.ConnectionCallbacks callbacks) {
-        googleApiClient = new GoogleApiClient.Builder(context)
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(callbacks)
-                .addOnConnectionFailedListener(connectionFailedListener)
-                .build();
-        googleApiClient.connect();
+        if ( googleApiClient== null || !googleApiClient.isConnected() ) {
+            googleApiClient = new GoogleApiClient.Builder(context)
+                    .addApi(LocationServices.API)
+                    .addConnectionCallbacks(callbacks)
+                    .addOnConnectionFailedListener(connectionFailedListener)
+                    .build();
+            googleApiClient.connect();
+        }
+        else {
+            if ( !isRemoveGeofences && this.trainStopFenceToAdd  != null ) {
+                addGeofenceOnConnectedHandle();
+            }
+            else {
+                removeGeofenceOnConnectHandle();
+            }
+        }
+
     }
 
     private void sendError() {
@@ -222,7 +235,8 @@ public class GeofenceManager {
                 @Override
                 public void onResult(Status status) {
                     if (status.isSuccess()) {
-                        removeSavedGeofences();
+                        //TODO handle this on main thread
+                        //removeSavedGeofences();
                     } else {
                         Log.e(TAG, "Removing geofence failed: " + status.getStatusMessage());
                         sendError();
@@ -234,6 +248,7 @@ public class GeofenceManager {
 
     public void addGeofence(Context context,TrainStopFence trainStopFence, GeofenceManagerListener listener) {
         //make sure we have the permissions
+        isRemoveGeofences = false;
         if ( !TransitLocationManager.getSharedInstance().isLocationAccessible() ) {
             listener.onError();
             return;
@@ -258,6 +273,7 @@ public class GeofenceManager {
     //removes list of geofences
     public void removeGeofences(List<TrainStopFence> trainStopFencesToRemove,
                                 GeofenceManagerListener listener) {
+        isRemoveGeofences = true;
         this.trainStopFencesToRemove = trainStopFencesToRemove;
         this.listener = listener;
         connectWithCallbacks(connectionRemoveListener);
@@ -265,6 +281,7 @@ public class GeofenceManager {
 
     //removes all geofences
     public void removeAllGeofences(GeofenceManagerListener listener) {
+        isRemoveGeofences = true;
         trainStopFencesToRemove = new ArrayList<>();
         for (TrainStopFence trainStopFence : trainStopFences) {
             trainStopFencesToRemove.add(trainStopFence);
@@ -277,17 +294,27 @@ public class GeofenceManager {
     private void removeSavedGeofences() {
         SharedPreferences.Editor editor = prefs.edit();
 
-        for (TrainStopFence trainStopFence : trainStopFencesToRemove) {
+        try {
+            Boolean isChanged = false;
+            for (TrainStopFence trainStopFence : trainStopFencesToRemove) {
 
-            for ( TrainStopFence existingFence : trainStopFences ) {
-                //check if fence id matches existing fences and remove the existing fences
-                if ( trainStopFence.getFenceId().equalsIgnoreCase(existingFence.getFenceId())) {
-                    editor.remove(existingFence.getFenceId());
-                    trainStopFences.remove(existingFence);
-                    editor.apply();
+                for ( TrainStopFence existingFence : trainStopFences ) {
+                    //check if fence id matches existing fences and remove the existing fences
+                    if ( trainStopFence.getFenceId().equalsIgnoreCase(existingFence.getFenceId())) {
+                        isChanged = true;
+                        editor.remove(existingFence.getFenceId());
+                        trainStopFences.remove(existingFence);
+
+                    }
                 }
             }
+
+            editor.apply();
         }
+        catch(java.util.ConcurrentModificationException exception ) {
+            //TODO handle this modification on a UI thread
+        }
+
 
         if (listener != null) {
             listener.onGeofencesUpdated();
