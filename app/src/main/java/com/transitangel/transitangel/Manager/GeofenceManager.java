@@ -234,6 +234,11 @@ public class GeofenceManager {
 
     public void addGeofence(Context context,TrainStopFence trainStopFence, GeofenceManagerListener listener) {
         //make sure we have the permissions
+        if ( !TransitLocationManager.getSharedInstance().isLocationAccessible() ) {
+            listener.onError();
+            return;
+        }
+
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             if ( context instanceof Activity) {
