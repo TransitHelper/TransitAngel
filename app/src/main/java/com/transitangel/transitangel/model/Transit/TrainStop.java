@@ -22,20 +22,21 @@ public class TrainStop implements Parcelable {
     String name;
     String longitude;
     String latitude;
+    Boolean isNotify=false;
 
     public TrainStop(JSONObject trainStopObj) throws JSONException {
         stopOrder = trainStopObj.getString("order");
         stopId = trainStopObj.getJSONObject("ScheduledStopPointRef").getString("ref");
         arrrivalTime = trainStopObj.getJSONObject("Arrival").getString("Time");
         departureTime = trainStopObj.getJSONObject("Departure").getString("Time");
-        HashMap<String,Stop> stopLookup = CaltrainTransitManager.getSharedInstance().getStopLookup();
-        Stop stop =  stopLookup.get(stopId);
-        if ( stop == null ) {
+        HashMap<String, Stop> stopLookup = CaltrainTransitManager.getSharedInstance().getStopLookup();
+        Stop stop = stopLookup.get(stopId);
+        if (stop == null) {
             //check bart
-            HashMap<String,Stop> bartStopLookup = BartTransitManager.getSharedInstance().getStopLookup();
+            HashMap<String, Stop> bartStopLookup = BartTransitManager.getSharedInstance().getStopLookup();
             stop = bartStopLookup.get(stopId);
         }
-        if ( stop != null ) {
+        if (stop != null) {
             name = stop.getName();
             latitude = stop.getLatitude();
             longitude = stop.getLongitude();
@@ -148,4 +149,13 @@ public class TrainStop implements Parcelable {
             return new TrainStop[size];
         }
     };
+
+    public Boolean getNotify() {
+        return isNotify;
+    }
+
+    public void setNotify(Boolean notify) {
+        isNotify = notify;
+    }
+
 }
