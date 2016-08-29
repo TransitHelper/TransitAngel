@@ -273,10 +273,15 @@ public class GeofenceManager {
         SharedPreferences.Editor editor = prefs.edit();
 
         for (TrainStopFence trainStopFence : trainStopFencesToRemove) {
-            int index = trainStopFences.indexOf(trainStopFence);
-            editor.remove(trainStopFence.getFenceId());
-            trainStopFences.remove(index);
-            editor.apply();
+
+            for ( TrainStopFence existingFence : trainStopFences ) {
+                //check if fence id matches existing fences and remove the existing fences
+                if ( trainStopFence.getFenceId().equalsIgnoreCase(existingFence.getFenceId())) {
+                    editor.remove(existingFence.getFenceId());
+                    trainStopFences.remove(existingFence);
+                    editor.apply();
+                }
+            }
         }
 
         if (listener != null) {

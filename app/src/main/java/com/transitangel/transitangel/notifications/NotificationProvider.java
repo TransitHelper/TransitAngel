@@ -67,6 +67,10 @@ public class NotificationProvider {
 
     public void updateTripStartedNotification(Context context, String updateString) {
         Trip trip = PrefManager.getOnGoingTrip();
+        if ( trip == null ) {
+            return;
+        }
+
         Intent dismiss = new Intent(context, DismissService.class);
         dismiss.setAction(DismissService.ACTION_DISMISS);
         dismiss.putExtra(DismissService.EXTRA_TRIP_ID, trip.getTripId());
