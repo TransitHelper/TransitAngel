@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.transitangel.transitangel.Intent.ShakerService;
 import com.transitangel.transitangel.Manager.TransitLocationManager;
 import com.transitangel.transitangel.R;
@@ -131,12 +130,12 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == TransitLocationManager.GET_LOCATION_REQUEST_CODE) {
-            TransitLocationManager.getSharedInstance().getCurrentLocation(this, new TransitLocationManager.LocationResponseHandler() {
-                @Override
-                public void OnLocationReceived(boolean isSuccess, LatLng latLng) {
-                    //testHandleOnLocationReceived(isSuccess,latLng);
-                }
-            });
+           //reload the recents fragment
+            NearByFragment nearByFragment = (NearByFragment) adapter.getRegisteredFragment(0); //first fragment
+            if (nearByFragment != null ) {
+                nearByFragment.loadCurrentStops();
+            }
+
         } else if (requestCode == TransitLocationManager.GET_UPDATES_LOCATION_REQUEST_CODE) {
             TransitLocationManager.getSharedInstance().getLocationUpdates(this);
         }

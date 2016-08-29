@@ -86,6 +86,18 @@ public class TransitIntentService extends IntentService {
             }
 
             if ( trainStopFence != null ) {
+
+                //check if it is the last geofence
+//                Trip trip = PrefManager.getOnGoingTrip();
+//                if ( trip != null ) {
+//                    Stop finalStop = trip.getToStop();
+//                    String stopIdForFence = trainStopFence.getTrainStop().getStopId();
+//                    if ( stopIdForFence.equalsIgnoreCase(finalStop.getId())) {
+//                        //this is the last stop
+//
+//                    }
+//                }
+
                 //TODO decide proper notification name
                 String notificationContent = "Entered " + trainStopFence.getTrainStop().getName();
                 NotificationProvider.getInstance().updateTripStartedNotification(this,notificationContent);
