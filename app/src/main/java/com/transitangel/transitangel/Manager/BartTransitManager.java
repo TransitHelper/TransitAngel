@@ -129,6 +129,12 @@ public class BartTransitManager extends TransitManager {
             , int hourLimit //
             , TrainsDepartingFromStationResponseHandler handler
     ) {
+
+        //check if location is accessible
+        if ( !TransitLocationManager.getSharedInstance().isLocationAccessible() ) {
+            handler.trainsDeparting(false,null);
+        }
+
         ArrayList<Train> departingTrains = new ArrayList<>();
         getNearestStop(context, new NearestStopResponseHandler() {
             @Override
@@ -152,6 +158,12 @@ public class BartTransitManager extends TransitManager {
     }
 
     public  void getNearestStop(Context context,NearestStopResponseHandler handler) {
+
+        //check if location is accessible
+        if ( !TransitLocationManager.getSharedInstance().isLocationAccessible() ) {
+            handler.nearestStop(false,null);
+        }
+
         TransitLocationManager.getSharedInstance().getCurrentLocation(context, new TransitLocationManager.LocationResponseHandler() {
             @Override
             public void OnLocationReceived(boolean isSuccess, LatLng latLng) {
