@@ -12,5 +12,6 @@
         android:id="@+id/tvNoLiveTrip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="No Live trip right now"/>
+        android:text="No Live trip right now"
+        android:padding="16dp"/>
 </FrameLayout>

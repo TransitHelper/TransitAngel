@@ -14,11 +14,15 @@ import android.widget.Toast;
 
 import com.transitangel.transitangel.Intent.ShakerService;
 import com.transitangel.transitangel.Manager.TransitLocationManager;
+import com.transitangel.transitangel.Manager.TransitManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.api.TripHelperApiFactory;
 import com.transitangel.transitangel.api.TripHelplerRequestInterceptor;
+import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.schedule.ScheduleActivity;
 import com.transitangel.transitangel.utils.TAConstants;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,7 +33,9 @@ public class HomeActivity extends AppCompatActivity {
 
     public static final String ACTION_SHOW_ONGOING = "ACTION_SHOW_ONGOING";
     public static final String ACTION_TRIP_CANCELLED = "ACTION_TRIP_CANCELLED";
-    public static final int ALARM_REQUEST_CODE = 111;
+    public static final String ACTION_SHORTCUT = "ACTION_SHORTCUT";
+    public static final String EXTRA_SHORTCUT_TRIP_ID = "EXTRA_SHORTCUT_TRIP_ID";
+
     private static SharedPreferences mSharedPreference;
 
     @BindView(R.id.tab_layout)
@@ -117,6 +123,14 @@ public class HomeActivity extends AppCompatActivity {
                 launchOnGoingScreen();
             } else if (action.equalsIgnoreCase(ACTION_TRIP_CANCELLED)) {
                 Toast.makeText(this, "Show on cancelled trip clicked.", Toast.LENGTH_LONG).show();
+            } else if(action.equalsIgnoreCase(ACTION_SHORTCUT)) {
+                String tripId = getIntent().getStringExtra(EXTRA_SHORTCUT_TRIP_ID);
+                ArrayList<Trip> cachedRecentTrip = TransitManager.getSharedInstance().fetchRecentTripList();
+                for(Trip trip: cachedRecentTrip) {
+                    if(trip.getTripId().equalsIgnoreCase(tripId)) {
+                        Toast.makeText(this, "Short cut clicked from home screen with Trip ID : " + tripId, Toast.LENGTH_LONG).show();
+                    }
+                }
             }
         }
     }

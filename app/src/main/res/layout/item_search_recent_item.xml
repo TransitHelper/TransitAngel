@@ -5,43 +5,50 @@
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    card_view:cardCornerRadius="4dp"
-    card_view:cardUseCompatPadding="true"
-    android:layout_marginLeft="8dp"
-    android:layout_marginRight="8dp"
-    android:layout_marginTop="1dp"
-    android:layout_marginBottom="1dp">
-    <LinearLayout
+    style="@style/cardStyle">
+    <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/recylerview_item_padding"
-        android:background="?attr/selectableItemBackground"
-        android:gravity="center_vertical">
+        android:background="?attr/selectableItemBackground">
 
         <ImageView
             android:id="@+id/ivIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/train_red"/>
+            android:src="@drawable/train_red"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginRight="8dp"/>
 
         <TextView
             android:layout_marginLeft="8dp"
             android:id="@+id/tvFrom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minWidth="50dp"
-            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/ivIcon"
             tools:text="SF"/>
 
         <TextView
             android:id="@+id/tvTo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minWidth="50dp"
-            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/tvFrom"
+            android:layout_toLeftOf="@+id/more"
             tools:text="SJ"/>
-    </LinearLayout>
+
+        <ImageView
+            android:id="@+id/more"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:padding="6dp"
+            android:src="@drawable/more"
+            android:layout_alignParentRight="true"
+            android:contentDescription="More options"
+            android:visibility="invisible"/>
+    </RelativeLayout>
 </android.support.v7.widget.CardView>

@@ -40,7 +40,12 @@ public class RecentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         void onItemClick(int position);
     }
 
+    public interface OnMoreMenuClickListener {
+        void onMenuItemClicked(int position, View view);
+    }
+
     private OnItemClickListener onItemClickListener;
+    private OnMoreMenuClickListener onMoreMenuClickListener;
 
     public RecentAdapter(Context context, @NonNull List<Trip> recentTripItemList,@NonNull List<Trip> recentSearchItemList) {
         this.recentTripItemList = recentTripItemList;
@@ -57,6 +62,10 @@ public class RecentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.onItemClickListener = onItemClickListener;
     }
 
+    public void setOnMoreMenuClickListener(OnMoreMenuClickListener onMoreMenuClickListener) {
+        this.onMoreMenuClickListener = onMoreMenuClickListener;
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -66,13 +75,13 @@ public class RecentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             viewHolder = new RecentHeaderViewHolder(view);
         } else if(viewType == RECENT_TRIP_ITEM_TYPE) {
             View view = inflater.inflate(R.layout.item_recents_trip, parent, false);
-            viewHolder = new RecentTripItemViewHolder(view, onItemClickListener);
+            viewHolder = new RecentTripItemViewHolder(view, onItemClickListener, onMoreMenuClickListener);
         } else if(viewType == RECENT_TRIP_ITEM_VIEW_MORE_TYPE) {
             View view = inflater.inflate(R.layout.item_see_all_trips, parent, false);
             viewHolder = new SeeAllRecentTripViewHolder(view, onItemClickListener);
         } else {
             View view = inflater.inflate(R.layout.item_search_recent_item, parent, false);
-            viewHolder = new RecentSearchItemViewHolder(view, onItemClickListener);
+            viewHolder = new RecentSearchItemViewHolder(view, onItemClickListener, onMoreMenuClickListener);
         }
         return viewHolder;
     }

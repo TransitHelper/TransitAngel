@@ -21,22 +21,31 @@ public class RecentSearchItemViewHolder extends RecyclerView.ViewHolder implemen
     ImageView ivIcon;
     @BindView(R.id.tvTo)
     TextView tvTo;
+    @BindView(R.id.more)
+    ImageView more;
 
     View parent;
 
-    RecentAdapter.OnItemClickListener onItemClickListener;
+    private final RecentAdapter.OnItemClickListener onItemClickListener;
+    private final RecentAdapter.OnMoreMenuClickListener onMoreMenuClickListener;
 
-    public RecentSearchItemViewHolder(View itemView, RecentAdapter.OnItemClickListener onItemClickListener) {
+    public RecentSearchItemViewHolder(View itemView, RecentAdapter.OnItemClickListener onItemClickListener, RecentAdapter.OnMoreMenuClickListener onMoreMenuClickListener) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         this.parent = itemView;
         this.onItemClickListener = onItemClickListener;
+        this.onMoreMenuClickListener = onMoreMenuClickListener;
+        //more.setOnClickListener(this);
         itemView.setOnClickListener(this);
 
     }
 
     @Override
     public void onClick(View view) {
-        onItemClickListener.onItemClick(getLayoutPosition());
+        if(view.getId() == R.id.more) {
+            onMoreMenuClickListener.onMenuItemClicked(getLayoutPosition(), view);
+        } else {
+            onItemClickListener.onItemClick(getLayoutPosition());
+        }
     }
 }

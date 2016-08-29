@@ -5,13 +5,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.transitangel.transitangel.Manager.BartTransitManager;
+import com.transitangel.transitangel.Manager.CaltrainTransitManager;
 import com.transitangel.transitangel.Manager.TransitManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.model.Transit.Trip;
@@ -23,7 +28,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RecentFragment extends Fragment implements RecentAdapter.OnItemClickListener {
+public class RecentFragment extends Fragment implements RecentAdapter.OnItemClickListener, RecentAdapter.OnMoreMenuClickListener {
 
     @BindView(R.id.rvRecents)
     RecyclerView rvRecents;
@@ -64,6 +69,7 @@ public class RecentFragment extends Fragment implements RecentAdapter.OnItemClic
         adapter = new RecentAdapter(getActivity(), recentTripLists, searchTripLists);
         rvRecents.setAdapter(adapter);
         adapter.setOnItemClickListener(this);
+        adapter.setOnMoreMenuClickListener(this);
         rvRecents.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvRecents.setNestedScrollingEnabled(false);
 
@@ -130,5 +136,39 @@ public class RecentFragment extends Fragment implements RecentAdapter.OnItemClic
 
     private void updateList() {
         adapter.updateData(recentTripLists, searchTripLists);
+    }
+
+    @Override
+    public void onMenuItemClicked(int position, View view) {
+      if(adapter.getItemViewType(position) == RecentAdapter.RECENT_TRIP_ITEM_TYPE) {
+            position = adapter.getRecentTripPosition(position);
+            showPopup(recentTripLists.get(position), view);
+        } else if(adapter.getItemViewType(position) ==  RecentAdapter.RECENT_SEARCH_ITEM_TYPE) {
+            position = adapter.getSearchListPosition(position);
+            showPopup(searchTripLists.get(position), view);
+      }
+    }
+
+    private void showPopup(final Trip trip, View view) {
+        PopupMenu popup = new PopupMenu(getActivity(), view);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.item_popup_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_create_shortcut:
+                        Toast.makeText(getActivity(), "Create a shortcut here", Toast.LENGTH_LONG).show();
+                        if (trip.getType() == TAConstants.TRANSIT_TYPE.BART) {
+                            BartTransitManager.getSharedInstance().createShortCut(trip);
+                        } else {
+                            CaltrainTransitManager.getSharedInstance().createShortCut(trip);
+                        }
+                        return true;
+                }
+                return false;
+            }
+        });
+        popup.show();
     }
 }
