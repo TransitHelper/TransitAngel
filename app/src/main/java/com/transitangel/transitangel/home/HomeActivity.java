@@ -148,8 +148,8 @@ public class HomeActivity extends AppCompatActivity {
                 intent.putExtra(DetailsActivity.EXTRA_SERVICE, DetailsActivity.EXTRA_SERVICE_CALTRAIN);
             }
             intent.putExtra(DetailsActivity.EXTRA_TRAIN, trip.getSelectedTrain());
-            intent.putExtra(DetailsActivity.EXTRA_FROM_STATION, trip.getFromStop().getName());
-            intent.putExtra(DetailsActivity.EXTRA_TO_STATION, trip.getToStop().getName());
+            intent.putExtra(DetailsActivity.EXTRA_FROM_STATION, trip.getFromStop().getId());
+            intent.putExtra(DetailsActivity.EXTRA_TO_STATION, trip.getToStop().getId());
             startActivity(intent);
         }
     }
