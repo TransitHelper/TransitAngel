@@ -214,7 +214,7 @@ public class CaltrainTransitManager extends TransitManager {
         if ( !TransitLocationManager.getSharedInstance().isLocationAccessible() ) {
             handler.trainsDeparting(false,null);
         }
-        
+
         ArrayList<Train> departingTrains = new ArrayList<>();
         getNearestStop(context, new NearestStopResponseHandler() {
             @Override
