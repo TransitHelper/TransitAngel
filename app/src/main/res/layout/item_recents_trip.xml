@@ -11,36 +11,38 @@
     android:layout_marginRight="8dp"
     android:layout_marginTop="1dp"
     android:layout_marginBottom="1dp">
-    <LinearLayout
+    <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/recylerview_item_padding"
-        android:background="?attr/selectableItemBackground"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:id="@+id/tvFrom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="50dp"
-            android:gravity="center"
-            tools:text="SF"/>
+        android:background="?attr/selectableItemBackground">
 
         <ImageView
-            android:id="@+id/ivArrow"
+            android:id="@+id/ivIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/arrow_white_drawable"/>
+            android:src="@drawable/train_red"
+            android:layout_alignParentLeft="true"
+            android:layout_alignTop="@+id/tvTripTo"
+            android:layout_alignBottom="@+id/tvTrainInfo"
+            android:layout_marginLeft="8dp"/>
 
         <TextView
-            android:id="@+id/tvTo"
-            android:layout_width="wrap_content"
+            android:id="@+id/tvTripTo"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minWidth="50dp"
-            android:gravity="center"
-            tools:text="SJ"/>
-    </LinearLayout>
+            tools:text="Trip from Mountain view to San Fransisco"
+            android:layout_toRightOf="@+id/ivIcon"/>
+
+        <TextView
+            android:id="@+id/tvTrainInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvTripTo"
+            android:layout_toRightOf="@+id/ivIcon"
+            tools:text="Train #323"/>
+
+    </RelativeLayout>
 </android.support.v7.widget.CardView>
