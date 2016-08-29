@@ -112,13 +112,15 @@ public class ScheduleFragment extends Fragment
         } else {
             mStops = CaltrainTransitManager.getSharedInstance().getStops();
             stopHashMap = CaltrainTransitManager.getSharedInstance().getStopLookup();
-        }
-        Trip trip = TransitManager.getSharedInstance().fetchRecentTrip();
-        if (trip != null) {
-            mFromStationId = trip.getFromStop().getId();
-            mToStationId = trip.getToStop().getId();
-        } else {
-            //TODO: set nearest location, want to save last known location and get nearest stop
+        }//Refactor it hot fix
+        if(mFromStationId == null) {
+            Trip trip = TransitManager.getSharedInstance().fetchRecentTrip();
+            if (trip != null) {
+                mFromStationId = trip.getFromStop().getId();
+                mToStationId = trip.getToStop().getId();
+            } else {
+                //TODO: set nearest location, want to save last known location and get nearest stop
+            }
         }
     }
 
