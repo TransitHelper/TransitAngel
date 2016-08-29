@@ -123,4 +123,5 @@
     <string name="nearby_caltrain_title">Nearby Caltrain Stations</string>
     <string name="nearby_bart_title">Nearby Bart Stations</string>
     <string name="recent_search_to">&#160;to&#160;</string>
+    <string name="nearby_error_text">Error while getting the train information.</string>
 </resources>
