@@ -31,7 +31,7 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
             return scheduleFragment;
         }
         else {
-            ScheduleFragment scheduleFragment=ScheduleFragment.newInstance(TAConstants.TRANSIT_TYPE.BART);
+            BartScheduleFragment scheduleFragment=BartScheduleFragment.newInstance(TAConstants.TRANSIT_TYPE.BART);
             scheduleFragment.setArguments(fragmentBundle);
             return scheduleFragment;
         }
