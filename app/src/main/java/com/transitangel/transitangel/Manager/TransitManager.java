@@ -777,9 +777,9 @@ public class TransitManager {
         Intent shortcutIntent = new Intent(mApplicationContext,
                 HomeActivity.class);
         String tripId = trip.getTripId();
-        shortcutIntent.putExtra("tripId", tripId);
+        shortcutIntent.putExtra(HomeActivity.EXTRA_SHORTCUT_TRIP_ID, tripId);
 
-        shortcutIntent.setAction(Intent.ACTION_MAIN);
+        shortcutIntent.setAction(HomeActivity.ACTION_SHORTCUT);
 
         Intent addIntent = new Intent();
         String fromStation = trip.getFromStop().getName();
