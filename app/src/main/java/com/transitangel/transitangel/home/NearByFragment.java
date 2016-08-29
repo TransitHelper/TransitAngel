@@ -12,7 +12,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.transitangel.transitangel.Manager.BartTransitManager;
+import com.transitangel.transitangel.Manager.CaltrainTransitManager;
+import com.transitangel.transitangel.Manager.TransitLocationManager;
+import com.transitangel.transitangel.Manager.TransitManager;
 import com.transitangel.transitangel.R;
+import com.transitangel.transitangel.model.Transit.Train;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,7 +33,8 @@ public class NearByFragment extends Fragment {
     @BindView(R.id.caltrain_container)
     LinearLayout caltrainContainer;
 
-    public NearByFragment() {}
+    public NearByFragment() {
+    }
 
     public static NearByFragment newInstance() {
         NearByFragment fragment = new NearByFragment();
@@ -42,7 +50,32 @@ public class NearByFragment extends Fragment {
     }
 
     private void init(LayoutInflater inflater) {
-        for(int i =0; i < 3 ; i++) {
+
+        CaltrainTransitManager.getSharedInstance().fetchTrainsDepartingFromNearestStation(getContext(), 3, new TransitManager.TrainsDepartingFromStationResponseHandler() {
+
+            @Override
+            public void trainsDeparting(boolean isSuccess, ArrayList<Train> trains) {
+                if (isSuccess) {
+                    ArrayList<Train> calTrains = new ArrayList<Train>();
+
+                }
+
+                BartTransitManager.getSharedInstance().fetchTrainsDepartingFromNearestStation(getContext(), 3, new TransitManager.TrainsDepartingFromStationResponseHandler() {
+
+                    @Override
+                    public void trainsDeparting(boolean isSuccess, ArrayList<Train> trains) {
+                        if (isSuccess) {
+                            ArrayList<Train> bartTrains = new ArrayList<Train>();
+
+                        }
+                    }
+                });
+            }
+        });
+
+
+
+        for (int i = 0; i < 3; i++) {
             // Check near by station and add it in the following way:
             RelativeLayout caltrain = (RelativeLayout) inflater.inflate(R.layout.item_nearby_trains, caltrainContainer, false);
             ImageView icon = (ImageView) caltrain.findViewById(R.id.ivIcon);
@@ -54,7 +87,7 @@ public class NearByFragment extends Fragment {
             caltrainContainer.addView(caltrain);
         }
 
-        for(int i =0; i < 3 ; i++) {
+        for (int i = 0; i < 3; i++) {
             // Check near by station and add it in the following way:
             RelativeLayout bart = (RelativeLayout) inflater.inflate(R.layout.item_nearby_trains, bartContainer, false);
             ImageView icon = (ImageView) bart.findViewById(R.id.ivIcon);
@@ -76,5 +109,12 @@ public class NearByFragment extends Fragment {
     @OnClick(R.id.bart_container)
     public void onBartContainerClicked() {
         Toast.makeText(getActivity(), "Take me to scheduled screen to show all nearby barts leaving", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == TransitLocationManager.GET_LOCATION_REQUEST_CODE) {
+
+        }
     }
 }
