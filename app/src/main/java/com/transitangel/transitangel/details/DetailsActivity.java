@@ -296,7 +296,6 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         mPendingIntents.add(pendingIntent);
         final Timestamp timestamp = DateUtil.getTimeStamp(lastStop.getArrrivalTime());
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, timestamp.getHours());
         calendar.set(Calendar.MINUTE, timestamp.getMinutes() - 2);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
