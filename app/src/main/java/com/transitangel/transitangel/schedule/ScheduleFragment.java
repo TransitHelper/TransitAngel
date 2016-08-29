@@ -52,7 +52,7 @@ public class ScheduleFragment extends Fragment
     private static final int RESULT_DETAILS = 3;
     public static final String FROM_STATION_ID = "from_station_id";
     public static final String TO_STATION_ID = "to_station_id";
-    public static final String TRANSIT_TYPE="Transit_type";
+    public static final String TRANSIT_TYPE = "Transit_type";
 
     private static final String TAG = ScheduleFragment.class.getSimpleName();
     ProgressDialog mProgressDialog;
@@ -112,14 +112,14 @@ public class ScheduleFragment extends Fragment
         } else {
             mStops = CaltrainTransitManager.getSharedInstance().getStops();
             stopHashMap = CaltrainTransitManager.getSharedInstance().getStopLookup();
-        }//Refactor it hot fix
-        if(mFromStationId == null) {
-            Trip trip = TransitManager.getSharedInstance().fetchRecentTrip();
-            if (trip != null) {
-                mFromStationId = trip.getFromStop().getId();
-                mToStationId = trip.getToStop().getId();
-            } else {
-                //TODO: set nearest location, want to save last known location and get nearest stop
+            if (mFromStationId == null) {
+                Trip trip = TransitManager.getSharedInstance().fetchRecentTrip();
+                if (trip != null) {
+                    mFromStationId = trip.getFromStop().getId();
+                    mToStationId = trip.getToStop().getId();
+                } else {
+                    //TODO: set nearest location, want to save last known location and get nearest stop
+                }
             }
         }
     }
