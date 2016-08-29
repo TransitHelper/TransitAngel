@@ -128,11 +128,16 @@ public class HomeActivity extends AppCompatActivity {
                 ArrayList<Trip> cachedRecentTrip = TransitManager.getSharedInstance().fetchRecentTripList();
                 for(Trip trip: cachedRecentTrip) {
                     if(trip.getTripId().equalsIgnoreCase(tripId)) {
-                        Toast.makeText(this, "Short cut clicked from home screen with Trip ID : " + tripId, Toast.LENGTH_LONG).show();
+                        launchStartTrip(trip);
+                        return;
                     }
                 }
             }
         }
+    }
+
+    private void launchStartTrip(Trip trip) {
+        Toast.makeText(this, "Short cut clicked from home screen with Trip ID : " + trip.getTripId(), Toast.LENGTH_LONG).show();
     }
 
 
