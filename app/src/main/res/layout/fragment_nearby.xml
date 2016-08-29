@@ -1,67 +1,89 @@
-<ScrollView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <LinearLayout
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/card_view_caltrain"
+        android:layout_height="match_parent">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            card_view:cardCornerRadius="4dp"
-            card_view:cardUseCompatPadding="true"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="1dp">
-            <LinearLayout
-                android:id="@+id/caltrain_container"
-                xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_view_caltrain"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/recylerview_item_padding"
-                android:background="?attr/selectableItemBackground"
-                android:orientation="vertical"
-                android:clickable="true">
-                <TextView
-                    android:id="@+id/nearby_header"
-                    style="@style/caption"
+                card_view:cardCornerRadius="4dp"
+                card_view:cardUseCompatPadding="true"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="1dp">
+                <LinearLayout
+                    android:id="@+id/caltrain_container"
+                    xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/nearby_caltrain_title"/>
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
+                    android:padding="@dimen/recylerview_item_padding"
+                    android:background="?attr/selectableItemBackground"
+                    android:orientation="vertical"
+                    android:clickable="true">
+                    <TextView
+                        android:id="@+id/nearby_header"
+                        style="@style/caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/nearby_caltrain_title"/>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/card_view_bart"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            card_view:cardCornerRadius="4dp"
-            card_view:cardUseCompatPadding="true"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="1dp"
-            android:layout_marginBottom="10dp">
-            <LinearLayout
-                android:id="@+id/bart_container"
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_view_bart"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/recylerview_item_padding"
-                android:background="?attr/selectableItemBackground"
-                android:orientation="vertical"
-                android:clickable="true">
-                <TextView
-                    android:id="@+id/nearby_header_bart"
-                    style="@style/caption"
+                card_view:cardCornerRadius="4dp"
+                card_view:cardUseCompatPadding="true"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginBottom="10dp">
+                <LinearLayout
+                    android:id="@+id/bart_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/nearby_bart_title"/>
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
+                    android:padding="@dimen/recylerview_item_padding"
+                    android:background="?attr/selectableItemBackground"
+                    android:orientation="vertical"
+                    android:clickable="true">
+                    <TextView
+                        android:id="@+id/nearby_header_bart"
+                        style="@style/caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/nearby_bart_title"/>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
 
-    </LinearLayout>
-</ScrollView>
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:indeterminate="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/errorText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/nearby_error_text"
+        android:visibility="gone"
+        android:padding="8dp"/>
+
+</FrameLayout>
