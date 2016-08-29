@@ -1,6 +1,7 @@
 package com.transitangel.transitangel.home;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +15,8 @@ import android.widget.Toast;
 import com.transitangel.transitangel.Manager.TransitManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.model.Transit.Trip;
+import com.transitangel.transitangel.schedule.ScheduleActivity;
+import com.transitangel.transitangel.utils.TAConstants;
 
 import java.util.ArrayList;
 
@@ -79,7 +82,12 @@ public class RecentFragment extends Fragment implements RecentAdapter.OnItemClic
             // Subtract header and recent trips
             position = adapter.getSearchListPosition(position);
             Trip trip = searchTripLists.get(position);
-            Toast.makeText(getActivity(), trip.getFromStop().getName() + " to " + trip.getToStop().getName(), Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(getActivity(), ScheduleActivity.class);
+            TAConstants.TRANSIT_TYPE type = trip.getType();
+            intent.putExtra(ScheduleActivity.ARG_TRANSIT_TYPE, type);
+            intent.putExtra(ScheduleActivity.FROM_STATION_ID, trip.getFromStop().getId());
+            intent.putExtra(ScheduleActivity.TO_STATION_ID, trip.getToStop().getId());
+            startActivity(intent);
         }
     }
 

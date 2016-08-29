@@ -80,7 +80,7 @@ public class NearByFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == TransitLocationManager.GET_LOCATION_REQUEST_CODE) {
-
+            loadCurrentStops();
         }
     }
 
