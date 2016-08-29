@@ -19,6 +19,7 @@ import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
 import com.transitangel.transitangel.Manager.TransitManager;
 import com.transitangel.transitangel.R;
+import com.transitangel.transitangel.details.DetailsActivity;
 import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.schedule.ScheduleActivity;
 import com.transitangel.transitangel.utils.TAConstants;
@@ -83,7 +84,16 @@ public class RecentFragment extends Fragment implements RecentAdapter.OnItemClic
             // Subtract the position of header
             position = adapter.getRecentTripPosition(position);
             Trip trip = recentTripLists.get(position);
-            Toast.makeText(getActivity(), trip.getFromStop().getName() + " to " + trip.getToStop().getName(), Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(getActivity(), DetailsActivity.class);
+            if (trip.getType() == TAConstants.TRANSIT_TYPE.BART) {
+                intent.putExtra(DetailsActivity.EXTRA_SERVICE, DetailsActivity.EXTRA_SERVICE_BART);
+            } else {
+                intent.putExtra(DetailsActivity.EXTRA_SERVICE, DetailsActivity.EXTRA_SERVICE_CALTRAIN);
+            }
+            intent.putExtra(DetailsActivity.EXTRA_TRAIN, trip.getSelectedTrain());
+            intent.putExtra(DetailsActivity.EXTRA_FROM_STATION, trip.getFromStop().getName());
+            intent.putExtra(DetailsActivity.EXTRA_TO_STATION, trip.getToStop().getName());
+            startActivity(intent);
         } else if(adapter.getItemViewType(position) ==  RecentAdapter.RECENT_SEARCH_ITEM_TYPE) {
             // Subtract header and recent trips
             position = adapter.getSearchListPosition(position);
