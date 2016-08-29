@@ -16,7 +16,7 @@ public class TrainStopFence implements Comparable {
     public String fenceId;
 
     public TrainStopFence(TrainStop trainStop) {
-        this(trainStop, 2.5f);
+        this(trainStop, 3.0f);
     }
 
     private TrainStopFence(TrainStop trainStop,float radiusKm) {
