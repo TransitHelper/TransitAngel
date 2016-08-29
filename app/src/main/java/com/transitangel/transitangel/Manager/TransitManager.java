@@ -553,17 +553,49 @@ public class TransitManager {
         if (items == null) {
             items = new ArrayList<Trip>();
         }
-        if (items.size() == 10) {
-            //remove the last element
-            items.remove(items.size() - 1);
+
+        boolean isExisting = false;
+       int currentIndex = 0;
+        for (Trip existingTrip : items ) {
+
+            if ( existingTrip.getFromStop().getName().equalsIgnoreCase(trip.getFromStop().getName())
+                    && existingTrip.getToStop().getName().equalsIgnoreCase(trip.getToStop().getName())) {
+                if ( prefType == TAConstants.SAVED_PREF_TYPE.RECENT_TRIP ) {
+                    //match from,to and train id for recent
+                    if ( trip.getSelectedTrain() != null && existingTrip.getSelectedTrain() != null
+                            && trip.getSelectedTrain().getNumber().equalsIgnoreCase(existingTrip.getSelectedTrain().getNumber())) {
+                        isExisting = true;
+                        break;
+                    }
+                }
+                else {
+                    //match the from and to station for recent search
+                    isExisting = true;
+                    break;
+                }
+            }
+            currentIndex ++;
         }
 
-        //add as first element
-        //TODO check for duplicates
-        if (!items.contains(trip)) {
-            items.add(0, trip);
+        if ( isExisting ) {
+            //move the position
+            items.remove(currentIndex);
+            items.add(0,trip);
+        }
+        else {
+            //add the item
+            if (items.size() == 10) {
+                //remove the last element
+                items.remove(items.size() - 1);
+            }
+
+            //add as first element
+            if (!items.contains(trip)) {
+                items.add(0, trip);
+            }
         }
 
+        //save
         String newItemsStr = gson.toJson(items, type);
         if (prefType == TAConstants.SAVED_PREF_TYPE.RECENT_SEARCH) {
             prefsEditor.putString("recents", newItemsStr);
@@ -745,9 +777,9 @@ public class TransitManager {
         Intent shortcutIntent = new Intent(mApplicationContext,
                 HomeActivity.class);
         String tripId = trip.getTripId();
-        shortcutIntent.putExtra("tripId", tripId);
+        shortcutIntent.putExtra(HomeActivity.EXTRA_SHORTCUT_TRIP_ID, tripId);
 
-        shortcutIntent.setAction(Intent.ACTION_MAIN);
+        shortcutIntent.setAction(HomeActivity.ACTION_SHORTCUT);
 
         Intent addIntent = new Intent();
         String fromStation = trip.getFromStop().getName();

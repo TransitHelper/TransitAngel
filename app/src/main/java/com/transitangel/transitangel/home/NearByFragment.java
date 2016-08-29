@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
-import com.transitangel.transitangel.Manager.TransitLocationManager;
 import com.transitangel.transitangel.Manager.TransitManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.model.Transit.Stop;
@@ -75,13 +74,6 @@ public class NearByFragment extends Fragment {
     @OnClick(R.id.bart_container)
     public void onBartContainerClicked() {
         Toast.makeText(getActivity(), "Take me to scheduled screen to show all nearby barts leaving", Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == TransitLocationManager.GET_LOCATION_REQUEST_CODE) {
-            loadCurrentStops();
-        }
     }
 
     public void loadCurrentStops() {
