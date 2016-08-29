@@ -1,13 +1,11 @@
 package com.transitangel.transitangel.schedule;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,8 +17,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.transitangel.transitangel.Manager.BartTransitManager;
-import com.transitangel.transitangel.Manager.CaltrainTransitManager;
-import com.transitangel.transitangel.Manager.TransitManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.details.DetailsActivity;
 import com.transitangel.transitangel.model.Transit.Stop;
@@ -43,7 +39,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ScheduleFragment extends Fragment
+public class BartScheduleFragment extends Fragment
         implements ScheduleRecyclerAdapter.OnItemClickListener,
         FilterDialogFragment.FilterChangedListener {
 
@@ -54,7 +50,6 @@ public class ScheduleFragment extends Fragment
     public static final String TO_STATION_ID = "to_station_id";
 
     private static final String TAG = ScheduleFragment.class.getSimpleName();
-    ProgressDialog mProgressDialog;
 
     @BindView(R.id.from_station)
     TextView mFromStation;
@@ -69,21 +64,21 @@ public class ScheduleFragment extends Fragment
 
 
     private static final String ARG_TRANSIT_TYPE = "transit_type";
-    private TAConstants.TRANSIT_TYPE mTRANSITType;
+    private static TAConstants.TRANSIT_TYPE mTRANSITType;
     private static String mFromStationId;
     private static String mToStationId;
     List<Stop> mStops = new ArrayList<>();
     List<scheduleItem> mRecentItems = new ArrayList<>();
     ScheduleRecyclerAdapter mRecyclerViewAdapter;
     HashMap<String, Stop> stopHashMap = new HashMap<>();
-    public Calendar mCalendar = Calendar.getInstance();
+    static Calendar mCalendar = Calendar.getInstance();
 
-    public ScheduleFragment() {
+    public BartScheduleFragment() {
         // Required empty public constructor
     }
 
-    public static ScheduleFragment newInstance(TAConstants.TRANSIT_TYPE type) {
-        ScheduleFragment fragment = new ScheduleFragment();
+    public static BartScheduleFragment newInstance(TAConstants.TRANSIT_TYPE type) {
+        BartScheduleFragment fragment = new BartScheduleFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_TRANSIT_TYPE, type);
         fragment.setArguments(args);
@@ -94,31 +89,11 @@ public class ScheduleFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        if (getArguments() != null) {
-            //TODO: mTransitType will always reset to bart due to tabviews
-            mTRANSITType = (TAConstants.TRANSIT_TYPE) getArguments().getSerializable(ARG_TRANSIT_TYPE);
-            mToStationId = getArguments().getString(TO_STATION_ID, null);
-            mFromStationId = getArguments().getString(FROM_STATION_ID, null);
-        }
-        InitializeData();
+        mTRANSITType= TAConstants.TRANSIT_TYPE.BART;
+        mStops = BartTransitManager.getSharedInstance().getStops();
+        stopHashMap = BartTransitManager.getSharedInstance().getStopLookup();
 
-    }
 
-    private void InitializeData() {
-        if (mTRANSITType == TAConstants.TRANSIT_TYPE.BART) {
-            mStops = BartTransitManager.getSharedInstance().getStops();
-            stopHashMap = BartTransitManager.getSharedInstance().getStopLookup();
-        } else {
-            mStops = CaltrainTransitManager.getSharedInstance().getStops();
-            stopHashMap = CaltrainTransitManager.getSharedInstance().getStopLookup();
-        }
-        Trip trip = TransitManager.getSharedInstance().fetchRecentTrip();
-        if (trip != null) {
-            mFromStationId = trip.getFromStop().getId();
-            mToStationId = trip.getToStop().getId();
-        } else {
-            //TODO: set nearest location, want to save last known location and get nearest stop
-        }
     }
 
     @Override
@@ -137,19 +112,13 @@ public class ScheduleFragment extends Fragment
         ImageView icon = (ImageView) emptyView.findViewById(R.id.image_empty_state);
         icon.setImageResource(R.mipmap.ic_train);
         mRecyclerView.setEmptyView(emptyView);
-        refreshTrainSchedule();
         return view;
     }
 
     private void getTrainSchedule() {
         ArrayList<Train> trains = new ArrayList<>();
         Date date = mCalendar.getTime();
-        if (TAConstants.TRANSIT_TYPE.BART == mTRANSITType) {
-            trains = BartTransitManager.getSharedInstance().fetchTrains(mFromStationId, mToStationId, 5, date, false);
-        } else {
-            trains = CaltrainTransitManager.getSharedInstance().fetchTrains(mFromStationId, mToStationId,
-                    5, date, false);
-        }
+        trains = BartTransitManager.getSharedInstance().fetchTrains(mFromStationId, mToStationId, 5, date, false);
         mRecentItems.clear();
         for (Train train : trains) {
             TrainStop mSource = train.getTrainStops().get(0);
@@ -161,25 +130,18 @@ public class ScheduleFragment extends Fragment
 
 
     private void refreshTrainSchedule() {
-        showProgressDialog();
         if (mFromStationId != null && mToStationId != null) {
             getTrainSchedule();
             if (mRecyclerViewAdapter != null) {
-                mRecyclerViewAdapter.setFilterCalendar(mCalendar);
                 mRecyclerViewAdapter.notifyDataSetChanged();
             }
         }
-        hideProgressDialog();
     }
 
     @OnClick(R.id.to_station)
     protected void onToStationClick() {
         Intent intent = new Intent(getActivity(), SearchActivity.class);
-        if (mTRANSITType == TAConstants.TRANSIT_TYPE.BART) {
-            intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_BART);
-        } else {
-            intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_CALTRAIN);
-        }
+        intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_BART);
         intent.putExtra(FROM_STATION_ID, mFromStationId);
         getActivity().startActivityForResult(intent, RESULT_SEARCH_TO, null);
     }
@@ -187,11 +149,7 @@ public class ScheduleFragment extends Fragment
     @OnClick(R.id.from_station)
     protected void onFromStationClick() {
         Intent intent = new Intent(getActivity(), SearchActivity.class);
-        if (mTRANSITType == TAConstants.TRANSIT_TYPE.BART) {
-            intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_BART);
-        } else {
-            intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_CALTRAIN);
-        }
+        intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_BART);
         intent.putExtra(TO_STATION_ID, mToStationId);
         getActivity().startActivityForResult(intent, RESULT_SEARCH_FROM, null);
     }
@@ -209,13 +167,11 @@ public class ScheduleFragment extends Fragment
         if (isStation) {
             String stationName = stopHashMap.get(mToStationId).getName();
             mToStation.setText(stationName);
-            Log.d(TAG, "To Station : " + stationName);
         }
 
         isStation = stopHashMap.containsKey(mFromStationId);
         if (isStation) {
             String stationName = stopHashMap.get(mFromStationId).getName();
-            Log.d(TAG, "From Station : " + stationName);
         }
         mToStation.setText(stopHashMap.containsKey(mToStationId) ?
                 stopHashMap.get(mToStationId).getName() : "Select To Station");
@@ -227,11 +183,7 @@ public class ScheduleFragment extends Fragment
             trip.setFromStop(stopHashMap.get(mFromStationId));
             trip.setToStop(stopHashMap.get(mToStationId));
             trip.setDate(new Date());
-            if (mTRANSITType == TAConstants.TRANSIT_TYPE.CALTRAIN) {
-                CaltrainTransitManager.getSharedInstance().saveRecentSearch(trip);
-            } else {
-                BartTransitManager.getSharedInstance().saveRecentSearch(trip);
-            }
+            BartTransitManager.getSharedInstance().saveRecentSearch(trip);
         }
     }
 
@@ -287,11 +239,7 @@ public class ScheduleFragment extends Fragment
     @Override
     public void onItemClick(int position) {
         Intent intent = new Intent(getActivity(), DetailsActivity.class);
-        if (mTRANSITType == TAConstants.TRANSIT_TYPE.BART) {
-            intent.putExtra(DetailsActivity.EXTRA_SERVICE, DetailsActivity.EXTRA_SERVICE_BART);
-        } else {
-            intent.putExtra(DetailsActivity.EXTRA_SERVICE, DetailsActivity.EXTRA_SERVICE_CALTRAIN);
-        }
+        intent.putExtra(DetailsActivity.EXTRA_SERVICE, DetailsActivity.EXTRA_SERVICE_BART);
         intent.putExtra(DetailsActivity.EXTRA_TRAIN, mRecentItems.get(position).getTrain());
         intent.putExtra(DetailsActivity.EXTRA_FROM_STATION, mFromStationId);
         intent.putExtra(DetailsActivity.EXTRA_TO_STATION, mToStationId);
@@ -302,18 +250,6 @@ public class ScheduleFragment extends Fragment
     @Override
     public void onFilterChanged(Calendar calendar, TAConstants.TRANSIT_TYPE type) {
         mCalendar = calendar;
-        mTRANSITType = type;
         refreshTrainSchedule();
-    }
-
-
-    public void showProgressDialog() {
-        mProgressDialog = ProgressDialog.show(getContext(), null, "Loading Data..", true, true);
-    }
-
-    public void hideProgressDialog() {
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
-        }
     }
 }

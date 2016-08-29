@@ -116,24 +116,27 @@ public class OnGoingActivity extends AppCompatActivity implements StationsAdapte
             return true;
         } else if (item.getItemId() == R.id.action_favorite) {
             Toast.makeText(this, "Under developement", Toast.LENGTH_LONG).show();
-        }  else if (item.getItemId() == R.id.action_close) {
+        } else if (item.getItemId() == R.id.action_close) {
             cancelTrip();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onItemClick(int position) {
-        // TODO: @Jeevitha: Need to add set alarm on the items.
-        Toast.makeText(OnGoingActivity.this, "Add the alarm here.", Toast.LENGTH_SHORT).show();
-    }
-
-
     public void cancelTrip() {
         PrefManager.removeOnGoingTrip();
         NotificationProvider.getInstance().dismissOnGoingNotification(this);
         Toast.makeText(OnGoingActivity.this, "Trip Cancelled.", Toast.LENGTH_SHORT).show();
         finish();
+    }
+
+    @Override
+    public void onCheckBoxSelected(int position) {
+
+    }
+
+    @Override
+    public void onCheckBoxUnSelected(int position) {
+
     }
 }

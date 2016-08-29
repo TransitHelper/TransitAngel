@@ -23,7 +23,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".search.SearchActivity" />
+        <activity
+            android:name=".search.SearchActivity"
+            android:parentActivityName=".home.HomeActivity" />
         <activity android:name=".LocationActivity" />
         <activity android:name=".schedule.ScheduleActivity" />
         <activity android:name=".details.DetailsActivity" />

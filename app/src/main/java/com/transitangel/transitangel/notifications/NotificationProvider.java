@@ -101,14 +101,19 @@ public class NotificationProvider {
     }
 
     public void dismissOnGoingNotification(Context context) {
+
+        Trip onGoingTrip = PrefManager.getOnGoingTrip();
+        // Set details from the ongoing trip
+        if ( onGoingTrip == null ) {
+            return;
+        }
+
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.cancel(NOTIFICATION_ONGOING_ID);
 
         // Get the train details:
         String title = "Trip cancelled";
 
-        Trip onGoingTrip = PrefManager.getOnGoingTrip();
-        // Set details from the ongoing trip
         String contentTitle = "Transit from " + onGoingTrip.getFromStop().getName()
         + " to " + onGoingTrip.getToStop().getName() + " has been cancelled";
 

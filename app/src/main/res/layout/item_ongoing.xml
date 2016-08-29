@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
     android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:gravity="center_vertical">
+    android:paddingRight="16dp">
 
     <View
         android:id="@+id/vIcon"
         android:layout_width="2dp"
         android:layout_height="match_parent"
-        android:background="@color/red_caltrain"
-        android:layout_marginRight="16dp"
-        android:layout_marginLeft="8dp"
+        android:layout_alignBottom="@+id/tvStopTime"
         android:layout_alignParentLeft="true"
         android:layout_alignTop="@+id/tvStopName"
-        android:layout_alignBottom="@+id/tvStopTime"/>
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/red_caltrain" />
 
     <ImageView
-        android:id="@+id/vCircleIcon"
+        android:id="@+id/stopIcon"
         android:layout_width="18dp"
         android:layout_height="18dp"
-        android:src="@drawable/checkbox_blank_circle_outline"
-        android:background="#fff"
+        android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"/>
+        android:background="#fff"
+        android:src="@drawable/checkbox_blank_circle_outline" />
 
     <TextView
         android:id="@+id/tvStopName"
@@ -35,24 +34,24 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/vIcon"
         android:paddingTop="8dp"
-        tools:text="Mountain View"/>
+        tools:text="Mountain View" />
 
     <TextView
         android:id="@+id/tvStopTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="4dp"
-        android:paddingBottom="8dp"
         android:layout_below="@+id/tvStopName"
         android:layout_toRightOf="@+id/vIcon"
-        tools:text="14:30"/>
+        android:paddingBottom="8dp"
+        android:paddingTop="4dp"
+        tools:text="14:30" />
 
-    <ImageView
-        android:id="@+id/ivNotificationIcon"
+    <CheckBox
+        android:id="@+id/cb_alarm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/alarm_gray"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true"
+        android:button="@drawable/custom_checkbox" />
 
 </RelativeLayout>

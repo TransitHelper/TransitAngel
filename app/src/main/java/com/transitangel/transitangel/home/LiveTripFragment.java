@@ -65,7 +65,7 @@ public class LiveTripFragment extends Fragment implements StationsAdapter.OnItem
 
     private void displayOnGoingTrip() {
         Trip trip = PrefManager.getOnGoingTrip();
-        if(trip != null) {
+        if (trip != null) {
             rvStationList.setVisibility(View.VISIBLE);
             tvNoLiveTrip.setVisibility(View.GONE);
             type = trip.getType();
@@ -89,9 +89,13 @@ public class LiveTripFragment extends Fragment implements StationsAdapter.OnItem
     }
 
     @Override
-    public void onItemClick(int position) {
-        TrainStop stops = mStops.get(position);
-        Toast.makeText(getActivity(), stops.getName(), Toast.LENGTH_LONG).show();
+    public void onCheckBoxSelected(int position) {
+
+    }
+
+    @Override
+    public void onCheckBoxUnSelected(int position) {
+
     }
 
     public void onCancelTrip() {

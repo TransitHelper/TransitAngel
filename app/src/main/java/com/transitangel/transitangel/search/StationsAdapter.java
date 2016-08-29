@@ -7,6 +7,9 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.model.Transit.Stop;
@@ -14,6 +17,9 @@ import com.transitangel.transitangel.model.Transit.TrainStop;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * @author yvastavaus.
@@ -25,7 +31,7 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final int ITEM_TYPE_STATION_END = 3;
 
     @IntDef({ITEM_DETAIL, ITEM_ONGOING})
-    public @interface ItemType{}
+    public @interface ItemType {}
 
     public static final int ITEM_DETAIL = 0;
     public static final int ITEM_ONGOING = 1;
@@ -33,16 +39,17 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private ArrayList<TrainStop> visibleStopsList;
     private ArrayList<TrainStop> allStopItemList;
     private HashMap<String, Stop> stopHashMap;
+    private OnItemClickListener onItemClickListener;
 
     @ItemType private int itemType;
 
     private Context context;
 
     public interface OnItemClickListener {
-        void onItemClick(int position);
-    }
+        void onCheckBoxSelected(int position);
 
-    private OnItemClickListener onItemClickListener;
+        void onCheckBoxUnSelected(int position);
+    }
 
     public StationsAdapter(Context context, ArrayList<TrainStop> stationStopItemList, HashMap<String, Stop> stopHashMap, @ItemType int itemType) {
         this.allStopItemList = stationStopItemList;
@@ -62,21 +69,21 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         RecyclerView.ViewHolder viewHolder = null;
         View view;
         if (viewType == ITEM_TYPE_STATION_MIDDLE) {
-            if(itemType == ITEM_DETAIL) {
+            if (itemType == ITEM_DETAIL) {
                 view = inflater.inflate(R.layout.item_stop_first, parent, false);
             } else {
                 view = inflater.inflate(R.layout.item_ongoing, parent, false);
             }
             viewHolder = new StationStopsViewHolder(view, onItemClickListener);
         } else if (viewType == ITEM_TYPE_STATION_START) {
-            if(itemType == ITEM_DETAIL) {
+            if (itemType == ITEM_DETAIL) {
                 view = inflater.inflate(R.layout.item_stop_first, parent, false);
             } else {
                 view = inflater.inflate(R.layout.item_ongoing, parent, false);
             }
             viewHolder = new StationStopsViewHolder(view, onItemClickListener);
         } else if (viewType == ITEM_TYPE_STATION_END) {
-            if(itemType == ITEM_DETAIL) {
+            if (itemType == ITEM_DETAIL) {
                 view = inflater.inflate(R.layout.item_stop_first, parent, false);
             } else {
                 view = inflater.inflate(R.layout.item_ongoing, parent, false);
@@ -106,15 +113,22 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             case ITEM_TYPE_STATION_START:
                 viewHolder.tvStopName.setText(stopHashMap.get(visibleStopsList.get(position).getStopId()).getName());
                 viewHolder.tvStopTime.setText(visibleStopsList.get(position).getDepartureTime());
+                viewHolder.mStopIcon.setImageResource(R.mipmap.ic_train_caltrain);
+                if (itemType == ITEM_DETAIL) {
+                    viewHolder.mSetAlarm.setVisibility(View.GONE);
+                }
                 break;
             case ITEM_TYPE_STATION_END:
                 viewHolder.tvStopName.setText(stopHashMap.get(visibleStopsList.get(position).getStopId()).getName());
                 viewHolder.tvStopTime.setText(visibleStopsList.get(position).getDepartureTime());
+                viewHolder.mStopIcon.setImageResource(R.mipmap.ic_cal_dest);
+                viewHolder.mSetAlarm.setChecked(visibleStopsList.get(position).getNotify());
                 break;
             case ITEM_TYPE_STATION_MIDDLE:
             default:
                 viewHolder.tvStopName.setText(stopHashMap.get(visibleStopsList.get(position).getStopId()).getName());
                 viewHolder.tvStopTime.setText(visibleStopsList.get(position).getDepartureTime());
+                viewHolder.mSetAlarm.setChecked(visibleStopsList.get(position).getNotify());
         }
     }
 
@@ -129,16 +143,47 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void setFilter(String queryText) {
-        if(TextUtils.isEmpty(queryText)){
+        if (TextUtils.isEmpty(queryText)) {
             visibleStopsList = new ArrayList<>(allStopItemList);
             return;
         }
         visibleStopsList = new ArrayList<>();
-        for (TrainStop item: allStopItemList) {
+        for (TrainStop item : allStopItemList) {
             if (stopHashMap.get(item.getStopId()).getName().toLowerCase().contains(queryText)) {
                 visibleStopsList.add(item);
             }
         }
         notifyDataSetChanged();
     }
+
+    public class StationStopsViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.stopIcon)
+        ImageView mStopIcon;
+        @BindView(R.id.tvStopName)
+        TextView tvStopName;
+        @BindView(R.id.tvStopTime)
+        TextView tvStopTime;
+        @BindView(R.id.cb_alarm)
+        CheckBox mSetAlarm;
+
+        public StationStopsViewHolder(View itemView, StationsAdapter.OnItemClickListener onItemClickListener) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+            mSetAlarm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mSetAlarm.isChecked()) {
+                        visibleStopsList.get(getLayoutPosition()).setNotify(true);
+                        onItemClickListener.onCheckBoxSelected(getLayoutPosition());
+                    } else {
+                        visibleStopsList.get(getLayoutPosition()).setNotify(false);
+                        onItemClickListener.onCheckBoxUnSelected(getLayoutPosition());
+                    }
+                }
+            });
+
+        }
+    }
+
 }

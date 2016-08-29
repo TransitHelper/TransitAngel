@@ -1,7 +1,9 @@
 package com.transitangel.transitangel.details;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,6 +22,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.pixplicity.easyprefs.library.Prefs;
 import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
 import com.transitangel.transitangel.Manager.GeofenceManager;
@@ -36,30 +41,20 @@ import com.transitangel.transitangel.search.StationsAdapter;
 import com.transitangel.transitangel.utils.Preconditions;
 import com.transitangel.transitangel.utils.TAConstants;
 
+import java.lang.reflect.Type;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class DetailsActivity extends AppCompatActivity implements StationsAdapter.OnItemClickListener, SearchView.OnQueryTextListener {
-
-    private static final String TAG = DetailsActivity.class.getSimpleName();
-
-    public static final String EXTRA_SELECTED_STATION = TAG + ".EXTRA_SELECTED_STATION";
-    public static final String EXTRA_TRAIN = TAG + ".EXTRA_TRAIN";
-    public static final String EXTRA_SERVICE = TAG + ".EXTRA_SERVICE";
-    public static final String EXTRA_SERVICE_BART = TAG + ".EXTRA_SERVICE_BART";
-    public static final String EXTRA_SERVICE_CALTRAIN = TAG + ".EXTRA_SERVICE_CALTRAIN";
-    public static final String EXTRA_FROM_STATION = TAG + ".EXTRA_FROM_STATION";
-    public static final String EXTRA_TO_STATION = TAG + ".EXTRA_TO_STATION";
-    public static final int ALARM_REQUEST_CODE = 111;
-
 
     @BindView(R.id.tvTitle)
     TextView tvTitle;
@@ -70,6 +65,17 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     @BindView(R.id.clMainContent)
     CoordinatorLayout clMainContent;
 
+    private static final String TAG = DetailsActivity.class.getSimpleName();
+    public static final String EXTRA_SELECTED_STATION = TAG + ".EXTRA_SELECTED_STATION";
+    public static final String EXTRA_TRAIN = TAG + ".EXTRA_TRAIN";
+    public static final String EXTRA_SERVICE = TAG + ".EXTRA_SERVICE";
+    public static final String EXTRA_SERVICE_BART = TAG + ".EXTRA_SERVICE_BART";
+    public static final String EXTRA_SERVICE_CALTRAIN = TAG + ".EXTRA_SERVICE_CALTRAIN";
+    public static final String EXTRA_FROM_STATION = TAG + ".EXTRA_FROM_STATION";
+    public static final String EXTRA_TO_STATION = TAG + ".EXTRA_TO_STATION";
+    public static final int ALARM_REQUEST_CODE = 111;
+    private static GeofenceManager.GeofenceManagerListener mGeofenceManagerListener;
+
     private ArrayList<TrainStop> mStops;
     private Train train;
     private StationsAdapter adapter;
@@ -79,7 +85,8 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     private TAConstants.TRANSIT_TYPE type;
     private TrainStop selectedStop;
     private Trip selectedTrip;
-
+    private ArrayList<PendingIntent> mPendingIntents = new ArrayList<>();
+    private ArrayList<TrainStop> mAlarmStops = new ArrayList<>();
     HashMap<String, Stop> stopHashMap = new HashMap<>();
 
     @Override
@@ -128,13 +135,10 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         final MenuItem searchItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(this);
-
-        // Use a custom search icon for the SearchView in AppBar
         int searchImgId = android.support.v7.appcompat.R.id.search_button;
         ImageView v = (ImageView) searchView.findViewById(searchImgId);
         v.setImageResource(R.drawable.search);
 
-        // Customize searchview text and hint colors
         int searchEditId = android.support.v7.appcompat.R.id.search_src_text;
         EditText et = (EditText) searchView.findViewById(searchEditId);
         et.setTextColor(Color.WHITE);
@@ -151,15 +155,20 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
             return true;
         } else if (item.getItemId() == R.id.action_favorite) {
             Toast.makeText(this, "Under developement", Toast.LENGTH_LONG).show();
-        } else if (item.getItemId() == R.id.action_alarm) {
-            Toast.makeText(this, "Under developement", Toast.LENGTH_LONG).show();
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onItemClick(int position) {
-        // TODO: Show details or something when the item is clicked.
+    public void onCheckBoxSelected(int position) {
+        mStops.get(position).setNotify(true);
+        mAlarmStops.add(mStops.get(position));
+    }
+
+    @Override
+    public void onCheckBoxUnSelected(int position) {
+        mStops.get(position).setNotify(false);
+        mAlarmStops.remove(mStops.get(position));
     }
 
     @Override
@@ -177,12 +186,51 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     @OnClick(R.id.fabStartTrip)
     public void startTrip() {
         TrainStop lastStop = getStopFromId(toStation);
-        if(lastStop == null) {
+        if (lastStop == null) {
             Toast.makeText(this, "No Valid to station found for the train", Toast.LENGTH_LONG).show();
             return;
         }
+        if (PrefManager.getOnGoingTrip() != null) {
+            showAlertDialog();
+        } else {
+            startNewTrip();
+        }
+    }
 
-        // Add trip information in the Pref manager to keep track of it.
+    private void showAlertDialog() {
+        //TODO: have custom alertview
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setTitle("Your current Trip is not completed!")
+                .setMessage("Are you sure you want to start new trip")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        GeofenceManager.getSharedInstance().removeAllGeofences(getmGeofenceManagerListener());//Have not tested
+                        RemoveCurrentTripAlarms();
+                        startNewTrip();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    private void RemoveCurrentTripAlarms() {
+        Type type = new TypeToken<List<PendingIntent>>() {}.getType();
+        Gson gson = new Gson();
+        String json = gson.toJson(mAlarmStops);
+        List<PendingIntent> intentList = gson.fromJson(json, type);
+        for (PendingIntent intent : intentList
+                ) {
+            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+            alarmManager.cancel(intent);
+        }
+    }
+
+    private void startNewTrip() {
         Trip trip = new Trip();
         trip.setSelectedTrain(train);
         trip.setFromStop(stopHashMap.get(fromStation));
@@ -190,82 +238,89 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         trip.setDate(new Date());
         trip.setType(type);
         PrefManager.addOnGoingTrip(trip);
-
-        //Adding Geofence to the last trip
-        //TODO: based on user selected station add geofence
-        addGeoFenceToSelectedStops(lastStop,trip);
-
-        //TODO check if we need to move the alarm calls and save recent trip to geofence callback?
-        //SetUp Alaram
-        addAlarmToSelectedStops(lastStop);
-
-        //save to the recent trips
+        addGeoFencesandAlarm(trip);
         TransitManager.getSharedInstance().saveRecentTrip(trip);
-
     }
+
+    private void addGeoFencesandAlarm(Trip trip) {
+        for (TrainStop stop : mAlarmStops) {
+            addGeoFenceToSelectedStops(stop, trip);
+            int requestCode = ALARM_REQUEST_CODE + stop.getStopOrder();//find better way to do it
+            addAlarmToSelectedStops(stop, requestCode);
+        }
+        Gson gson = new Gson();
+        String json = gson.toJson(mAlarmStops);
+        Prefs.putString(TAConstants.AlarmIntents, json);
+    }
+
+    private void addGeoFenceToSelectedStops(TrainStop lastStop, Trip trip) {
+        TrainStopFence trainStopFence = new TrainStopFence(lastStop);
+        selectedStop = lastStop;
+        selectedTrip = trip;
+        GeofenceManager.getSharedInstance().addGeofence(this, trainStopFence, getmGeofenceManagerListener());
+    }
+
+    public GeofenceManager.GeofenceManagerListener getmGeofenceManagerListener() {
+        if (mGeofenceManagerListener == null) {
+            mGeofenceManagerListener = new GeofenceManager.GeofenceManagerListener() {
+                @Override
+                public void onGeofencesUpdated() {
+                    Log.e(DetailsActivity.class.getSimpleName(), "GeoFence Added");
+                }
+                @Override
+                public void onError() {
+                    Toast.makeText(DetailsActivity.this, "Error while adding location, please check location services and try again", Toast.LENGTH_LONG).show();
+
+                }
+            };
+        }
+        return mGeofenceManagerListener;
+    }
+
 
     private void startOnGoingNotification(Trip trip) {
         NotificationProvider.getInstance().showTripStartedNotification(this, trip);
     }
 
-    private void addAlarmToSelectedStops(TrainStop lastStop) {
+    private void addAlarmToSelectedStops(TrainStop lastStop, int requestCode) {
         Intent intent = new Intent(this, AlarmBroadcastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                this.getApplicationContext(), ALARM_REQUEST_CODE, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        final Timestamp timestamp =
-                Timestamp.valueOf(
-                        new SimpleDateFormat("yyyy-MM-dd ")
-                                .format(new Date())
-                                .concat(lastStop.getArrrivalTime())
-                );
+                this.getApplicationContext(), requestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        mPendingIntents.add(pendingIntent);
+        final Timestamp timestamp = getTimeStampFromString(lastStop.getArrrivalTime());
+
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, timestamp.getHours());
-        calendar.set(Calendar.MINUTE, timestamp.getMinutes()-5);
+        calendar.set(Calendar.MINUTE, timestamp.getMinutes() - 2);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 pendingIntent);
-        Toast.makeText(this, "Alarm will vibrate at time specified",
-                Toast.LENGTH_SHORT).show();
     }
 
-    private void addGeoFenceToSelectedStops(TrainStop lastStop,Trip trip) {
-        TrainStopFence trainStopFence = new TrainStopFence(lastStop);
-        selectedStop = lastStop;
-        selectedTrip = trip;
-
-        GeofenceManager.getSharedInstance().addGeofence(this, trainStopFence, new GeofenceManager.GeofenceManagerListener() {
-            @Override
-            public void onGeofencesUpdated() {
-
-                Log.d("Fence Added", "Here");
-
-                //Start Notification
-                startOnGoingNotification(trip);
-
-            }
-
-            @Override
-            public void onError() {
-                Toast.makeText(DetailsActivity.this, "Error while adding location, please check location services and try again", Toast.LENGTH_LONG).show();
-            }
-        });
+    private Timestamp getTimeStampFromString(String arrrivalTime) {
+        return Timestamp.valueOf(
+                new SimpleDateFormat("yyyy-MM-dd ")
+                        .format(new Date())
+                        .concat(arrrivalTime)
+        );
     }
 
     public TrainStop getStopFromId(String stopId) {
-        for(TrainStop trainStop: mStops) {
-            if(trainStop.getStopId().equalsIgnoreCase(stopId)) {
+        for (TrainStop trainStop : mStops) {
+            if (trainStop.getStopId().equalsIgnoreCase(stopId)) {
                 return trainStop;
             }
         }
         return null;
     }
 
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == GeofenceManager.GEOFENCE_GET_FINE_LOC_REQ_CODE ) {
-            if ( selectedStop != null && selectedTrip != null) {
-                addGeoFenceToSelectedStops(selectedStop,selectedTrip);
+        if (requestCode == GeofenceManager.GEOFENCE_GET_FINE_LOC_REQ_CODE) {
+            if (selectedStop != null && selectedTrip != null) {
+                addGeoFenceToSelectedStops(selectedStop, selectedTrip);
             }
         }
     }
