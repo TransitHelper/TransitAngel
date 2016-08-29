@@ -46,6 +46,8 @@ public class HomeActivity extends AppCompatActivity {
     private TripHelperApiFactory mTripHelperApiFactory;
     private CompositeSubscription mSubscription = new CompositeSubscription();
 
+    private String[] titles = {"Near by", "Recents", "Live trip"};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,20 +64,20 @@ public class HomeActivity extends AppCompatActivity {
     private void init() {
         mSharedPreference = getApplicationContext().getSharedPreferences(TAConstants.SharedPrefGeofences, Context.MODE_PRIVATE);
         TabLayout.Tab nearbyTab = tabLayout.newTab();
-        nearbyTab.setText("Near By");
-        nearbyTab.setContentDescription("Near by");
+        nearbyTab.setContentDescription(titles[0]);
+        nearbyTab.setText(titles[0]);
         nearbyTab.setIcon(R.drawable.ic_explore_white_48dp);
         tabLayout.addTab(nearbyTab);
 
         TabLayout.Tab recentsTab = tabLayout.newTab();
-        recentsTab.setText("Recents");
-        recentsTab.setContentDescription("Recents");
+        recentsTab.setContentDescription(titles[1]);
+        recentsTab.setText(titles[1]);
         recentsTab.setIcon(R.drawable.ic_restore_white_48dp);
         tabLayout.addTab(recentsTab);
 
         TabLayout.Tab onGoingTab = tabLayout.newTab();
-        onGoingTab.setText("Live Trip");
-        onGoingTab.setContentDescription("Live trip");
+        onGoingTab.setContentDescription(titles[2]);
+        onGoingTab.setText(titles[2]);
         onGoingTab.setIcon(R.drawable.ic_play_arrow_white_48dp);
         tabLayout.addTab(onGoingTab);
 

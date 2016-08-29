@@ -13,12 +13,12 @@ import butterknife.ButterKnife;
 /**
  * author yvastavaus.
  */
-public class RecentItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+public class RecentSearchItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
     @BindView(R.id.tvFrom)
     TextView tvFrom;
-    @BindView(R.id.ivArrow)
-    ImageView ivArrow;
+    @BindView(R.id.ivIcon)
+    ImageView ivIcon;
     @BindView(R.id.tvTo)
     TextView tvTo;
 
@@ -26,7 +26,7 @@ public class RecentItemViewHolder extends RecyclerView.ViewHolder implements Vie
 
     RecentAdapter.OnItemClickListener onItemClickListener;
 
-    public RecentItemViewHolder(View itemView, RecentAdapter.OnItemClickListener onItemClickListener) {
+    public RecentSearchItemViewHolder(View itemView, RecentAdapter.OnItemClickListener onItemClickListener) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         this.parent = itemView;
