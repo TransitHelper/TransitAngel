@@ -89,7 +89,9 @@ public class TransitLocationManager implements com.google.android.gms.location.L
             new GoogleApiClient.OnConnectionFailedListener() {
                 @Override
                 public void onConnectionFailed(ConnectionResult connectionResult) {
-
+                    if ( activityLocationResponseHandler != null ) {
+                        activityLocationResponseHandler.OnLocationReceived(false,new LatLng(0,0));
+                    }
                 }
             };
 
