@@ -89,7 +89,9 @@ public class TransitLocationManager implements com.google.android.gms.location.L
             new GoogleApiClient.OnConnectionFailedListener() {
                 @Override
                 public void onConnectionFailed(ConnectionResult connectionResult) {
-
+                    if ( activityLocationResponseHandler != null ) {
+                        activityLocationResponseHandler.OnLocationReceived(false,new LatLng(0,0));
+                    }
                 }
             };
 
@@ -102,7 +104,7 @@ public class TransitLocationManager implements com.google.android.gms.location.L
             }
             else {
                 // throw new IllegalArgumentException("Context not activity");
-                activityLocationResponseHandler.OnLocationReceived(false,null);
+                activityLocationResponseHandler.OnLocationReceived(false,new LatLng(0,0));
             }
         }
         else {
@@ -114,6 +116,9 @@ public class TransitLocationManager implements com.google.android.gms.location.L
                 Log.d("DEBUG", "current location: " + mCurrentLocation.toString());
                 LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
                 activityLocationResponseHandler.OnLocationReceived(true, latLng);
+            }
+            else {
+                activityLocationResponseHandler.OnLocationReceived(false,new LatLng(0,0));
             }
         }
     }
