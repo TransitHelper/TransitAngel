@@ -83,8 +83,8 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     private Trip selectedTrip;
     private ArrayList<PendingIntent> mPendingIntents = new ArrayList<>();
     private ArrayList<TrainStop> mAlarmStops = new ArrayList<>();
-    private ArrayList<TrainStop>geofenceStops = new ArrayList<>();
     HashMap<String, Stop> stopHashMap = new HashMap<>();
+    Trip trip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,12 +232,17 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     }
 
     private void startNewTrip() {
-        Trip trip = new Trip();
+        trip = new Trip();
         trip.setSelectedTrain(train);
         trip.setFromStop(stopHashMap.get(fromStation));
         trip.setToStop(stopHashMap.get(toStation));
         trip.setDate(new Date());
         trip.setType(type);
+        //Adding destination stop if not selected
+        if (!mAlarmStops.contains(mStops.get(mStops.size() - 1))) {
+            mAlarmStops.add(mStops.get(mStops.size() - 1));
+            mStops.get(mStops.size() - 1).setNotify(true);
+        }
         PrefManager.addOnGoingTrip(trip);
         addGeoFencesandAlarm(trip);
         startOnGoingNotification(trip);
@@ -245,39 +250,23 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     }
 
     private void addGeoFencesandAlarm(Trip trip) {
-        geofenceStops = new ArrayList<>();
-        geofenceStops.addAll(mAlarmStops);
-        addGeoFenceToSelectedStops(trip);
         for (TrainStop stop : mAlarmStops) {
+            addGeoFenceToSelectedStops(stop, trip);
             int requestCode = ALARM_REQUEST_CODE + stop.getStopOrder();//find better way to do it
             addAlarmToSelectedStops(stop, requestCode);
+            Log.e("AddedAlarm",String.valueOf(requestCode));
         }
     }
 
-    //recursively add geofence , add the next fence only when the fence has been updated
-    private void addGeoFenceToSelectedStops(Trip trip) {
-        if ( geofenceStops.size() > 0 ) {
-            try {
-                selectedStop = geofenceStops.get(0);
-                TrainStopFence trainStopFence = new TrainStopFence(selectedStop);
-                selectedTrip = trip;
-                GeofenceManager.getSharedInstance().addGeofence(this, trainStopFence, new GeofenceManager.GeofenceManagerListener() {
-                    @Override
-                    public void onGeofencesUpdated() {
-                        geofenceStops.remove(selectedStop);
-                        addGeoFenceToSelectedStops(selectedTrip);
-                    }
-
-                    @Override
-                    public void onError() {
-                        //do nothing?
-                    }
-                });
-            } catch (Exception e) {
-                Log.e(TAG, e.getMessage());
-            }
+    private void addGeoFenceToSelectedStops(TrainStop lastStop, Trip trip) {
+        try {
+            TrainStopFence trainStopFence = new TrainStopFence(lastStop);
+            selectedStop = lastStop;
+            selectedTrip = trip;
+            GeofenceManager.getSharedInstance().addGeofence(this, trainStopFence, getmGeofenceManagerListener());
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
         }
-
     }
 
     public GeofenceManager.GeofenceManagerListener getmGeofenceManagerListener() {
@@ -290,7 +279,7 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
 
                 @Override
                 public void onError() {
-                    Toast.makeText(DetailsActivity.this, "Error while adding location, please check location services and try again", Toast.LENGTH_LONG).show();
+                 Log.e(DetailsActivity.class.getSimpleName(), "Error while adding location, please check location services and try again");
 
                 }
             };
@@ -308,13 +297,13 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         Gson gson = new Gson();
         String json = gson.toJson(lastStop);
         intent.putExtra(AlarmBroadcastReceiver.ARG_STOP, json);
+        intent.putExtra(AlarmBroadcastReceiver.TRIP_ID,trip.getTripId());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 this.getApplicationContext(), requestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-        mPendingIntents.add(pendingIntent);
         final Timestamp timestamp = DateUtil.getTimeStamp(lastStop.getArrrivalTime());
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(timestamp);
+        calendar.add(Calendar.MINUTE,-3);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 pendingIntent);
@@ -334,7 +323,7 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == GeofenceManager.GEOFENCE_GET_FINE_LOC_REQ_CODE) {
             if (selectedStop != null && selectedTrip != null) {
-                addGeoFenceToSelectedStops(selectedTrip);
+                addGeoFenceToSelectedStops(selectedStop, selectedTrip);
             }
         }
     }

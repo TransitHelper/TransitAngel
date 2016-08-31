@@ -7,6 +7,7 @@ import com.pixplicity.easyprefs.library.Prefs;
 import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
 import com.transitangel.transitangel.Manager.GeofenceManager;
+import com.transitangel.transitangel.Manager.TTSManager;
 import com.transitangel.transitangel.Manager.TransitLocationManager;
 import com.transitangel.transitangel.Manager.TransitManager;
 
@@ -31,5 +32,6 @@ public class TransitAngelApplication extends Application {
          BartTransitManager.getSharedInstance().setup(this);
          TransitLocationManager.getSharedInstance().setup(this);
          GeofenceManager.getSharedInstance().setup(this);
+         TTSManager.getSharedInstance().setupTTS(this);
     }
 }

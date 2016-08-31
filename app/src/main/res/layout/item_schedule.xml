@@ -1,49 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="8dp">
-
-    <ImageView
-        android:layout_width="wrap_content"
+    style="@style/cardStyle">
+    <RelativeLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_train"
-        android:id="@+id/imageView" />
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/train_description"
-        style="@style/ItemMainLabelStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:contentDescription="Train Name"
-        android:text="@string/app_name"
-        android:layout_toEndOf="@+id/imageView" />
+        <TextView
+            android:id="@+id/train_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Local(Gilroy-Sf) South Bound #147"
+            android:padding="8dp"/>
 
-    <TextView
-        android:id="@+id/train_departure_time"
-        style="@style/ItemSubLabelStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:contentDescription="Train arrives"
-        android:text="15mins"
-        android:layout_alignTop="@+id/journey_time"
-        android:layout_alignStart="@+id/train_description" />
+        <LinearLayout
+            android:id="@+id/duration_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/train_description"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/journey_time"
-        style="@style/ItemSubLabelStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/train_description"
-        android:layout_margin="8dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:text="1hr 55mins"
-        android:textColor="@color/textSpecialInfoColor" />
-</RelativeLayout>
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="19:00 - 19:45"/>
+
+            <TextView
+                android:id="@+id/stops"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="15 stops"/>
+
+            <TextView
+                android:id="@+id/duration"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="45 min"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/duration_container"
+            android:padding="8dp"
+            android:text="Leaving in 15 min"/>
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

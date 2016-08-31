@@ -21,7 +21,20 @@ Imagine a blind person who is new to the city and  just needs to travel from San
   - User could be delay information about any saved trip proactively via a push engine
   - Add additional services like Muni and other public transportation
   - Add Smart notifications which could give them about upcoming train information learning from their usage pattern of the app. Eg. If they open the app at 7 AM and 5 PM, we could make use of this information to give them information about directions and delay information before hand.
- 
+
+## WalkThrough(Sprint2)
+![Walk Through](VideoSprint2.gif) 
+
+### 1. Notification on reaching stop
+![Home Screen](Sprint2_Nofitication2.png)
+
+### 2. Notification before reaching stop
+![Search Screen](Sprint2_Notification.png)
+
+### 3. Trip Info Screen
+![Trip Info Screen](Sprint2_CurrentTrip.png)
+
+
 ## WalkThrough(Sprint1)
 ![Walk Through](TransitAngel.gif)
 

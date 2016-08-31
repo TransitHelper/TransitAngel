@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import com.transitangel.transitangel.Manager.TransitManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.api.TripHelperApiFactory;
 import com.transitangel.transitangel.api.TripHelplerRequestInterceptor;
+import com.transitangel.transitangel.details.DetailsActivity;
 import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.schedule.ScheduleActivity;
 import com.transitangel.transitangel.utils.TAConstants;
@@ -53,6 +55,9 @@ public class HomeActivity extends AppCompatActivity {
 
     private String[] titles = {"Near by", "Recents", "Live trip"};
 
+    private TextToSpeech myTTS;
+    private int MY_DATA_CHECK_CODE = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +69,24 @@ public class HomeActivity extends AppCompatActivity {
         Intent serviceIntent = new Intent(this, ShakerService.class);
         startService(serviceIntent);
 
+        //TO check if TTS in installed
+        Intent checkTTSIntent = new Intent();
+        checkTTSIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+        startActivityForResult(checkTTSIntent, MY_DATA_CHECK_CODE);
+
+    }
+
+
+    //act on result of TTS data check
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == MY_DATA_CHECK_CODE) {
+            if (resultCode != TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+                //no data - install it now
+                Intent installTTSIntent = new Intent();
+                installTTSIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+                startActivity(installTTSIntent);
+            }
+        }
     }
 
     private void init() {
@@ -97,9 +120,9 @@ public class HomeActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 homePager.setCurrentItem(tab.getPosition());
                 Fragment fragment = adapter.getRegisteredFragment(tab.getPosition());
-                if(fragment instanceof LiveTripFragment) {
+                if (fragment instanceof LiveTripFragment) {
                     fabCancelTrip.show();
-                    ((LiveTripFragment)fragment).onSelected();
+                    ((LiveTripFragment) fragment).onSelected();
                 } else {
                     fabCancelTrip.hide();
                 }
@@ -123,11 +146,11 @@ public class HomeActivity extends AppCompatActivity {
                 launchOnGoingScreen();
             } else if (action.equalsIgnoreCase(ACTION_TRIP_CANCELLED)) {
                 Toast.makeText(this, "Show on cancelled trip clicked.", Toast.LENGTH_LONG).show();
-            } else if(action.equalsIgnoreCase(ACTION_SHORTCUT)) {
+            } else if (action.equalsIgnoreCase(ACTION_SHORTCUT)) {
                 String tripId = getIntent().getStringExtra(EXTRA_SHORTCUT_TRIP_ID);
                 ArrayList<Trip> cachedRecentTrip = TransitManager.getSharedInstance().fetchRecentTripList();
-                for(Trip trip: cachedRecentTrip) {
-                    if(trip.getTripId().equalsIgnoreCase(tripId)) {
+                for (Trip trip : cachedRecentTrip) {
+                    if (trip.getTripId().equalsIgnoreCase(tripId)) {
                         launchStartTrip(trip);
                         return;
                     }
@@ -137,7 +160,20 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void launchStartTrip(Trip trip) {
-        Toast.makeText(this, "Short cut clicked from home screen with Trip ID : " + trip.getTripId(), Toast.LENGTH_LONG).show();
+//        Toast.makeText(this, "Short cut clicked from home screen with Trip ID : " + trip.getTripId(), Toast.LENGTH_LONG).show();
+        if (trip != null) {
+            //show the details activity for the trip
+            Intent intent = new Intent(this, DetailsActivity.class);
+            if (trip.getType() == TAConstants.TRANSIT_TYPE.BART) {
+                intent.putExtra(DetailsActivity.EXTRA_SERVICE, DetailsActivity.EXTRA_SERVICE_BART);
+            } else {
+                intent.putExtra(DetailsActivity.EXTRA_SERVICE, DetailsActivity.EXTRA_SERVICE_CALTRAIN);
+            }
+            intent.putExtra(DetailsActivity.EXTRA_TRAIN, trip.getSelectedTrain());
+            intent.putExtra(DetailsActivity.EXTRA_FROM_STATION, trip.getFromStop().getId());
+            intent.putExtra(DetailsActivity.EXTRA_TO_STATION, trip.getToStop().getId());
+            startActivity(intent);
+        }
     }
 
 
@@ -149,9 +185,9 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == TransitLocationManager.GET_LOCATION_REQUEST_CODE) {
-           //reload the recents fragment
+            //reload the recents fragment
             NearByFragment nearByFragment = (NearByFragment) adapter.getRegisteredFragment(0); //first fragment
-            if (nearByFragment != null ) {
+            if (nearByFragment != null) {
                 nearByFragment.loadCurrentStops();
             }
 
@@ -184,9 +220,9 @@ public class HomeActivity extends AppCompatActivity {
     @OnClick(R.id.fabCancelTrip)
     public void onCancelTrip() {
         Fragment fragment = adapter.getRegisteredFragment(tabLayout.getSelectedTabPosition());
-        if(fragment instanceof LiveTripFragment) {
+        if (fragment instanceof LiveTripFragment) {
             fabCancelTrip.show();
-            ((LiveTripFragment)fragment).onCancelTrip();
+            ((LiveTripFragment) fragment).onCancelTrip();
         } else {
             fabCancelTrip.hide();
         }

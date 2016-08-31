@@ -33,8 +33,11 @@ import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -355,11 +358,6 @@ public class TransitManager {
                             //add only if the arrival time is after the leavingAfter time
                             if (arrivalTime.after(leavingAfter)) {
                                 trains.add(train);
-
-//                                if (limit > 0 && trains.size() == limit) {
-//                                    return trains;
-//                                }
-
                                 //reset the from stop and to stop to avoid duplicates
                                 fromStop = null;
                                 toStop = null;
@@ -368,6 +366,41 @@ public class TransitManager {
                     }
                 }
             }
+        }
+
+        //sort trains based on departure time
+        if ( trains.size() > 2 ) {
+            Collections.sort(trains, new Comparator<Train>() {
+                @Override
+                public int compare(Train t1, Train t2) {
+                    if ( t1== null || t2 == null ) {
+                        return 0;
+                    }
+                    //check departure from the first stop?
+                    String t1Departure = t1.getTrainStops().get(0).getDepartureTime();
+                    String[] parts = t1Departure.split(":");
+                    Calendar cal = Calendar.getInstance();
+                    cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(parts[0]));
+                    cal.set(Calendar.MINUTE, Integer.parseInt(parts[1]));
+                    Date t1DepartureTime = cal.getTime();
+
+                    //check departure for t2
+                    String t2Departure = t2.getTrainStops().get(0).getDepartureTime();
+                    String[] parts2 = t2Departure.split(":");
+                    Calendar cal2 = Calendar.getInstance();
+                    cal2.set(Calendar.HOUR_OF_DAY, Integer.parseInt(parts2[0]));
+                    cal2.set(Calendar.MINUTE, Integer.parseInt(parts2[1]));
+                    Date t2DepartureTime = cal2.getTime();
+
+                    return t1DepartureTime.compareTo(t2DepartureTime);
+                }
+            });
+        }
+
+
+        if ( limit > 0 && trains.size() > limit ) {
+            List<Train> limitList = trains.subList(0,limit-1);
+            return new ArrayList<>(limitList);
         }
 
         //return train list

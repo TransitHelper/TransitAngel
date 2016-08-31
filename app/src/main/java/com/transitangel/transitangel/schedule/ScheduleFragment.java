@@ -30,7 +30,6 @@ import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.model.scheduleItem;
 import com.transitangel.transitangel.search.SearchActivity;
 import com.transitangel.transitangel.utils.TAConstants;
-import com.transitangel.transitangel.view.RecyclerItemDecoration;
 import com.transitangel.transitangel.view.widget.EmptySupportingRecyclerView;
 
 import java.util.ArrayList;
@@ -126,7 +125,6 @@ public class ScheduleFragment extends Fragment
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setNestedScrollingEnabled(true);
-        mRecyclerView.addItemDecoration(new RecyclerItemDecoration(getContext(), R.drawable.recycler_view_divider));
         View emptyView = mViewStub.inflate();
         TextView textView = (TextView) emptyView.findViewById(R.id.text_empty_state_description);
         textView.setText(R.string.empty_results);

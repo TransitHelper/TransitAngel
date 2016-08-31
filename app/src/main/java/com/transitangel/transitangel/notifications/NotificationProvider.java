@@ -10,6 +10,7 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.transitangel.transitangel.Manager.GeofenceManager;
 import com.transitangel.transitangel.Manager.PrefManager;
+import com.transitangel.transitangel.Manager.TTSManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.home.HomeActivity;
 import com.transitangel.transitangel.model.Transit.Trip;
@@ -62,6 +63,10 @@ public class NotificationProvider {
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(NOTIFICATION_ONGOING_ID, notification.build());
+
+        //announce both title and content?
+        TTSManager.getSharedInstance().speak(title);
+        TTSManager.getSharedInstance().speak(contentTitle);
     }
 
 
@@ -99,6 +104,10 @@ public class NotificationProvider {
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(NOTIFICATION_ONGOING_ID, notification.build());
+
+        //announce both title and content?
+        TTSManager.getSharedInstance().speak(title);
+        TTSManager.getSharedInstance().speak(contentTitle);
     }
 
     private NotificationProvider() {
@@ -154,6 +163,9 @@ public class NotificationProvider {
             }
         });
         removeCurrentTripAlarms(context);
+
+        //announce both title and content?
+        TTSManager.getSharedInstance().speak(contentTitle);
     }
 
     public void showBigTextNotification(Context context, Intent intent, String title, String contentText) {
@@ -176,6 +188,10 @@ public class NotificationProvider {
                 .build();
 
         notificationManager.notify(NOTIFICATION_BIG_TEXT, notification);
+
+        //announce both title and content?
+        TTSManager.getSharedInstance().speak(title);
+        TTSManager.getSharedInstance().speak(contentText);
     }
 
     private void removeCurrentTripAlarms(Context context) {
