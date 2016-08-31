@@ -1,18 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/toolbar_layout" />
+    <android.support.v7.widget.Toolbar
+       android:id="@+id/toolbar"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:background="?attr/colorPrimary"
+       app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+       app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+       android:contentInsetStart="0dp"
+       android:contentInsetLeft="0dp"
+       android:contentInsetRight="0dp"
+       android:contentInsetEnd="0dp"
+       app:contentInsetLeft="0dp"
+       app:contentInsetStart="0dp"
+       app:contentInsetRight="0dp"
+       app:contentInsetEnd="0dp"
+       android:minHeight="?attr/actionBarSize">
+        <TextView
+            android:id="@+id/tvTitle"
+            style="@style/TextTitleStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/textColor"
+            tools:text="Schedule: Caltrian"
+            android:drawablePadding="8dp"
+            android:layout_marginLeft="-10dp"
+            android:drawableRight="@drawable/ic_arrow_drop_down_white_24dp"/>
+    </android.support.v7.widget.Toolbar>
+
+    <RelativeLayout
+        android:id="@+id/station_selector_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:layout_below="@+id/toolbar"
+        android:paddingRight="@dimen/padding_right_station_container"
+        android:paddingLeft="@dimen/padding_left_station_container"
+        android:paddingBottom="@dimen/padding_bottom_station_container">
+
+        <TextView
+            android:id="@+id/from_station"
+            style="@style/EditableTextviewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/station_icons"
+            android:text="From Station"/>
+
+        <View
+            android:id="@+id/from_station_bottom_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/from_station"
+            android:layout_toRightOf="@+id/station_icons"
+            android:layout_marginTop="-1dp"
+            android:background="@android:color/white"
+            android:focusable="false"/>
+
+        <TextView
+            android:id="@+id/to_station"
+            style="@style/EditableTextviewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/from_station"
+            android:layout_toRightOf="@+id/station_icons"
+            android:text="To Station"/>
+
+        <View
+            android:id="@+id/to_station_bottom_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/to_station"
+            android:layout_toRightOf="@+id/station_icons"
+            android:layout_marginTop="-1dp"
+            android:background="@android:color/white"
+            android:focusable="false"/>
+
+        <LinearLayout
+            android:id="@+id/station_icons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignTop="@+id/from_station"
+            android:layout_alignBottom="@+id/to_station_bottom_line"
+            android:gravity="center"
+            android:layout_marginRight="10dp">
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_start"
+                android:layout_marginBottom="4dp"
+                android:contentDescription="@string/content_description_from_icon"/>
+            <ImageView
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:src="@drawable/ic_during"
+                android:layout_marginBottom="4dp"
+                android:contentDescription="@string/content_description_during_icon"/>
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_room_white_36dp"
+                android:contentDescription="@string/content_description_to_icon"/>
+        </LinearLayout>
+    </RelativeLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white">
+        android:background="@android:color/white"
+        android:layout_below="@+id/station_selector_container">
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tablayout"
@@ -22,5 +128,5 @@
 
     </android.support.v4.view.ViewPager>
 
-</LinearLayout>
+</RelativeLayout>
 

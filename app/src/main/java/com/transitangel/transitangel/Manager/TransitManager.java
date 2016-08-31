@@ -335,9 +335,9 @@ public class TransitManager {
                         if (shouldIncludeAllTrainsForThatDay) {
                             trains.add(train);
 
-                            if (limit > 0 && trains.size() == limit) {
-                                return trains;
-                            }
+//                            if (limit > 0 && trains.size() == limit) {
+//                                return trains;
+//                            }
                             //reset the from stop and to stop to avoid duplicates
                             fromStop = null;
                             toStop = null;
@@ -356,9 +356,9 @@ public class TransitManager {
                             if (arrivalTime.after(leavingAfter)) {
                                 trains.add(train);
 
-                                if (limit > 0 && trains.size() == limit) {
-                                    return trains;
-                                }
+//                                if (limit > 0 && trains.size() == limit) {
+//                                    return trains;
+//                                }
 
                                 //reset the from stop and to stop to avoid duplicates
                                 fromStop = null;

@@ -41,13 +41,12 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class ScheduleFragment extends Fragment
         implements ScheduleRecyclerAdapter.OnItemClickListener,
-        FilterDialogFragment.FilterChangedListener {
+        FilterDialogFragment.FilterChangedListener, ScheduleActivity.OnStationSelected {
 
-    private static final int RESULT_SEARCH_FROM = 1;
+    public static final int RESULT_SEARCH_FROM = 1;
     private static final int RESULT_SEARCH_TO = 2;
     private static final int RESULT_DETAILS = 3;
     public static final String FROM_STATION_ID = "from_station_id";
@@ -57,12 +56,6 @@ public class ScheduleFragment extends Fragment
     private static final String TAG = ScheduleFragment.class.getSimpleName();
     ProgressDialog mProgressDialog;
 
-    @BindView(R.id.from_station)
-    TextView mFromStation;
-    @BindView(R.id.to_station)
-    TextView mToStation;
-    @BindView(R.id.swap_station)
-    ImageView mSwapStationBtn;
     @BindView(R.id.rvRecents)
     EmptySupportingRecyclerView mRecyclerView;
     @BindView(R.id.empty_view_stub)
@@ -151,7 +144,7 @@ public class ScheduleFragment extends Fragment
             trains = BartTransitManager.getSharedInstance().fetchTrains(mFromStationId, mToStationId, 5, date, false);
         } else {
             trains = CaltrainTransitManager.getSharedInstance().fetchTrains(mFromStationId, mToStationId,
-                    5, date, false);
+                    10, date, false);
         }
         mRecentItems.clear();
         for (Train train : trains) {
@@ -175,31 +168,6 @@ public class ScheduleFragment extends Fragment
         hideProgressDialog();
     }
 
-    @OnClick(R.id.to_station)
-    protected void onToStationClick() {
-        Intent intent = new Intent(getActivity(), SearchActivity.class);
-        if (mTRANSITType == TAConstants.TRANSIT_TYPE.BART) {
-            intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_BART);
-        } else {
-            intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_CALTRAIN);
-        }
-        intent.putExtra(FROM_STATION_ID, mFromStationId);
-        getActivity().startActivityForResult(intent, RESULT_SEARCH_TO, null);
-    }
-
-    @OnClick(R.id.from_station)
-    protected void onFromStationClick() {
-        Intent intent = new Intent(getActivity(), SearchActivity.class);
-        if (mTRANSITType == TAConstants.TRANSIT_TYPE.BART) {
-            intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_BART);
-        } else {
-            intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_CALTRAIN);
-        }
-        intent.putExtra(TO_STATION_ID, mToStationId);
-        getActivity().startActivityForResult(intent, RESULT_SEARCH_FROM, null);
-    }
-
-    @OnClick(R.id.swap_station)
     protected void onSwapStationClick() {
         String temp = mFromStationId;
         mFromStationId = mToStationId;
@@ -211,7 +179,6 @@ public class ScheduleFragment extends Fragment
         boolean isStation = stopHashMap.containsKey(mToStationId);
         if (isStation) {
             String stationName = stopHashMap.get(mToStationId).getName();
-            mToStation.setText(stationName);
             Log.d(TAG, "To Station : " + stationName);
         }
 
@@ -220,11 +187,15 @@ public class ScheduleFragment extends Fragment
             String stationName = stopHashMap.get(mFromStationId).getName();
             Log.d(TAG, "From Station : " + stationName);
         }
-        mToStation.setText(stopHashMap.containsKey(mToStationId) ?
+
+        ((ScheduleActivity)getActivity()).setToStation(stopHashMap.containsKey(mToStationId) ?
                 stopHashMap.get(mToStationId).getName() : "Select To Station");
-        mFromStation.setText(stopHashMap.containsKey(mFromStationId) ?
+
+        ((ScheduleActivity)getActivity()).setFromStation(stopHashMap.containsKey(mFromStationId) ?
                 stopHashMap.get(mFromStationId).getName() : "Select From Station");
+
         refreshTrainSchedule();
+
         if (!isSwapStation && stopHashMap.containsKey(mFromStationId) && stopHashMap.containsKey(mToStationId)) {
             Trip trip = new Trip();
             trip.setFromStop(stopHashMap.get(mFromStationId));
@@ -283,7 +254,11 @@ public class ScheduleFragment extends Fragment
             FilterDialogFragment editDialogFragment = FilterDialogFragment.newInstance(getContext(), this, mTRANSITType);
             editDialogFragment.show(getActivity().getFragmentManager().beginTransaction(), "Filter");
             return true;
+        } else if(item.getItemId() == R.id.action_reverse) {
+            onSwapStationClick();
+            return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -318,5 +293,22 @@ public class ScheduleFragment extends Fragment
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
+    }
+
+    @Override
+    public void onFromStationSelected(Intent intent) {
+        intent.putExtra(TO_STATION_ID, mToStationId);
+    }
+
+    @Override
+    public void onToStationSelected() {
+        Intent intent = new Intent(getActivity(), SearchActivity.class);
+        if (mTRANSITType == TAConstants.TRANSIT_TYPE.BART) {
+            intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_BART);
+        } else {
+            intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_CALTRAIN);
+        }
+        intent.putExtra(FROM_STATION_ID, mFromStationId);
+        getActivity().startActivityForResult(intent, RESULT_SEARCH_TO, null);
     }
 }
