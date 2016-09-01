@@ -46,7 +46,7 @@ public class ScheduleFragment extends Fragment
         FilterDialogFragment.FilterChangedListener, ScheduleActivity.OnStationSelected {
 
     public static final int RESULT_SEARCH_FROM = 1;
-    private static final int RESULT_SEARCH_TO = 2;
+    public static final int RESULT_SEARCH_TO = 2;
     private static final int RESULT_DETAILS = 3;
     public static final String FROM_STATION_ID = "from_station_id";
     public static final String TO_STATION_ID = "to_station_id";
@@ -299,14 +299,7 @@ public class ScheduleFragment extends Fragment
     }
 
     @Override
-    public void onToStationSelected() {
-        Intent intent = new Intent(getActivity(), SearchActivity.class);
-        if (mTRANSITType == TAConstants.TRANSIT_TYPE.BART) {
-            intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_BART);
-        } else {
-            intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_CALTRAIN);
-        }
+    public void onToStationSelected(Intent intent) {
         intent.putExtra(FROM_STATION_ID, mFromStationId);
-        getActivity().startActivityForResult(intent, RESULT_SEARCH_TO, null);
     }
 }

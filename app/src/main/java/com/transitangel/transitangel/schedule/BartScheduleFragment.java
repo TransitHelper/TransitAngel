@@ -157,11 +157,8 @@ public class BartScheduleFragment extends Fragment
     }
 
     @Override
-    public void onToStationSelected() {
-        Intent intent = new Intent(getActivity(), SearchActivity.class);
-        intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_BART);
+    public void onToStationSelected(Intent intent) {
         intent.putExtra(FROM_STATION_ID, mFromStationId);
-        getActivity().startActivityForResult(intent, RESULT_SEARCH_TO, null);
     }
 
     @Override

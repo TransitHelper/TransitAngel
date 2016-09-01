@@ -52,17 +52,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/station_icons"
+            android:textSize="16sp"
+            android:background="@drawable/station_background"
+            android:layout_marginBottom="12dp"
             android:text="From Station"/>
-
-        <View
-            android:id="@+id/from_station_bottom_line"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@+id/from_station"
-            android:layout_toRightOf="@+id/station_icons"
-            android:layout_marginTop="-1dp"
-            android:background="@android:color/white"
-            android:focusable="false"/>
 
         <TextView
             android:id="@+id/to_station"
@@ -70,18 +63,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/from_station"
+            android:textSize="16sp"
             android:layout_toRightOf="@+id/station_icons"
+            android:background="@drawable/station_background"
             android:text="To Station"/>
 
-        <View
-            android:id="@+id/to_station_bottom_line"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@+id/to_station"
-            android:layout_toRightOf="@+id/station_icons"
-            android:layout_marginTop="-1dp"
-            android:background="@android:color/white"
-            android:focusable="false"/>
+
 
         <LinearLayout
             android:id="@+id/station_icons"
@@ -89,7 +76,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_alignTop="@+id/from_station"
-            android:layout_alignBottom="@+id/to_station_bottom_line"
+            android:layout_alignBottom="@+id/to_station"
             android:gravity="center"
             android:layout_marginRight="10dp">
 
@@ -100,8 +87,14 @@
                 android:layout_marginBottom="4dp"
                 android:contentDescription="@string/content_description_from_icon"/>
             <ImageView
-                android:layout_width="12dp"
-                android:layout_height="12dp"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_during"
+                android:layout_marginBottom="4dp"
+                android:contentDescription="@string/content_description_during_icon"/>
+            <ImageView
+                android:layout_width="8dp"
+                android:layout_height="8dp"
                 android:src="@drawable/ic_during"
                 android:layout_marginBottom="4dp"
                 android:contentDescription="@string/content_description_during_icon"/>

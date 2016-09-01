@@ -47,7 +47,7 @@ public class ScheduleActivity extends AppCompatActivity {
     public interface OnStationSelected {
         void onFromStationSelected(Intent intent);
 
-        void onToStationSelected();
+        void onToStationSelected(Intent intent);
 
     }
 
@@ -165,7 +165,14 @@ public class ScheduleActivity extends AppCompatActivity {
     public void onClickToStation() {
         Fragment fragment = getCurrentFragment();
         if(fragment != null && fragment instanceof OnStationSelected) {
-            ((OnStationSelected)getCurrentFragment()).onToStationSelected();
+            Intent intent = new Intent(this, SearchActivity.class);
+            if (mTransitType == TAConstants.TRANSIT_TYPE.BART) {
+                intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_BART);
+            } else {
+                intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_CALTRAIN);
+            }
+            ((OnStationSelected)getCurrentFragment()).onToStationSelected(intent);
+            startActivityForResult(intent, ScheduleFragment.RESULT_SEARCH_TO, null);
         }
     }
 }

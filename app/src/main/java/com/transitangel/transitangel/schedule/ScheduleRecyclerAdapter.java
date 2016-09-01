@@ -122,7 +122,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
             tvTime.setText(departureTime);
             mTrainArrivalTime.setText(departureRelativeTime);
             mTrainInformation.setContentDescription(infoContent);
-            mJourneyTime.setText(DateUtil.getRelativeTime(destinationArrivalTime.getTime(), timestamp.getTime()));
+            mJourneyTime.setText("(" + DateUtil.getRelativeTime(destinationArrivalTime.getTime(), timestamp.getTime()) + ")");
             mJourneyTime.setContentDescription("Arrives destination at" + dateFormat.format(destinationArrivalTime.getTime()));
         }
     }
