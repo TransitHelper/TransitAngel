@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="service_station">
+        <item>Schedule for Caltrain</item>
+        <item>Schedule for Bart</item>
+    </string-array>
+</resources>

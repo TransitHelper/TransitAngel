@@ -358,7 +358,6 @@ public class TransitManager {
                             //add only if the arrival time is after the leavingAfter time
                             if (arrivalTime.after(leavingAfter)) {
                                 trains.add(train);
-
                                 //reset the from stop and to stop to avoid duplicates
                                 fromStop = null;
                                 toStop = null;

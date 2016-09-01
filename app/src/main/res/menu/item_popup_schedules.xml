@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/action_caltrain"
+          android:orderInCategory="1"
+          android:title="Caltrain"/>
+
+    <item android:id="@+id/action_bart"
+          android:orderInCategory="2"
+          android:title="Bart"/>
+</menu>
