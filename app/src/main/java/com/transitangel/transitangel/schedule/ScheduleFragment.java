@@ -142,7 +142,7 @@ public class ScheduleFragment extends Fragment
             trains = BartTransitManager.getSharedInstance().fetchTrains(mFromStationId, mToStationId, 5, date, false);
         } else {
             trains = CaltrainTransitManager.getSharedInstance().fetchTrains(mFromStationId, mToStationId,
-                    10, date, false);
+                    5, date, false);
         }
         mRecentItems.clear();
         for (Train train : trains) {
