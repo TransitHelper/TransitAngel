@@ -13,8 +13,13 @@ import android.widget.TextView;
 
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.model.Transit.TrainStop;
+import com.transitangel.transitangel.utils.DateUtil;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,6 +32,7 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final int ITEM_TYPE_STATION_START = 1;
     private static final int ITEM_TYPE_STATION_MIDDLE = 2;
     private static final int ITEM_TYPE_STATION_END = 3;
+    DateFormat dateFormat = new SimpleDateFormat("hh:mm a");
 
     @IntDef({ITEM_DETAIL, ITEM_ONGOING})
     public @interface ItemType {}
@@ -108,37 +114,44 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         StationStopsViewHolder viewHolder = (StationStopsViewHolder) holder;
         RelativeLayout.LayoutParams params;
         // FUTURE USE TO SETUP THE ICONS ON SEARCH
+        viewHolder.tvStopName.setText(visibleStopsList.get(position).getName());
+        Timestamp departureTime=DateUtil.getTimeStamp(visibleStopsList.get(position).getDepartureTime());
+        String formattedTime=dateFormat.format(departureTime);
+        viewHolder.tvStopTime.setText(formattedTime);
+        Timestamp now = new Timestamp(new Date().getTime());
         switch (getItemViewType(position)) {
             case ITEM_TYPE_STATION_START:
-                viewHolder.tvStopName.setText(visibleStopsList.get(position).getName());
-                viewHolder.tvStopTime.setText(visibleStopsList.get(position).getDepartureTime());
-                params = (RelativeLayout.LayoutParams)viewHolder.trackFinal.getLayoutParams();
+                params = (RelativeLayout.LayoutParams) viewHolder.trackFinal.getLayoutParams();
                 params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
                 viewHolder.trackFinal.setLayoutParams(params);
                 viewHolder.trackFinal.setVisibility(View.VISIBLE);
-                if (itemType == ITEM_DETAIL) {
-                    viewHolder.mSetAlarm.setVisibility(View.GONE);
-                }
+                viewHolder.mSetAlarm.setVisibility(View.GONE);
                 break;
             case ITEM_TYPE_STATION_END:
-                viewHolder.tvStopName.setText(visibleStopsList.get(position).getName());
-                viewHolder.tvStopTime.setText(visibleStopsList.get(position).getDepartureTime());
                 viewHolder.mSetAlarm.setChecked(visibleStopsList.get(position).getNotify());
-                params = (RelativeLayout.LayoutParams)viewHolder.trackFinal.getLayoutParams();
+                params = (RelativeLayout.LayoutParams) viewHolder.trackFinal.getLayoutParams();
                 params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                 viewHolder.trackFinal.setLayoutParams(params);
-                viewHolder.trackFinal.setVisibility(View.VISIBLE);
+                if (DateUtil.getTimeStamp(visibleStopsList.get(position).getDepartureTime()).before(now)) {
+                    viewHolder.mSetAlarm.setVisibility(View.GONE);
+                } else {
+                    viewHolder.mSetAlarm.setVisibility(View.VISIBLE);
+                    viewHolder.mSetAlarm.setChecked(visibleStopsList.get(position).getNotify());
+                }
                 break;
             case ITEM_TYPE_STATION_MIDDLE:
             default:
-                viewHolder.tvStopName.setText(visibleStopsList.get(position).getName());
-                viewHolder.tvStopTime.setText(visibleStopsList.get(position).getDepartureTime());
-                viewHolder.mSetAlarm.setChecked(visibleStopsList.get(position).getNotify());
+                if (DateUtil.getTimeStamp(visibleStopsList.get(position).getDepartureTime()).before(now)) {
+                    viewHolder.mSetAlarm.setVisibility(View.GONE);
+                } else {
+                    viewHolder.mSetAlarm.setVisibility(View.VISIBLE);
+                    viewHolder.mSetAlarm.setChecked(visibleStopsList.get(position).getNotify());
+                }
         }
 
         String contentDescription = context.getString(R.string.content_description_train_arriving) + visibleStopsList.get(position).getName()
                 + context.getString(R.string.content_description_station)
-                +  visibleStopsList.get(position).getDepartureTime()
+                + formattedTime
                 + (viewHolder.mSetAlarm.isChecked() ? context.getString(R.string.notification_selected) : context.getString(R.string.tap_to_add_notifications));
 
         viewHolder.setContentDescption(contentDescription);
@@ -172,7 +185,7 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyDataSetChanged();
     }
 
-    public class StationStopsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class StationStopsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.vIcon)
         View trackVerticalIcon;

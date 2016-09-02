@@ -46,6 +46,7 @@ public class LiveTripFragment extends Fragment implements StationsAdapter.OnItem
     private ArrayList<TrainStop> mStops;
     private StationsAdapter adapter;
     private TAConstants.TRANSIT_TYPE type;
+    private ArrayList<TrainStop> mAlarmStops = new ArrayList<>();
 
     HashMap<String, Stop> stopHashMap = new HashMap<>();
 

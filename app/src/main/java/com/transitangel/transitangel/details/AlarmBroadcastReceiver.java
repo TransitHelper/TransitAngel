@@ -14,11 +14,12 @@ import com.transitangel.transitangel.notifications.NotificationProvider;
 import com.transitangel.transitangel.utils.DateUtil;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.concurrent.TimeUnit;
 
 public class AlarmBroadcastReceiver extends BroadcastReceiver {
-    public static final int NOTIFICATION_LOCATION_UNAVAILABLE = 100;
-    private String TAG = AlarmBroadcastReceiver.class.getSimpleName();
+    DateFormat dateFormat = new SimpleDateFormat("hh:mm a");
     public static final String ARG_STOP = "ARG_STOP";
     public static final String TRIP_ID = "TRIP_ID";
 
@@ -47,7 +48,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
             if (mintues>0) {
                 notificationMessage = "Approaching " + nextStop.getName() + " in " + mintues + " minutes";
             }else{
-                notificationMessage ="Approached "+ nextStop.getName() + " at " + TimeUnit.MILLISECONDS.toHours(stopTimeStamp.getTime());
+                notificationMessage ="Approached "+ nextStop.getName() + " at " + dateFormat.format(stopTimeStamp);
             }
                 NotificationProvider.getInstance().updateTripStartedNotification(context, notificationMessage);
                 Vibrator vibrator = (Vibrator) context

@@ -85,7 +85,7 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     private Trip trip;
     private ArrayList<PendingIntent> mPendingIntents = new ArrayList<>();
     private ArrayList<TrainStop> mAlarmStops = new ArrayList<>();
-    private ArrayList<TrainStop>geofenceStops = new ArrayList<>();
+    private ArrayList<TrainStop> geofenceStops = new ArrayList<>();
     HashMap<String, Stop> stopHashMap = new HashMap<>();
 
     @Override
@@ -107,7 +107,7 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         Preconditions.checkNull(serviceType);
         Preconditions.checkNull(train);
 
-        mStops = train.getTrainStopsBetween(fromStation,toStation);
+        mStops = train.getTrainStopsBetween(fromStation, toStation);
         if (EXTRA_SERVICE_CALTRAIN.equalsIgnoreCase(serviceType)) {
             type = TAConstants.TRANSIT_TYPE.CALTRAIN;
             stopHashMap = CaltrainTransitManager.getSharedInstance().getStopLookup();
@@ -161,7 +161,7 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         ArrayList<TrainStop> visibleStopsList = adapter.getVisibleStops();
         String contentDescription = getString(R.string.content_description_train_arriving) + visibleStopsList.get(position).getName()
                 + getString(R.string.content_description_station)
-                +  visibleStopsList.get(position).getDepartureTime()
+                + visibleStopsList.get(position).getDepartureTime()
                 + getString(R.string.notification_selected);
         view.setContentDescription(contentDescription);
         mStops.get(position).setNotify(true);
@@ -173,7 +173,7 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         ArrayList<TrainStop> visibleStopsList = adapter.getVisibleStops();
         String contentDescription = getString(R.string.content_description_train_arriving) + visibleStopsList.get(position).getName()
                 + getString(R.string.content_description_station)
-                +  visibleStopsList.get(position).getDepartureTime()
+                + visibleStopsList.get(position).getDepartureTime()
                 + getString(R.string.tap_to_add_notifications);
         view.setContentDescription(contentDescription);
         mStops.get(position).setNotify(false);
@@ -263,16 +263,17 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     private void addGeoFencesandAlarm() {
         geofenceStops = new ArrayList<>();
         geofenceStops.addAll(mAlarmStops);
-        addGeoFenceToSelectedStops(trip);
         for (TrainStop stop : mAlarmStops) {
             int requestCode = ALARM_REQUEST_CODE + stop.getStopOrder();//find better way to do it
             addAlarmToSelectedStops(stop, requestCode);
         }
+        addGeoFenceToSelectedStops(trip);
+
     }
 
     //recursively add geofence , add the next fence only when the fence has been updated
     private void addGeoFenceToSelectedStops(Trip trip) {
-        if ( geofenceStops.size() > 0 ) {
+        if (geofenceStops.size() > 0) {
             try {
                 selectedStop = geofenceStops.get(0);
                 TrainStopFence trainStopFence = new TrainStopFence(selectedStop);
@@ -324,13 +325,14 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         Gson gson = new Gson();
         String json = gson.toJson(lastStop);
         intent.putExtra(AlarmBroadcastReceiver.ARG_STOP, json);
-        intent.putExtra(AlarmBroadcastReceiver.TRIP_ID,trip.getTripId());
+        intent.putExtra(AlarmBroadcastReceiver.TRIP_ID, trip.getTripId());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 this.getApplicationContext(), requestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         final Timestamp timestamp = DateUtil.getTimeStamp(lastStop.getArrrivalTime());
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(timestamp);
-        calendar.add(Calendar.MINUTE,-3);
+        calendar.add(Calendar.MINUTE, -2);
+        Log.e(String.valueOf(calendar.getTime()), String.valueOf(System.currentTimeMillis()));
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 pendingIntent);

@@ -112,7 +112,6 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
                 departureTime =  dateFormat.format(timestamp);
                 departureRelativeTime = "At " + dateFormat.format(timestamp);
                 infoContent += departureRelativeTime;
-
             }
 
             tvTime.setText(departureTime);
