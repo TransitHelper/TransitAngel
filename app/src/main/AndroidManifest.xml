@@ -18,6 +18,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".home.HomeActivity"
+            android:label="@string/home_screen_label"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,6 +28,7 @@
         </activity>
         <activity
             android:name=".search.SearchActivity"
+            android:label="@string/search_screen_label"
             android:parentActivityName=".home.HomeActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -34,12 +36,15 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".schedule.ScheduleActivity"
+            android:label="@string/schedule_screen_label"
             android:screenOrientation="portrait" />
         <activity
             android:name=".details.DetailsActivity"
+            android:label="@string/trip_details_screen_label"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ongoing.OnGoingActivity"
+            android:label="@string/ongoing_label"
             android:screenOrientation="portrait" />
 
         <service
