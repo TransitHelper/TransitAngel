@@ -94,12 +94,12 @@ public class RecentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 return RECENT_TRIP_ITEM_HEADER_TYPE;
             }
             // Show only 3 items
-            if(recentTripItemList.size() > 3) {
-                if (position <= 3) {
+            if(recentTripItemList.size() > 2) {
+                if (position <= 2) {
                     return RECENT_TRIP_ITEM_TYPE;
                 }
 
-                if (position == 4) {
+                if (position == 3) {
                     return RECENT_TRIP_ITEM_VIEW_MORE_TYPE;
                 }
             } else {
@@ -185,9 +185,9 @@ public class RecentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private void updateTotalCounts() {
         RECENT_TRIP_HEADER = recentTripItemList.size() != 0 ? 1 : 0;
         RECENT_TRIP_LIST = recentTripItemList.size();
-        if(recentTripItemList.size() > 3) {
+        if(recentTripItemList.size() > 2) {
             RECENT_TRIP_VIEW_MORE = 1;
-            RECENT_TRIP_LIST = 3;
+            RECENT_TRIP_LIST = 2;
         }
         RECENT_SEARCH_HEADER = 1;
         RECENT_SEARCH_LIST = recentSearchItemList.size();

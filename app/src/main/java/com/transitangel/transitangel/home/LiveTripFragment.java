@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class LiveTripFragment extends Fragment implements StationsAdapter.OnItemClickListener {
 
@@ -37,6 +39,9 @@ public class LiveTripFragment extends Fragment implements StationsAdapter.OnItem
 
     @BindView(R.id.tvNoLiveTrip)
     TextView tvNoLiveTrip;
+
+    @BindView(R.id.btnCancelTrip)
+    Button btnCancelTrip;
 
     private ArrayList<TrainStop> mStops;
     private StationsAdapter adapter;
@@ -66,6 +71,7 @@ public class LiveTripFragment extends Fragment implements StationsAdapter.OnItem
     private void displayOnGoingTrip() {
         Trip trip = PrefManager.getOnGoingTrip();
         if (trip != null) {
+            btnCancelTrip.setVisibility(View.VISIBLE);
             rvStationList.setVisibility(View.VISIBLE);
             tvNoLiveTrip.setVisibility(View.GONE);
             type = trip.getType();
@@ -84,6 +90,7 @@ public class LiveTripFragment extends Fragment implements StationsAdapter.OnItem
         } else {
             // Display empty screen
             rvStationList.setVisibility(View.GONE);
+            btnCancelTrip.setVisibility(View.GONE);
             tvNoLiveTrip.setVisibility(View.VISIBLE);
         }
     }
@@ -98,6 +105,7 @@ public class LiveTripFragment extends Fragment implements StationsAdapter.OnItem
 
     }
 
+    @OnClick(R.id.btnCancelTrip)
     public void onCancelTrip() {
         PrefManager.removeOnGoingTrip();
         // Remove the persistent notification.
