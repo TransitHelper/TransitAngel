@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" >
     <item android:id="@+id/action_search"
           android:orderInCategory="5"
-          android:title="Search"
-          android:hint="Search Station Name"
+          android:title="@string/search_menu_title"
+          android:hint="@string/search_station_name"
           android:icon="@drawable/search"
           app:showAsAction="always"
           app:actionViewClass="android.support.v7.widget.SearchView" />

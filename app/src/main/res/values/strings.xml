@@ -1,10 +1,12 @@
 <resources>
-    <string name="app_name">TripAngel</string>
+    <string name="app_name">Trip Angel</string>
     <string name="contentdescription_lookup_schedule">Lookup Schedule</string>
     <string name="contentdescription_on_going_trip">On Going Trip information</string>
     <string name="schedule">Get me somewhere</string>
     <string name="recents">Recents</string>
     <string name="home_title">TransitAngel</string>
+    <string name="search_from_title">From station list(%1$s)</string>
+    <string name="search_to_title">To station list(%1$s)</string>
     <string name="search_title">Search train schedules</string>
     <string name="contentdescription_from_to">Search item from %1$s To %2$s</string>
     <string name="label_caltrain">CalTrain</string>
@@ -149,4 +151,6 @@
     <string name="live_trip_selected">Live trip selected</string>
     <string name="content_description_selected">selected</string>
     <string name="content_description_unselected">unselected</string>
+    <string name="search_station_name">Search Station Name</string>
+    <string name="search_menu_title">Search</string>
 </resources>
