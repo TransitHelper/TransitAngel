@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -45,9 +44,6 @@ public class HomeActivity extends AppCompatActivity {
 
     @BindView(R.id.home_pager)
     ViewPager homePager;
-
-    @BindView(R.id.fabCancelTrip)
-    FloatingActionButton fabCancelTrip;
 
     private HomePagerAdapter adapter;
     private TripHelperApiFactory mTripHelperApiFactory;
@@ -115,16 +111,15 @@ public class HomeActivity extends AppCompatActivity {
                 (getSupportFragmentManager(), tabLayout.getTabCount());
         homePager.setAdapter(adapter);
         homePager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        homePager.setOffscreenPageLimit(3);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 homePager.setCurrentItem(tab.getPosition());
                 Fragment fragment = adapter.getRegisteredFragment(tab.getPosition());
                 if (fragment instanceof LiveTripFragment) {
-                    fabCancelTrip.show();
                     ((LiveTripFragment) fragment).onSelected();
                 } else {
-                    fabCancelTrip.hide();
                 }
             }
 
@@ -215,17 +210,6 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-    }
-
-    @OnClick(R.id.fabCancelTrip)
-    public void onCancelTrip() {
-        Fragment fragment = adapter.getRegisteredFragment(tabLayout.getSelectedTabPosition());
-        if (fragment instanceof LiveTripFragment) {
-            fabCancelTrip.show();
-            ((LiveTripFragment) fragment).onCancelTrip();
-        } else {
-            fabCancelTrip.hide();
-        }
     }
 
     @Override

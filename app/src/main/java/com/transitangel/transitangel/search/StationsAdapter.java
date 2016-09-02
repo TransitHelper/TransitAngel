@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.transitangel.transitangel.R;
@@ -104,12 +104,16 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         StationStopsViewHolder viewHolder = (StationStopsViewHolder) holder;
+        RelativeLayout.LayoutParams params;
         // FUTURE USE TO SETUP THE ICONS ON SEARCH
         switch (getItemViewType(position)) {
             case ITEM_TYPE_STATION_START:
                 viewHolder.tvStopName.setText(visibleStopsList.get(position).getName());
                 viewHolder.tvStopTime.setText(visibleStopsList.get(position).getDepartureTime());
-                viewHolder.mStopIcon.setImageResource(R.mipmap.ic_train_caltrain);
+                params = (RelativeLayout.LayoutParams)viewHolder.trackFinal.getLayoutParams();
+                params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+                viewHolder.trackFinal.setLayoutParams(params);
+                viewHolder.trackFinal.setVisibility(View.VISIBLE);
                 if (itemType == ITEM_DETAIL) {
                     viewHolder.mSetAlarm.setVisibility(View.GONE);
                 }
@@ -117,8 +121,11 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             case ITEM_TYPE_STATION_END:
                 viewHolder.tvStopName.setText(visibleStopsList.get(position).getName());
                 viewHolder.tvStopTime.setText(visibleStopsList.get(position).getDepartureTime());
-                viewHolder.mStopIcon.setImageResource(R.mipmap.ic_cal_dest);
                 viewHolder.mSetAlarm.setChecked(visibleStopsList.get(position).getNotify());
+                params = (RelativeLayout.LayoutParams)viewHolder.trackFinal.getLayoutParams();
+                params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                viewHolder.trackFinal.setLayoutParams(params);
+                viewHolder.trackFinal.setVisibility(View.VISIBLE);
                 break;
             case ITEM_TYPE_STATION_MIDDLE:
             default:
@@ -152,10 +159,14 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyDataSetChanged();
     }
 
-    public class StationStopsViewHolder extends RecyclerView.ViewHolder {
+    public class StationStopsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        @BindView(R.id.stopIcon)
-        ImageView mStopIcon;
+        @BindView(R.id.vIcon)
+        View trackVerticalIcon;
+        @BindView(R.id.track)
+        View trackIcon;
+        @BindView(R.id.trackFinal)
+        View trackFinal;
         @BindView(R.id.tvStopName)
         TextView tvStopName;
         @BindView(R.id.tvStopTime)
@@ -166,6 +177,7 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public StationStopsViewHolder(View itemView, StationsAdapter.OnItemClickListener onItemClickListener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
             mSetAlarm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -179,6 +191,19 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             });
 
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (mSetAlarm.isChecked()) {
+                mSetAlarm.setChecked(false);
+                visibleStopsList.get(getLayoutPosition()).setNotify(false);
+                onItemClickListener.onCheckBoxUnSelected(getLayoutPosition());
+            } else {
+                mSetAlarm.setChecked(true);
+                visibleStopsList.get(getLayoutPosition()).setNotify(true);
+                onItemClickListener.onCheckBoxSelected(getLayoutPosition());
+            }
         }
     }
 

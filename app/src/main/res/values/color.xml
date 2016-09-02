@@ -21,7 +21,7 @@
 
     <!-- Lists -->
     <color name="list_divider">#84a1bb</color>
-    <color name="red_caltrain">#A81C1C</color>
+    <color name="blue_tracks">#1976D2</color>
 
     <color name="bg_activity_default">@android:color/white</color>
     <color name="bg_secondary">#EDF3F9</color>
