@@ -101,7 +101,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
             String infoContent = "Train Number " + item.getTrain().getNumber() + " From " + item.getFrom() + " to " + item.getTo();
             mTrainInformation.setText(info);
             final Timestamp timestamp =DateUtil.getTimeStamp(item.getDepatureTime());
-            List<TrainStop> mTrainStop = item.getTrain().getTrainStops();
+            List<TrainStop> mTrainStop = item.getTrain().getTrainStopsBetween(item.getFromStopID(),item.getToStopID());
             final Timestamp destinationArrivalTime =DateUtil.getTimeStamp(mTrainStop.get(mTrainStop.size() - 1).getArrrivalTime());
             String departureRelativeTime;
             if (new Timestamp(new Date().getTime()).equals(timestamp)) {
@@ -114,6 +114,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
                 infoContent += departureRelativeTime;
 
             }
+
             tvTime.setText(departureTime);
             mTrainArrivalTime.setText(departureRelativeTime);
             mTrainInformation.setContentDescription(infoContent);

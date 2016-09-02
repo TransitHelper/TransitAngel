@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -138,10 +139,11 @@ public class BartScheduleFragment extends Fragment
         trains = BartTransitManager.getSharedInstance().fetchTrains(mFromStationId, mToStationId, 5, date, false);
         mRecentItems.clear();
         for (Train train : trains) {
-            TrainStop mSource = train.getTrainStops().get(0);
+            ArrayList<TrainStop> mTrainStop = train.getTrainStopsBetween(mFromStationId, mToStationId);
+            TrainStop mSource = mTrainStop.get(0);
             mRecentItems.add(new scheduleItem(stopHashMap.get(mSource.getStopId()).getName(),
-                    stopHashMap.get(train.getTrainStops().get(train.getTrainStops().size() - 1).getStopId()).getName()
-                    , mSource.getDepartureTime(), "", train));
+                    stopHashMap.get(mToStationId).getName(), mFromStationId, mToStationId
+                    , mSource.getDepartureTime(), train));
         }
     }
 
@@ -228,8 +230,8 @@ public class BartScheduleFragment extends Fragment
         Intent intent = new Intent(getActivity(), DetailsActivity.class);
         intent.putExtra(DetailsActivity.EXTRA_SERVICE, DetailsActivity.EXTRA_SERVICE_BART);
         intent.putExtra(DetailsActivity.EXTRA_TRAIN, mRecentItems.get(position).getTrain());
-        intent.putExtra(DetailsActivity.EXTRA_FROM_STATION, mFromStationId);
-        intent.putExtra(DetailsActivity.EXTRA_TO_STATION, mToStationId);
+        intent.putExtra(DetailsActivity.EXTRA_FROM_STATION_ID, mFromStationId);
+        intent.putExtra(DetailsActivity.EXTRA_TO_STATION_ID, mToStationId);
         getActivity().startActivityForResult(intent, RESULT_DETAILS, null);
     }
 

@@ -8,6 +8,29 @@ public class scheduleItem {
     String DepatureTime;
     String ImportantInformation;
     Train train;
+    String fromStopID;
+
+    public String getFromStopID() {
+        return fromStopID;
+    }
+
+    public void setFromStopID(String fromStopID) {
+        this.fromStopID = fromStopID;
+    }
+
+    public String getToStopID() {
+        return toStopID;
+    }
+
+    public void setToStopID(String toStopID) {
+        this.toStopID = toStopID;
+    }
+
+    public void setTrain(Train train) {
+        this.train = train;
+    }
+
+    String toStopID;
 
     public String getDepatureTime() {
         return DepatureTime;
@@ -49,11 +72,12 @@ public class scheduleItem {
         this.from = from;
         this.to = to;
     }
-    public scheduleItem(String from, String to, String depatureTime, String importantInformation, Train train) {
-        this.from = from;
-        this.to = to;
-        this.DepatureTime=depatureTime;
-        this.ImportantInformation=importantInformation;
-        this.train = train;
+    public scheduleItem(String from, String to,String fromStopID,String toStopID, String depatureTime,Train train) {
+        setTo(to);
+        setFrom(from);
+        setFromStopID(fromStopID);
+        setToStopID(toStopID);
+        setDepatureTime(depatureTime);
+        setTrain(train);
     }
 }

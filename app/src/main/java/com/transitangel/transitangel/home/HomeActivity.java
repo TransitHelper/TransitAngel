@@ -138,7 +138,6 @@ public class HomeActivity extends AppCompatActivity {
         String action = getIntent().getAction();
         if (!TextUtils.isEmpty(action)) {
             if (action.equalsIgnoreCase(ACTION_SHOW_ONGOING)) {
-                Toast.makeText(this, "Show on going screen here.", Toast.LENGTH_LONG).show();
                 launchOnGoingScreen();
                 nearbyView.setContentDescription(getString(R.string.neaby_unselected));
                 recents.setContentDescription(getString(R.string.recents_unselected));
@@ -169,8 +168,8 @@ public class HomeActivity extends AppCompatActivity {
                 intent.putExtra(DetailsActivity.EXTRA_SERVICE, DetailsActivity.EXTRA_SERVICE_CALTRAIN);
             }
             intent.putExtra(DetailsActivity.EXTRA_TRAIN, trip.getSelectedTrain());
-            intent.putExtra(DetailsActivity.EXTRA_FROM_STATION, trip.getFromStop().getId());
-            intent.putExtra(DetailsActivity.EXTRA_TO_STATION, trip.getToStop().getId());
+            intent.putExtra(DetailsActivity.EXTRA_FROM_STATION_ID, trip.getFromStop().getId());
+            intent.putExtra(DetailsActivity.EXTRA_TO_STATION_ID, trip.getToStop().getId());
             startActivity(intent);
         }
     }

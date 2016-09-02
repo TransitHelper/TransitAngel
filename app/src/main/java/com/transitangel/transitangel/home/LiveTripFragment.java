@@ -75,7 +75,7 @@ public class LiveTripFragment extends Fragment implements StationsAdapter.OnItem
             rvStationList.setVisibility(View.VISIBLE);
             tvNoLiveTrip.setVisibility(View.GONE);
             type = trip.getType();
-            mStops = trip.getSelectedTrain().getTrainStops();
+            mStops = trip.getSelectedTrain().getTrainStopsBetween(trip.getFromStop().getId(),trip.getToStop().getId());
             if (type == TAConstants.TRANSIT_TYPE.CALTRAIN) {
                 stopHashMap = CaltrainTransitManager.getSharedInstance().getStopLookup();
             } else {

@@ -39,8 +39,8 @@ public class OnGoingActivity extends AppCompatActivity implements StationsAdapte
     public static final String EXTRA_SERVICE = TAG + ".EXTRA_SERVICE";
     public static final String EXTRA_SERVICE_BART = TAG + ".EXTRA_SERVICE_BART";
     public static final String EXTRA_SERVICE_CALTRAIN = TAG + ".EXTRA_SERVICE_CALTRAIN";
-    public static final String EXTRA_FROM_STATION = TAG + ".EXTRA_FROM_STATION";
-    public static final String EXTRA_TO_STATION = TAG + ".EXTRA_TO_STATION";
+    public static final String EXTRA_FROM_STATION = TAG + ".EXTRA_FROM_STATION_ID";
+    public static final String EXTRA_TO_STATION = TAG + ".EXTRA_TO_STATION_ID";
     public static final int ALARM_REQUEST_CODE = 111;
 
 

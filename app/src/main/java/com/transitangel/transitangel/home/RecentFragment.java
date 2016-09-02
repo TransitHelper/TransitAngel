@@ -91,8 +91,8 @@ public class RecentFragment extends Fragment implements RecentAdapter.OnItemClic
                 intent.putExtra(DetailsActivity.EXTRA_SERVICE, DetailsActivity.EXTRA_SERVICE_CALTRAIN);
             }
             intent.putExtra(DetailsActivity.EXTRA_TRAIN, trip.getSelectedTrain());
-            intent.putExtra(DetailsActivity.EXTRA_FROM_STATION, trip.getFromStop().getId());
-            intent.putExtra(DetailsActivity.EXTRA_TO_STATION, trip.getToStop().getId());
+            intent.putExtra(DetailsActivity.EXTRA_FROM_STATION_ID, trip.getFromStop().getId());
+            intent.putExtra(DetailsActivity.EXTRA_TO_STATION_ID, trip.getToStop().getId());
             startActivity(intent);
         } else if(adapter.getItemViewType(position) ==  RecentAdapter.RECENT_SEARCH_ITEM_TYPE) {
             // Subtract header and recent trips

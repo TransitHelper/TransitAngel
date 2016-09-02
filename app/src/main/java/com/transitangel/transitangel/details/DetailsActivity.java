@@ -30,6 +30,7 @@ import com.transitangel.transitangel.Manager.GeofenceManager;
 import com.transitangel.transitangel.Manager.PrefManager;
 import com.transitangel.transitangel.Manager.TransitManager;
 import com.transitangel.transitangel.R;
+import com.transitangel.transitangel.home.HomeActivity;
 import com.transitangel.transitangel.model.Transit.Stop;
 import com.transitangel.transitangel.model.Transit.Train;
 import com.transitangel.transitangel.model.Transit.TrainStop;
@@ -63,13 +64,12 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     CoordinatorLayout clMainContent;
 
     private static final String TAG = DetailsActivity.class.getSimpleName();
-    public static final String EXTRA_SELECTED_STATION = TAG + ".EXTRA_SELECTED_STATION";
     public static final String EXTRA_TRAIN = TAG + ".EXTRA_TRAIN";
     public static final String EXTRA_SERVICE = TAG + ".EXTRA_SERVICE";
     public static final String EXTRA_SERVICE_BART = TAG + ".EXTRA_SERVICE_BART";
     public static final String EXTRA_SERVICE_CALTRAIN = TAG + ".EXTRA_SERVICE_CALTRAIN";
-    public static final String EXTRA_FROM_STATION = TAG + ".EXTRA_FROM_STATION";
-    public static final String EXTRA_TO_STATION = TAG + ".EXTRA_TO_STATION";
+    public static final String EXTRA_FROM_STATION_ID = TAG + ".EXTRA_FROM_STATION_ID";
+    public static final String EXTRA_TO_STATION_ID = TAG + ".EXTRA_TO_STATION_ID";
     public static final int ALARM_REQUEST_CODE = 111;
     private static GeofenceManager.GeofenceManagerListener mGeofenceManagerListener;
 
@@ -99,15 +99,15 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     private void init() {
         serviceType = getIntent().getStringExtra(EXTRA_SERVICE);
         train = getIntent().getParcelableExtra(EXTRA_TRAIN);
-        fromStation = getIntent().getStringExtra(EXTRA_FROM_STATION);
-        toStation = getIntent().getStringExtra(EXTRA_TO_STATION);
+        fromStation = getIntent().getStringExtra(EXTRA_FROM_STATION_ID);
+        toStation = getIntent().getStringExtra(EXTRA_TO_STATION_ID);
 
         Preconditions.checkNull(fromStation);
         Preconditions.checkNull(toStation);
         Preconditions.checkNull(serviceType);
         Preconditions.checkNull(train);
 
-        mStops = train.getTrainStops();
+        mStops = train.getTrainStopsBetween(fromStation,toStation);
         if (EXTRA_SERVICE_CALTRAIN.equalsIgnoreCase(serviceType)) {
             type = TAConstants.TRANSIT_TYPE.CALTRAIN;
             stopHashMap = CaltrainTransitManager.getSharedInstance().getStopLookup();
@@ -254,6 +254,10 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         addGeoFencesandAlarm();
         startOnGoingNotification(trip);
         TransitManager.getSharedInstance().saveRecentTrip(trip);
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.setAction(HomeActivity.ACTION_SHOW_ONGOING);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     private void addGeoFencesandAlarm() {
