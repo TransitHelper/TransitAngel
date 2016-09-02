@@ -40,23 +40,22 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
             network_enabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
         } catch (Exception ex) {
         }
-        if (!gps_enabled && !network_enabled) {
+        if (!gps_enabled && !network_enabled && isTripValid(tripId)) {
             String notificationMessage;
-            Timestamp stopTimeStamp=DateUtil.getTimeStamp(nextStop.getArrrivalTime());
-            long mintues = getTimeStampDifference(stopTimeStamp);
-
-            if (mintues>0) {
-                notificationMessage = "Approaching " + nextStop.getName() + " in " + mintues + " minutes";
-            }else{
-                notificationMessage ="Approached "+ nextStop.getName() + " at " + dateFormat.format(stopTimeStamp);
+            Timestamp stopTimeStamp = DateUtil.getTimeStamp(nextStop.getArrrivalTime());
+            long minutes = getTimeStampDifference(stopTimeStamp);
+            if (minutes > 0) {
+                notificationMessage = "Approaching " + nextStop.getName() + " in " + minutes + " minutes";
+            } else {
+                notificationMessage = "Approached " + nextStop.getName() + " at " + dateFormat.format(stopTimeStamp);
             }
-                NotificationProvider.getInstance().updateTripStartedNotification(context, notificationMessage);
-                Vibrator vibrator = (Vibrator) context
-                        .getSystemService(Context.VIBRATOR_SERVICE);
-                vibrator.vibrate(2000);
-            }
-
+            NotificationProvider.getInstance().updateTripStartedNotification(context, notificationMessage);
+            Vibrator vibrator = (Vibrator) context
+                    .getSystemService(Context.VIBRATOR_SERVICE);
+            vibrator.vibrate(2000);
         }
+
+    }
 
     private long getTimeStampDifference(Timestamp timeStamp) {
         long difference = timeStamp.getTime() - System.currentTimeMillis();
@@ -66,6 +65,11 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
     private boolean isTripValid(String tripId) {
         Log.e("TripID", tripId);
         Log.e("PrefTripId", PrefManager.getOnGoingTrip().getTripId());
-        return (PrefManager.getOnGoingTrip() != null && PrefManager.getOnGoingTrip().getTripId() == tripId);
+        if (PrefManager.getOnGoingTrip() == null) return true;
+        if (PrefManager.getOnGoingTrip().getTripId() == tripId) return true;
+        else {
+            return false;
+        }
+
     }
 }

@@ -70,7 +70,6 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     public static final String EXTRA_SERVICE_CALTRAIN = TAG + ".EXTRA_SERVICE_CALTRAIN";
     public static final String EXTRA_FROM_STATION_ID = TAG + ".EXTRA_FROM_STATION_ID";
     public static final String EXTRA_TO_STATION_ID = TAG + ".EXTRA_TO_STATION_ID";
-    public static final int ALARM_REQUEST_CODE = 111;
     private static GeofenceManager.GeofenceManagerListener mGeofenceManagerListener;
 
     private ArrayList<TrainStop> mStops;
@@ -264,7 +263,7 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         geofenceStops = new ArrayList<>();
         geofenceStops.addAll(mAlarmStops);
         for (TrainStop stop : mAlarmStops) {
-            int requestCode = ALARM_REQUEST_CODE + stop.getStopOrder();//find better way to do it
+            int requestCode = TAConstants.ALARM_REQUEST_CODE + stop.getStopOrder();//find better way to do it
             addAlarmToSelectedStops(stop, requestCode);
         }
         addGeoFenceToSelectedStops(trip);

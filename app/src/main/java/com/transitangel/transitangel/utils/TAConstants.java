@@ -12,6 +12,7 @@ public class TAConstants {
     public static String SharedPrefGeofences = "SHARED_PREFS_GEOFENCES";
     public static String HomeScreenSettings = "HOME_SCREEN_SETTINGS";
     public static String AlarmIntents = "ALARM_PENDING_INTENTS";
+    public static final int ALARM_REQUEST_CODE = 111;
 
 
 }
