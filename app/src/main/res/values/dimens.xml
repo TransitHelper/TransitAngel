@@ -20,5 +20,8 @@
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="padding_left_station_container">40dp</dimen>
+    <dimen name="padding_right_station_container">20dp</dimen>
+    <dimen name="padding_bottom_station_container">8dp</dimen>
 
 </resources>

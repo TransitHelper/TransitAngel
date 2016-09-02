@@ -69,11 +69,14 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         @BindView(R.id.train_description)
         TextView mTrainInformation;
 
-        @BindView(R.id.train_departure_time)
+        @BindView(R.id.status)
         TextView mTrainArrivalTime;
 
-        @BindView(R.id.journey_time)
+        @BindView(R.id.duration)
         TextView mJourneyTime;
+
+        @BindView(R.id.time)
+        TextView tvTime;
 
 
         public ScheduleViewHolder(View v) {
@@ -92,6 +95,8 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         }
 
         public void bindTrainData(scheduleItem item) {
+            String departureTime = "";
+            String arrivalTime = "";
             String info = item.getTrain().getNumber() + " " + item.getFrom() + "-" + item.getTo();
             String infoContent = "Train Number " + item.getTrain().getNumber() + " From " + item.getFrom() + " to " + item.getTo();
             mTrainInformation.setText(info);
@@ -104,16 +109,20 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
                             .format(mCalendar.getTime())
                             .concat(item.getDepatureTime()));
             if (filterTimeStamp.equals(timestamp)) {
-                departureRelativeTime = "In " + DateUtil.getRelativeTime(timestamp.getTime(), System.currentTimeMillis()) + "(" + dateFormat.format(timestamp) + ")";
+                departureTime =  dateFormat.format(timestamp);
+                departureRelativeTime = "In " + DateUtil.getRelativeTime(timestamp.getTime(), System.currentTimeMillis());
                 infoContent += "In " + DateUtil.getRelativeTime(timestamp.getTime(), System.currentTimeMillis());
             } else {
+                departureTime =  dateFormat.format(timestamp);
                 departureRelativeTime = "At " + dateFormat.format(timestamp);
                 infoContent += departureRelativeTime;
 
             }
+
+            tvTime.setText(departureTime);
             mTrainArrivalTime.setText(departureRelativeTime);
             mTrainInformation.setContentDescription(infoContent);
-            mJourneyTime.setText(DateUtil.getRelativeTime(destinationArrivalTime.getTime(), timestamp.getTime()));
+            mJourneyTime.setText("(" + DateUtil.getRelativeTime(destinationArrivalTime.getTime(), timestamp.getTime()) + ")");
             mJourneyTime.setContentDescription("Arrives destination at" + dateFormat.format(destinationArrivalTime.getTime()));
         }
     }

@@ -143,6 +143,7 @@ public class NotificationProvider {
                         .setContentText(contentTitle)
                         .setContentIntent(piOnDismiss)
                         .setTicker(contentTitle)
+                        .setPriority(android.support.v7.app.NotificationCompat.PRIORITY_HIGH)
                         .setAutoCancel(true);
         notificationManager.notify(NOTIFICATION_DISMISS_ID, mBuilder.build());
 

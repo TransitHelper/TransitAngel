@@ -3,10 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.transitangel.transitangel.schedule.ScheduleActivity">
+
+    <item
+        android:id="@+id/action_reverse"
+        android:contentDescription="Reverse from and to station"
+        android:icon="@drawable/ic_direction"
+        android:title="Reverse stations"
+        android:orderInCategory="1"
+        app:showAsAction="always" />
+
     <item
         android:id="@+id/action_filter"
         android:contentDescription="Filter Schedule based on time and date."
-        android:icon="@drawable/ic_action_filter"
+        android:icon="@drawable/ic_filter"
         android:title="Filter"
+        android:orderInCategory="2"
         app:showAsAction="always" />
 </menu>

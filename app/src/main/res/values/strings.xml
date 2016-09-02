@@ -124,4 +124,7 @@
     <string name="nearby_bart_title">Nearby Bart Stations</string>
     <string name="recent_search_to">&#160;to&#160;</string>
     <string name="nearby_error_text">Error while getting the train information.</string>
+    <string name="content_description_from_icon">From station icon</string>
+    <string name="content_description_during_icon">During trip icon</string>
+    <string name="content_description_to_icon">To station icon</string>
 </resources>

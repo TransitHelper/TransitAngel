@@ -30,7 +30,6 @@ import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.model.scheduleItem;
 import com.transitangel.transitangel.search.SearchActivity;
 import com.transitangel.transitangel.utils.TAConstants;
-import com.transitangel.transitangel.view.RecyclerItemDecoration;
 import com.transitangel.transitangel.view.widget.EmptySupportingRecyclerView;
 
 import java.util.ArrayList;
@@ -41,11 +40,10 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class BartScheduleFragment extends Fragment
         implements ScheduleRecyclerAdapter.OnItemClickListener,
-        FilterDialogFragment.FilterChangedListener {
+        FilterDialogFragment.FilterChangedListener, ScheduleActivity.OnStationSelected  {
 
     private static final int RESULT_SEARCH_FROM = 1;
     private static final int RESULT_SEARCH_TO = 2;
@@ -57,12 +55,6 @@ public class BartScheduleFragment extends Fragment
     private static final String TAG = ScheduleFragment.class.getSimpleName();
     ProgressDialog mProgressDialog;
 
-    @BindView(R.id.from_station)
-    TextView mFromStation;
-    @BindView(R.id.to_station)
-    TextView mToStation;
-    @BindView(R.id.swap_station)
-    ImageView mSwapStationBtn;
     @BindView(R.id.rvRecents)
     EmptySupportingRecyclerView mRecyclerView;
     @BindView(R.id.empty_view_stub)
@@ -128,7 +120,6 @@ public class BartScheduleFragment extends Fragment
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setNestedScrollingEnabled(true);
-        mRecyclerView.addItemDecoration(new RecyclerItemDecoration(getContext(), R.drawable.recycler_view_divider));
         View emptyView = mViewStub.inflate();
         TextView textView = (TextView) emptyView.findViewById(R.id.text_empty_state_description);
         textView.setText(R.string.empty_results);
@@ -165,23 +156,17 @@ public class BartScheduleFragment extends Fragment
         hideProgressDialog();
     }
 
-    @OnClick(R.id.to_station)
-    protected void onToStationClick() {
-        Intent intent = new Intent(getActivity(), SearchActivity.class);
-        intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_BART);
+    @Override
+    public void onToStationSelected(Intent intent) {
         intent.putExtra(FROM_STATION_ID, mFromStationId);
-        getActivity().startActivityForResult(intent, RESULT_SEARCH_TO, null);
     }
 
-    @OnClick(R.id.from_station)
-    protected void onFromStationClick() {
-        Intent intent = new Intent(getActivity(), SearchActivity.class);
+    @Override
+    public void onFromStationSelected(Intent intent) {
         intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_BART);
         intent.putExtra(TO_STATION_ID, mToStationId);
-        getActivity().startActivityForResult(intent, RESULT_SEARCH_FROM, null);
     }
 
-    @OnClick(R.id.swap_station)
     protected void onSwapStationClick() {
         String temp = mFromStationId;
         mFromStationId = mToStationId;
@@ -193,7 +178,6 @@ public class BartScheduleFragment extends Fragment
         boolean isStation = stopHashMap.containsKey(mToStationId);
         if (isStation) {
             String stationName = stopHashMap.get(mToStationId).getName();
-            mToStation.setText(stationName);
             Log.d(TAG, "To Station : " + stationName);
         }
 
@@ -202,10 +186,13 @@ public class BartScheduleFragment extends Fragment
             String stationName = stopHashMap.get(mFromStationId).getName();
             Log.d(TAG, "From Station : " + stationName);
         }
-        mToStation.setText(stopHashMap.containsKey(mToStationId) ?
+
+        ((ScheduleActivity)getActivity()).setToStation(stopHashMap.containsKey(mToStationId) ?
                 stopHashMap.get(mToStationId).getName() : "Select To Station");
-        mFromStation.setText(stopHashMap.containsKey(mFromStationId) ?
+
+        ((ScheduleActivity)getActivity()).setFromStation(stopHashMap.containsKey(mFromStationId) ?
                 stopHashMap.get(mFromStationId).getName() : "Select From Station");
+
         refreshTrainSchedule();
         if (!isSwapStation && stopHashMap.containsKey(mFromStationId) && stopHashMap.containsKey(mToStationId)) {
             Trip trip = new Trip();
@@ -265,7 +252,11 @@ public class BartScheduleFragment extends Fragment
             FilterDialogFragment editDialogFragment = FilterDialogFragment.newInstance(getContext(), this, mTRANSITType);
             editDialogFragment.show(getActivity().getFragmentManager().beginTransaction(), "Filter");
             return true;
+        } else if(item.getItemId() == R.id.action_reverse) {
+            onSwapStationClick();
+            return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 

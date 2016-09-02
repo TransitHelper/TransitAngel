@@ -39,4 +39,7 @@
     <!-- TAB -->
     <color name="tab_indicator">#CCFFFFFF</color>
     <color name="black_shadow">#33000000</color>
+
+    <color name="on_schedule">#689F38</color>
+    <color name="delay_schedule">#E53935</color>
 </resources>
