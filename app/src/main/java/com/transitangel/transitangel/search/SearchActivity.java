@@ -38,6 +38,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
     public static final String EXTRA_SERVICE = TAG + ".EXTRA_SERVICE";
     public static final String EXTRA_SERVICE_BART = TAG + ".EXTRA_SERVICE_BART";
     public static final String EXTRA_SERVICE_CALTRAIN = TAG + ".EXTRA_SERVICE_CALTRAIN";
+    public static final String EXTRA_FROM = TAG + ".EXTRA_FROM";
 
     public static final int MODE_TYPE_SEARCH = 1;
     public static final int MODE_TYPE_DETAILS = 2;
@@ -58,6 +59,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
     private String serviceType;
 
     private int mode;
+    private boolean isFrom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,21 +72,24 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
     private void init() {
         mode = getIntent().getIntExtra(EXTRA_MODE, MODE_TYPE_SEARCH);
         serviceType = getIntent().getStringExtra(EXTRA_SERVICE);
+        isFrom = getIntent().getBooleanExtra(EXTRA_FROM, false);
+
+        setSupportActionBar(toolbar);
 
         if (EXTRA_SERVICE_CALTRAIN.equalsIgnoreCase(serviceType)) {
             mStops = CaltrainTransitManager.getSharedInstance().getStops();
-        } else {
-            mStops = BartTransitManager.getSharedInstance().getStops();
-        }
-
-        setSupportActionBar(toolbar);
-        if (mode == MODE_TYPE_DETAILS) {
-            train = getIntent().getParcelableExtra(EXTRA_TRAIN_INFO);
-            if (train != null) {
-                tvTitle.setText("Train Details :" + train.getName());
+            if(isFrom) {
+                getSupportActionBar().setTitle(getString(R.string.search_from_title, "Caltrain"));
+            } else {
+                getSupportActionBar().setTitle(getString(R.string.search_to_title, "Caltrain"));
             }
         } else {
-            getSupportActionBar().setTitle(getString(R.string.search_title));
+            mStops = BartTransitManager.getSharedInstance().getStops();
+            if(isFrom) {
+                getSupportActionBar().setTitle(getString(R.string.search_from_title, "Bart"));
+            } else {
+                getSupportActionBar().setTitle(getString(R.string.search_to_title, "Bart"));
+            }
         }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

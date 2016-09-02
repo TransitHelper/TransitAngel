@@ -156,6 +156,7 @@ public class ScheduleActivity extends AppCompatActivity {
             } else {
                 intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_CALTRAIN);
             }
+            intent.putExtra(SearchActivity.EXTRA_FROM, true);
             ((OnStationSelected)getCurrentFragment()).onFromStationSelected(intent);
             startActivityForResult(intent, ScheduleFragment.RESULT_SEARCH_FROM, null);
         }

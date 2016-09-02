@@ -10,23 +10,22 @@
 
     <View
         android:id="@+id/vIcon"
-        android:layout_width="2dp"
+        android:layout_width="3dp"
         android:layout_height="match_parent"
         android:layout_alignBottom="@+id/tvStopName"
         android:layout_alignParentLeft="true"
         android:layout_alignTop="@+id/tvStopName"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="13dp"
         android:layout_marginRight="16dp"
         android:background="@color/blue_tracks" />
 
-    <ImageView
-        android:id="@+id/stopIcon"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
-        android:layout_alignParentLeft="true"
+    <View
+        android:id="@+id/track"
+        android:layout_width="10dp"
+        android:layout_height="3dp"
         android:layout_centerVertical="true"
-        android:background="#fff"
-        android:src="@drawable/checkbox_blank_circle_outline" />
+        android:layout_marginLeft="16dp"
+        android:background="@color/blue_tracks"/>
 
     <TextView
         android:id="@+id/tvStopName"
