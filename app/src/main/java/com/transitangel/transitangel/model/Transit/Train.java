@@ -60,6 +60,27 @@ public class Train implements Parcelable {
         return null;
     }
 
+    public ArrayList<TrainStop> getTrainStopsBetween(String fromStopId,String toStopId ) {
+        ArrayList<TrainStop> trainStopsInBetween = new ArrayList<>();
+        boolean shouldInclude = false;
+        for ( TrainStop  trainStop : trainStops ) {
+            if ( trainStop.getStopId().equalsIgnoreCase(fromStopId)) {
+                shouldInclude = true;
+            }
+            if ( shouldInclude ) {
+                trainStopsInBetween.add(trainStop);
+            }
+            if (trainStop.getStopId().equalsIgnoreCase(toStopId)) {
+                shouldInclude = false;
+            }
+        }
+        return trainStopsInBetween;
+    }
+
+    public int getTrainStopsBetweenCount(String fromStopId, String toStopId ) {
+        ArrayList<TrainStop> trainStopsInBetween = getTrainStopsBetween(fromStopId,toStopId);
+        return trainStopsInBetween.size();
+    }
 
     @Override
     public int describeContents() {

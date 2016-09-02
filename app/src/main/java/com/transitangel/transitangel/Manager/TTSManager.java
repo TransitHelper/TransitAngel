@@ -14,7 +14,7 @@ public class TTSManager implements TextToSpeech.OnInitListener {
     protected Context mApplicationContext;
     private TextToSpeech mTTS;
     private boolean isInitialized = false;
-    private String pendintTextToSpeak;
+    private String pendingTextToSpeak;
 
     public static synchronized TTSManager getSharedInstance() {
         if ( sInstance == null ) {
@@ -34,10 +34,10 @@ public class TTSManager implements TextToSpeech.OnInitListener {
 
     public void speak(String speech) {
 
-        //speak straight away
+
         if ( mTTS != null) {
             if ( !isInitialized ) {
-                pendintTextToSpeak = speech;
+                pendingTextToSpeak = speech;
             }
             else {
                 mTTS.speak(speech, TextToSpeech.QUEUE_ADD, null);
@@ -55,9 +55,9 @@ public class TTSManager implements TextToSpeech.OnInitListener {
                 mTTS.setLanguage(Locale.US);
                 isInitialized = true;
                 //this logic is if speak was called while initialize is in progress
-                if ( pendintTextToSpeak != null ) {
-                    speak(pendintTextToSpeak);
-                    pendintTextToSpeak = null;
+                if ( pendingTextToSpeak != null ) {
+                    speak(pendingTextToSpeak);
+                    pendingTextToSpeak = null;
                 }
         }
         else if (initStatus == TextToSpeech.ERROR) {

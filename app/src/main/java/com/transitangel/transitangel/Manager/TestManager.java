@@ -6,10 +6,12 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 import com.transitangel.transitangel.model.Transit.Service;
 import com.transitangel.transitangel.model.Transit.Stop;
+import com.transitangel.transitangel.model.Transit.Train;
 import com.transitangel.transitangel.model.Transit.TrainStop;
 import com.transitangel.transitangel.model.Transit.TrainStopFence;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -48,6 +50,13 @@ public class TestManager {
 
         ArrayList<Stop>caltrainStops = CaltrainTransitManager.getSharedInstance().getLocalStops();
 
+        ArrayList<Train> calTrainsToMtv = CaltrainTransitManager.getSharedInstance().fetchTrains("70011","70211",-1,new Date(),false);
+        if ( calTrainsToMtv.size() > 0 ) {
+            Train train  =  calTrainsToMtv.get(0);
+            ArrayList<TrainStop> trainStops = train.getTrainStopsBetween("70011","70211");
+            int count = train.getTrainStopsBetweenCount("70011","70211");
+            Log.d("Count","Here");
+        }
 //       ArrayList<Trip> recents =  TransitManager.getSharedInstance().fetchRecentSearchList();
 //        if ( recents.size() > 0 ) {
 //            TransitManager.getSharedInstance().createShortCut(recents.get(0));
