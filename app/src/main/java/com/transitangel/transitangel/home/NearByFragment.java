@@ -1,6 +1,7 @@
 package com.transitangel.transitangel.home;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
@@ -20,6 +20,8 @@ import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.model.Transit.Stop;
 import com.transitangel.transitangel.model.Transit.Train;
 import com.transitangel.transitangel.model.Transit.TrainStop;
+import com.transitangel.transitangel.schedule.ScheduleActivity;
+import com.transitangel.transitangel.utils.TAConstants;
 
 import java.util.ArrayList;
 
@@ -68,13 +70,45 @@ public class NearByFragment extends Fragment {
 
     @OnClick(R.id.caltrain_container)
     public void onCaltrainContainerClicked() {
-        Toast.makeText(getActivity(), "Take me to scheduled screen to show all nearby caltrains leaving", Toast.LENGTH_LONG).show();
-    }
+        if ( currentCalStop != null ) {
+            //start the schedule by setting the from station
+            Intent intent = new Intent(getActivity(), ScheduleActivity.class);
+            intent.putExtra(ScheduleActivity.ARG_TRANSIT_TYPE, TAConstants.TRANSIT_TYPE.CALTRAIN);
+            intent.putExtra(ScheduleActivity.FROM_STATION_ID,currentCalStop.getId());
+
+            //set the to station of the first train?
+            final ArrayList<Train> calTrainList = CaltrainTransitManager.getSharedInstance().fetchTrainsDepartingFromStation(currentCalStop.getId(), 3);
+            if ( calTrainList != null && calTrainList.size()>0){
+                Train firstTrain = calTrainList.get(0);
+                TrainStop lastStop = firstTrain.getTrainStops().get(firstTrain.getTrainStops().size()-1);
+                if ( lastStop != null ) {
+                    intent.putExtra(ScheduleActivity.TO_STATION_ID,lastStop.getStopId());
+                }
+            }
+            startActivity(intent);
+        }
+      }
 
     @OnClick(R.id.bart_container)
     public void onBartContainerClicked() {
-        Toast.makeText(getActivity(), "Take me to scheduled screen to show all nearby barts leaving", Toast.LENGTH_LONG).show();
-    }
+        if ( currentBartStop != null ) {
+            //start the schedule by setting the from station
+            Intent intent = new Intent(getActivity(), ScheduleActivity.class);
+            intent.putExtra(ScheduleActivity.ARG_TRANSIT_TYPE, TAConstants.TRANSIT_TYPE.BART);
+            intent.putExtra(ScheduleActivity.FROM_STATION_ID,currentBartStop.getId());
+
+            //set the to statio of the first train
+            final ArrayList<Train> bartTrainList = BartTransitManager.getSharedInstance().fetchTrainsDepartingFromStation(currentBartStop.getId(), 3);
+            if ( bartTrainList != null && bartTrainList.size()>0){
+                Train firstTrain = bartTrainList.get(0);
+                TrainStop lastStop = firstTrain.getTrainStops().get(firstTrain.getTrainStops().size()-1);
+                if ( lastStop != null ) {
+                    intent.putExtra(ScheduleActivity.TO_STATION_ID,lastStop.getStopId());
+                }
+            }
+            startActivity(intent);
+        }
+     }
 
     public void loadCurrentStops() {
         CaltrainTransitManager.getSharedInstance().getNearestStop(getContext(), new TransitManager.NearestStopResponseHandler() {

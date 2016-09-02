@@ -318,6 +318,10 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
 
     private void startOnGoingNotification(Trip trip) {
         NotificationProvider.getInstance().showTripStartedNotification(this, trip);
+        Intent showTripIntent = new Intent(this, HomeActivity.class);
+        showTripIntent.setAction(HomeActivity.ACTION_SHOW_ONGOING);
+        showTripIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(showTripIntent);
     }
 
     private void addAlarmToSelectedStops(TrainStop lastStop, int requestCode) {

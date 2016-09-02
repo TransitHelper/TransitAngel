@@ -1,15 +1,18 @@
 <resources>
-    <string name="app_name">TripAngel</string>
+    <string name="app_name">Trip Angel</string>
     <string name="contentdescription_lookup_schedule">Lookup Schedule</string>
     <string name="contentdescription_on_going_trip">On Going Trip information</string>
     <string name="schedule">Get me somewhere</string>
     <string name="recents">Recents</string>
     <string name="home_title">TransitAngel</string>
+    <string name="search_from_title">From station list(%1$s)</string>
+    <string name="search_to_title">To station list(%1$s)</string>
     <string name="search_title">Search train schedules</string>
     <string name="contentdescription_from_to">Search item from %1$s To %2$s</string>
     <string name="label_caltrain">CalTrain</string>
     <string name="trip_from_to">Trip from %1$s to %2$s</string>
     <string name="trip_train_number">Train #%1$s at %2$s</string>
+    <string name="trip_train_without_number">Train at %1$s</string>
     <string name="contentdescription_recent_trip">Recent Trip from %1$s to %2$s, train number %3$s scheduled at %4$s</string>
     <string name="header_recent_trip">Recent Trip</string>
     <string name="header_recent_search">Recent Search</string>
@@ -149,4 +152,11 @@
     <string name="live_trip_selected">Live trip selected</string>
     <string name="content_description_selected">selected</string>
     <string name="content_description_unselected">unselected</string>
+    <string name="search_station_name">Search Station Name</string>
+    <string name="search_menu_title">Search</string>
+    <string name="home_screen_label">Trip Angel Home Screen</string>
+    <string name="search_screen_label">Search Screen</string>
+    <string name="schedule_screen_label">Schedule Screen</string>
+    <string name="trip_details_screen_label">Trip Details Screen</string>
+    <string name="ongoing_label">Ongoing Trip Screen</string>
 </resources>
