@@ -370,11 +370,11 @@ public class TransitManager {
         }
 
         //sort trains based on departure time
-        if ( trains.size() > 2 ) {
+        if (trains.size() > 2) {
             Collections.sort(trains, new Comparator<Train>() {
                 @Override
                 public int compare(Train t1, Train t2) {
-                    if ( t1== null || t2 == null ) {
+                    if (t1 == null || t2 == null) {
                         return 0;
                     }
                     //check departure from the first stop?
@@ -399,8 +399,8 @@ public class TransitManager {
         }
 
 
-        if ( limit > 0 && trains.size() > limit ) {
-            List<Train> limitList = trains.subList(0,limit-1);
+        if (limit > 0 && trains.size() > limit) {
+            List<Train> limitList = trains.subList(0, limit - 1);
             return new ArrayList<>(limitList);
         }
 
@@ -589,34 +589,32 @@ public class TransitManager {
         }
 
         boolean isExisting = false;
-       int currentIndex = 0;
-        for (Trip existingTrip : items ) {
+        int currentIndex = 0;
+        for (Trip existingTrip : items) {
 
-            if ( existingTrip.getFromStop().getName().equalsIgnoreCase(trip.getFromStop().getName())
+            if (existingTrip.getFromStop().getName().equalsIgnoreCase(trip.getFromStop().getName())
                     && existingTrip.getToStop().getName().equalsIgnoreCase(trip.getToStop().getName())) {
-                if ( prefType == TAConstants.SAVED_PREF_TYPE.RECENT_TRIP ) {
+                if (prefType == TAConstants.SAVED_PREF_TYPE.RECENT_TRIP) {
                     //match from,to and train id for recent
-                    if ( trip.getSelectedTrain() != null && existingTrip.getSelectedTrain() != null
+                    if (trip.getSelectedTrain() != null && existingTrip.getSelectedTrain() != null
                             && trip.getSelectedTrain().getNumber().equalsIgnoreCase(existingTrip.getSelectedTrain().getNumber())) {
                         isExisting = true;
                         break;
                     }
-                }
-                else {
+                } else {
                     //match the from and to station for recent search
                     isExisting = true;
                     break;
                 }
             }
-            currentIndex ++;
+            currentIndex++;
         }
 
-        if ( isExisting ) {
+        if (isExisting) {
             //move the position
             items.remove(currentIndex);
-            items.add(0,trip);
-        }
-        else {
+            items.add(0, trip);
+        } else {
             //add the item
             if (items.size() == 10) {
                 //remove the last element
@@ -652,6 +650,19 @@ public class TransitManager {
         ArrayList<Trip> list = fetchSavedItems(TAConstants.SAVED_PREF_TYPE.RECENT_TRIP);
         if (!list.isEmpty())
             return list.get(0);
+        return null;
+    }
+
+    public Trip fetchRecentTrip(TAConstants.TRANSIT_TYPE type) {
+        ArrayList<Trip> list = fetchSavedItems(TAConstants.SAVED_PREF_TYPE.RECENT_TRIP);
+        if (!list.isEmpty()) {
+            for (Trip trip : list
+                    ) {
+                if (trip.getType() == type) {
+                    return trip;
+                }
+            }
+        }
         return null;
     }
 
@@ -835,11 +846,11 @@ public class TransitManager {
     }
 
     public interface TrainsDepartingFromStationResponseHandler {
-        public void trainsDeparting(boolean isSuccess,ArrayList<Train> trains);
+        public void trainsDeparting(boolean isSuccess, ArrayList<Train> trains);
     }
 
     public interface NearestStopResponseHandler {
-        public void nearestStop(boolean isSuccess,Stop stop);
+        public void nearestStop(boolean isSuccess, Stop stop);
     }
 
     public boolean isAccessibilityEnabled() {
