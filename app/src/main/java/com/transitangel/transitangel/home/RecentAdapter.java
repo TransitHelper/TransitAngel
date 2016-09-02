@@ -123,10 +123,12 @@ public class RecentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         int viewType = getItemViewType(position);
         if(viewType == RECENT_TRIP_ITEM_HEADER_TYPE) {
             RecentHeaderViewHolder headerViewHolder = (RecentHeaderViewHolder) holder;
-            headerViewHolder.header.setText("Recent Trips");
+            headerViewHolder.header.setText((context.getString(R.string.recent_trips)));
+            headerViewHolder.parent.setContentDescription(context.getString(R.string.content_description_recent_trip_header));
         } else if (viewType == RECENT_SEARCH_ITEM_HEADER_TYPE) {
             RecentHeaderViewHolder headerViewHolder = (RecentHeaderViewHolder) holder;
-            headerViewHolder.header.setText("Recent Searches");
+            headerViewHolder.header.setText(context.getString(R.string.recent_search));
+            headerViewHolder.parent.setContentDescription(context.getString(R.string.content_description_recent_search_header));
         } else  if(viewType == RECENT_TRIP_ITEM_TYPE) {
             RecentTripItemViewHolder recentItemViewHolder = (RecentTripItemViewHolder)holder;
             position = getRecentTripPosition(position);

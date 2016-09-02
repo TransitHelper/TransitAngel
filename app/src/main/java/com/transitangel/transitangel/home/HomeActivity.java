@@ -10,6 +10,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Toast;
 
 import com.transitangel.transitangel.Intent.ShakerService;
@@ -87,26 +89,25 @@ public class HomeActivity extends AppCompatActivity {
 
     private void init() {
         mSharedPreference = getApplicationContext().getSharedPreferences(TAConstants.SharedPrefGeofences, Context.MODE_PRIVATE);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View nearbyView = inflater.inflate(R.layout.tab_header_nearby, tabLayout, false);
+        nearbyView.setContentDescription(getString(R.string.neaby_selected));
         TabLayout.Tab nearbyTab = tabLayout.newTab();
-        nearbyTab.setContentDescription(titles[0]);
-        nearbyTab.setText(titles[0]);
-        nearbyTab.setIcon(R.drawable.ic_explore_white_48dp);
+        nearbyTab.setCustomView(nearbyView);
         tabLayout.addTab(nearbyTab);
 
+        View recents = inflater.inflate(R.layout.tab_header_recents, tabLayout, false);
+        recents.setContentDescription(getString(R.string.recents_unselected));
         TabLayout.Tab recentsTab = tabLayout.newTab();
-        recentsTab.setContentDescription(titles[1]);
-        recentsTab.setText(titles[1]);
-        recentsTab.setIcon(R.drawable.ic_restore_white_48dp);
+        recentsTab.setCustomView(recents);
         tabLayout.addTab(recentsTab);
 
+        View liveTrip = inflater.inflate(R.layout.tab_header_live_trip, tabLayout, false);
+        liveTrip.setContentDescription(getString(R.string.live_trip_unselected));
         TabLayout.Tab onGoingTab = tabLayout.newTab();
-        onGoingTab.setContentDescription(titles[2]);
-        onGoingTab.setText(titles[2]);
-        onGoingTab.setIcon(R.drawable.ic_play_arrow_white_48dp);
+        onGoingTab.setCustomView(liveTrip);
         tabLayout.addTab(onGoingTab);
-
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
         adapter = new HomePagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount());
         homePager.setAdapter(adapter);
@@ -119,13 +120,13 @@ public class HomeActivity extends AppCompatActivity {
                 Fragment fragment = adapter.getRegisteredFragment(tab.getPosition());
                 if (fragment instanceof LiveTripFragment) {
                     ((LiveTripFragment) fragment).onSelected();
-                } else {
                 }
+                tab.getCustomView().setContentDescription(titles[tab.getPosition()] + " " + getString(R.string.content_description_selected));
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
+                tab.getCustomView().setContentDescription(titles[tab.getPosition()] + " " +getString(R.string.content_description_unselected));
             }
 
             @Override
@@ -139,6 +140,9 @@ public class HomeActivity extends AppCompatActivity {
             if (action.equalsIgnoreCase(ACTION_SHOW_ONGOING)) {
                 Toast.makeText(this, "Show on going screen here.", Toast.LENGTH_LONG).show();
                 launchOnGoingScreen();
+                nearbyView.setContentDescription(getString(R.string.neaby_unselected));
+                recents.setContentDescription(getString(R.string.recents_unselected));
+                liveTrip.setContentDescription(getString(R.string.live_trip_selected));
             } else if (action.equalsIgnoreCase(ACTION_TRIP_CANCELLED)) {
                 Toast.makeText(this, "Show on cancelled trip clicked.", Toast.LENGTH_LONG).show();
             } else if (action.equalsIgnoreCase(ACTION_SHORTCUT)) {
@@ -175,6 +179,7 @@ public class HomeActivity extends AppCompatActivity {
     private void launchOnGoingScreen() {
         // Set the current item to live notifications.
         homePager.setCurrentItem(2);
+
     }
 
     @Override

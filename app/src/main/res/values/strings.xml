@@ -5,8 +5,8 @@
     <string name="schedule">Get me somewhere</string>
     <string name="recents">Recents</string>
     <string name="home_title">TransitAngel</string>
-    <string name="search_title">Search</string>
-    <string name="contentdescription_from_to">From %1$s To %2$s</string>
+    <string name="search_title">Search train schedules</string>
+    <string name="contentdescription_from_to">Search item from %1$s To %2$s</string>
     <string name="label_caltrain">CalTrain</string>
     <string name="trip_from_to">Trip from %1$s to %2$s</string>
     <string name="trip_train_number">Train #%1$s at %2$s</string>
@@ -129,4 +129,24 @@
     <string name="content_description_to_icon">To station icon</string>
     <string name="live_trip_cancel_trip_button">CANCEL TRIP</string>
     <string name="no_live_trip">No live trip right now</string>
+    <string name="tap_to_add_notifications">. Tap to add notification.</string>
+    <string name="notification_selected">. Notification selected.</string>
+    <string name="content_description_train_arriving">"Train arriving on "</string>
+    <string name="content_description_station">"Station , at "</string>
+    <string name="recent_trips">Recent Trip</string>
+    <string name="recent_search">Recent Search</string>
+    <string name="content_description_recent_search_header">Recent Search Section</string>
+    <string name="content_description_recent_trip_header">Recent Trip Section</string>
+    <string name="content_description_notification_checkbox">Notifications</string>
+    <string name="tab_neaby_header">Near by</string>
+    <string name="tab_header_live_trip">Live Trip</string>
+    <string name="tab_header_recents_header">Recents</string>
+    <string name="neaby_selected">Near by selected</string>
+    <string name="neaby_unselected">Near by unselected</string>
+    <string name="recents_unselected">Recents unselected</string>
+    <string name="recents_selected">Recents selected</string>
+    <string name="live_trip_unselected">Live trip unselected</string>
+    <string name="live_trip_selected">Live trip selected</string>
+    <string name="content_description_selected">selected</string>
+    <string name="content_description_unselected">unselected</string>
 </resources>
