@@ -127,4 +127,6 @@
     <string name="content_description_from_icon">From station icon</string>
     <string name="content_description_during_icon">During trip icon</string>
     <string name="content_description_to_icon">To station icon</string>
+    <string name="live_trip_cancel_trip_button">CANCEL TRIP</string>
+    <string name="no_live_trip">No live trip right now</string>
 </resources>

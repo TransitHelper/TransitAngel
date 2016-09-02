@@ -17,7 +17,7 @@
         android:layout_alignTop="@+id/tvStopName"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="16dp"
-        android:background="@color/red_caltrain" />
+        android:background="@color/blue_tracks" />
 
     <ImageView
         android:id="@+id/stopIcon"
