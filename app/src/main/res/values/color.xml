@@ -42,4 +42,5 @@
 
     <color name="on_schedule">#689F38</color>
     <color name="delay_schedule">#E53935</color>
+    <color name="white_faded">#A6ffffff</color>
 </resources>

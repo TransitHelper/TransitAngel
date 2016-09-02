@@ -96,13 +96,23 @@ public class LiveTripFragment extends Fragment implements StationsAdapter.OnItem
     }
 
     @Override
-    public void onCheckBoxSelected(int position) {
-
+    public void onCheckBoxSelected(View view, int position) {
+        ArrayList<TrainStop> visibleStopsList = adapter.getVisibleStops();
+        String contentDescription = getString(R.string.content_description_train_arriving) + visibleStopsList.get(position).getName()
+                + getString(R.string.content_description_station)
+                +  visibleStopsList.get(position).getDepartureTime()
+                + getString(R.string.notification_selected);
+        view.setContentDescription(contentDescription);
     }
 
     @Override
-    public void onCheckBoxUnSelected(int position) {
-
+    public void onCheckBoxUnSelected(View view, int position) {
+        ArrayList<TrainStop> visibleStopsList = adapter.getVisibleStops();
+        String contentDescription = getString(R.string.content_description_train_arriving) + visibleStopsList.get(position).getName()
+                + getString(R.string.content_description_station)
+                +  visibleStopsList.get(position).getDepartureTime()
+                + getString(R.string.tap_to_add_notifications);
+        view.setContentDescription(contentDescription);
     }
 
     @OnClick(R.id.btnCancelTrip)

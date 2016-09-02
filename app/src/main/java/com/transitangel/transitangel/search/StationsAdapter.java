@@ -40,12 +40,14 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @ItemType private int itemType;
 
+    private boolean isNotificationClickedOnce;
+
     private Context context;
 
     public interface OnItemClickListener {
-        void onCheckBoxSelected(int position);
+        void onCheckBoxSelected(View view, int position);
 
-        void onCheckBoxUnSelected(int position);
+        void onCheckBoxUnSelected(View view, int position);
     }
 
     public StationsAdapter(Context context, ArrayList<TrainStop> stationStopItemList, @ItemType int itemType) {
@@ -133,8 +135,19 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 viewHolder.tvStopTime.setText(visibleStopsList.get(position).getDepartureTime());
                 viewHolder.mSetAlarm.setChecked(visibleStopsList.get(position).getNotify());
         }
+
+        String contentDescription = context.getString(R.string.content_description_train_arriving) + visibleStopsList.get(position).getName()
+                + context.getString(R.string.content_description_station)
+                +  visibleStopsList.get(position).getDepartureTime()
+                + (viewHolder.mSetAlarm.isChecked() ? context.getString(R.string.notification_selected) : context.getString(R.string.tap_to_add_notifications));
+
+        viewHolder.setContentDescption(contentDescription);
+
     }
 
+    public ArrayList<TrainStop> getVisibleStops() {
+        return visibleStopsList;
+    }
 
     @Override
     public int getItemCount() {
@@ -174,22 +187,27 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         @BindView(R.id.cb_alarm)
         CheckBox mSetAlarm;
 
+        View itemView;
+
         public StationStopsViewHolder(View itemView, StationsAdapter.OnItemClickListener onItemClickListener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            this.itemView = itemView;
             itemView.setOnClickListener(this);
             mSetAlarm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (mSetAlarm.isChecked()) {
                         visibleStopsList.get(getLayoutPosition()).setNotify(true);
-                        onItemClickListener.onCheckBoxSelected(getLayoutPosition());
+                        onItemClickListener.onCheckBoxSelected(itemView, getLayoutPosition());
                     } else {
                         visibleStopsList.get(getLayoutPosition()).setNotify(false);
-                        onItemClickListener.onCheckBoxUnSelected(getLayoutPosition());
+                        onItemClickListener.onCheckBoxUnSelected(itemView, getLayoutPosition());
                     }
                 }
             });
+
+            mSetAlarm.setContentDescription(itemView.getContext().getString(R.string.content_description_notification_checkbox));
 
         }
 
@@ -198,12 +216,16 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (mSetAlarm.isChecked()) {
                 mSetAlarm.setChecked(false);
                 visibleStopsList.get(getLayoutPosition()).setNotify(false);
-                onItemClickListener.onCheckBoxUnSelected(getLayoutPosition());
+                onItemClickListener.onCheckBoxUnSelected(itemView, getLayoutPosition());
             } else {
                 mSetAlarm.setChecked(true);
                 visibleStopsList.get(getLayoutPosition()).setNotify(true);
-                onItemClickListener.onCheckBoxSelected(getLayoutPosition());
+                onItemClickListener.onCheckBoxSelected(itemView, getLayoutPosition());
             }
+        }
+
+        public void setContentDescption(String contentDescription) {
+            itemView.setContentDescription(contentDescription);
         }
     }
 

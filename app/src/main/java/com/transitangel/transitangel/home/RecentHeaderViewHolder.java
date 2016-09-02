@@ -12,12 +12,14 @@ import butterknife.ButterKnife;
 /**
  * author yvastavaus.
  */
-public class RecentHeaderViewHolder extends RecyclerView.ViewHolder{
+public class RecentHeaderViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.header)
     TextView header;
 
+    View parent;
     public RecentHeaderViewHolder(View itemView) {
         super(itemView);
+        this.parent = itemView;
         ButterKnife.bind(this, itemView);
     }
 }
