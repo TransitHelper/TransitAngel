@@ -40,7 +40,10 @@ public class TTSManager implements TextToSpeech.OnInitListener {
                 pendingTextToSpeak = speech;
             }
             else {
-                mTTS.speak(speech, TextToSpeech.QUEUE_ADD, null);
+                if (TransitManager.getSharedInstance().isAccessibilityEnabled()) {
+                    mTTS.speak(speech, TextToSpeech.QUEUE_ADD, null);
+                }
+
             }
 
         }
