@@ -343,7 +343,7 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         intent.putExtra(AlarmBroadcastReceiver.ARG_STOP, json);
         intent.putExtra(AlarmBroadcastReceiver.TRIP_ID, trip.getTripId());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                this.getApplicationContext(), requestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                this.getApplicationContext(), requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         final Timestamp timestamp = DateUtil.getTimeStamp(lastStop.getArrrivalTime());
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(timestamp);

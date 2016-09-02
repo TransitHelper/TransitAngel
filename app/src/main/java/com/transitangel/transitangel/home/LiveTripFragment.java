@@ -202,7 +202,7 @@ public class LiveTripFragment extends Fragment implements StationsAdapter.OnItem
     private Observable<TrainStop> removeAlarmToSelectedStops(TrainStop lastStop, int requestCode) {
         Intent intent = new Intent(getActivity(), AlarmBroadcastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                getActivity().getApplicationContext(), requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                getActivity().getApplicationContext(), requestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         final Timestamp timestamp = DateUtil.getTimeStamp(lastStop.getArrrivalTime());
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(timestamp);
