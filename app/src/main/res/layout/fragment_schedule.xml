@@ -1,8 +1,66 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".schedule.ScheduleFragment">
+
+    <RelativeLayout
+        android:id="@+id/station_selector_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:background="?attr/colorPrimary"
+        android:paddingBottom="@dimen/padding_bottom_station_container"
+        android:paddingLeft="@dimen/padding_left_station_container"
+        android:paddingRight="@dimen/padding_right_station_container">
+
+        <ImageView
+            android:id="@+id/from_station_icon"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_alignTop="@+id/from_station"
+            android:layout_margin="8dp"
+            android:layout_marginBottom="4dp"
+            android:contentDescription="@string/content_description_from_icon"
+            android:src="@drawable/ic_start" />
+
+        <TextView
+            android:id="@+id/from_station"
+            style="@style/EditableTextviewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:layout_toRightOf="@+id/from_station_icon"
+            android:background="@drawable/station_background"
+            android:text="From Station"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/to_station_icon"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_alignTop="@+id/to_station"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_toStartOf="@+id/from_station"
+            android:contentDescription="@string/content_description_to_icon"
+            android:src="@drawable/ic_room_white_36dp" />
+
+        <TextView
+            android:id="@+id/to_station"
+            style="@style/EditableTextviewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/from_station"
+            android:layout_toRightOf="@+id/to_station_icon"
+            android:background="@drawable/station_background"
+            android:text="To Station"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
 
     <com.transitangel.transitangel.view.widget.EmptySupportingRecyclerView
         android:id="@+id/rvRecents"
@@ -18,4 +76,4 @@
         android:layout_below="@id/rvRecents"
         android:layout="@layout/empty_view" />
 
-</RelativeLayout>
+</LinearLayout>
