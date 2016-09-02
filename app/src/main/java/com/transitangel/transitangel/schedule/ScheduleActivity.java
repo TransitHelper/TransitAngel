@@ -31,7 +31,12 @@ public class ScheduleActivity extends AppCompatActivity {
     public static final String FROM_STATION_ID = "from_station_id";
     public static final String TO_STATION_ID = "to_station_id";
     public static final String ARG_TRANSIT_TYPE = "transit_type";
-    private TAConstants.TRANSIT_TYPE mTransitType;
+    public static String BART_FROM_STATION;
+    public static String BART_TO_STATION;
+    public static String CAL_FROM_STATION;
+    public static String CAL_TO_STATION;
+    private static TAConstants.TRANSIT_TYPE mTransitType;
+    private static String FRAG_TAG;
 
 
     @Override
@@ -42,10 +47,14 @@ public class ScheduleActivity extends AppCompatActivity {
         mTransitType = (TAConstants.TRANSIT_TYPE) getIntent().getSerializableExtra(ARG_TRANSIT_TYPE);
         setUpTitle();
         if (mTransitType == null || mTransitType == TAConstants.TRANSIT_TYPE.CALTRAIN) {
+            CAL_FROM_STATION = getIntent().getStringExtra(FROM_STATION_ID);
+            CAL_TO_STATION = getIntent().getStringExtra(TO_STATION_ID);
             mTitle.setText("Schedule: Caltrain");
             mTitle.setContentDescription("Schedule for Caltrain, tap to select other service");
             loadCalTrainFragment(true);
         } else {
+            BART_FROM_STATION = getIntent().getStringExtra(FROM_STATION_ID);
+            BART_TO_STATION = getIntent().getStringExtra(TO_STATION_ID);
             mTitle.setText("Schedule: Bart");
             mTitle.setContentDescription("Schedule for Bart, tap to select other service");
             loadBartFragment(true);
@@ -54,41 +63,37 @@ public class ScheduleActivity extends AppCompatActivity {
 
     private void loadCalTrainFragment(boolean isFromRecent) {
         ScheduleFragment newFragment = ScheduleFragment.newInstance(mTransitType);
-        if (isFromRecent) {
+        if (isFromRecent && mTransitType == TAConstants.TRANSIT_TYPE.CALTRAIN) {
             Bundle bundle = new Bundle();
-            bundle.putString
-                    (ScheduleFragment.FROM_STATION_ID,
-                            getIntent().getStringExtra(FROM_STATION_ID));
-            bundle.putString(
-                    ScheduleFragment.TO_STATION_ID,
-                    getIntent().getStringExtra(TO_STATION_ID));
+            bundle.putString(ScheduleFragment.FROM_STATION_ID, CAL_FROM_STATION);
+            bundle.putString(ScheduleFragment.TO_STATION_ID, CAL_TO_STATION);
             newFragment.setArguments(bundle);
         }
+        FRAG_TAG = TAConstants.TRANSIT_TYPE.CALTRAIN.name();
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, newFragment, mTransitType.name()).commit();
+                .replace(R.id.fragment_container, newFragment, FRAG_TAG).commit();
     }
 
     private void loadBartFragment(boolean isFromRecent) {
         BartScheduleFragment newFragment = BartScheduleFragment.newInstance(mTransitType);
-        if (isFromRecent) {
+        if (isFromRecent && mTransitType== TAConstants.TRANSIT_TYPE.BART) {
             Bundle bundle = new Bundle();
-            bundle.putString
-                    (BartScheduleFragment.FROM_STATION_ID,
-                            getIntent().getStringExtra(FROM_STATION_ID));
-            bundle.putString(
-                    BartScheduleFragment.TO_STATION_ID,
-                    getIntent().getStringExtra(TO_STATION_ID));
+            bundle.putString(BartScheduleFragment.FROM_STATION_ID, BART_FROM_STATION);
+            bundle.putString(BartScheduleFragment.TO_STATION_ID, BART_TO_STATION);
             newFragment.setArguments(bundle);
         }
-
+        FRAG_TAG = TAConstants.TRANSIT_TYPE.BART.name();
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, newFragment, mTransitType.name()).commit();
+                .replace(R.id.fragment_container, newFragment, FRAG_TAG).commit();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                onBackPressedListener currentFragment = (onBackPressedListener) getSupportFragmentManager().findFragmentByTag(FRAG_TAG);
+                if (currentFragment != null)
+                    currentFragment.onBackPressed();
                 finish();
                 return true;
             default:
@@ -110,7 +115,7 @@ public class ScheduleActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Fragment currentFragment = (Fragment) getSupportFragmentManager().findFragmentByTag(mTransitType.name());
+        Fragment currentFragment = (Fragment) getSupportFragmentManager().findFragmentByTag(FRAG_TAG);
         if (currentFragment != null) {
             currentFragment.onActivityResult(requestCode, resultCode, data);
         } else {
@@ -145,9 +150,7 @@ public class ScheduleActivity extends AppCompatActivity {
         popup.show();
     }
 
-    @Override
-    public void onBackPressed()
-    {
-
+    interface onBackPressedListener {
+        void onBackPressed();
     }
 }

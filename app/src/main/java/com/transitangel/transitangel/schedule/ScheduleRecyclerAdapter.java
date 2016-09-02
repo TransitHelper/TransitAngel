@@ -16,6 +16,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -96,7 +97,6 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
 
         public void bindTrainData(scheduleItem item) {
             String departureTime = "";
-            String arrivalTime = "";
             String info = item.getTrain().getNumber() + " " + item.getFrom() + "-" + item.getTo();
             String infoContent = "Train Number " + item.getTrain().getNumber() + " From " + item.getFrom() + " to " + item.getTo();
             mTrainInformation.setText(info);
@@ -104,11 +104,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
             List<TrainStop> mTrainStop = item.getTrain().getTrainStops();
             final Timestamp destinationArrivalTime =DateUtil.getTimeStamp(mTrainStop.get(mTrainStop.size() - 1).getArrrivalTime());
             String departureRelativeTime;
-            final Timestamp filterTimeStamp = Timestamp.valueOf(
-                    new SimpleDateFormat("yyyy-MM-dd ")
-                            .format(mCalendar.getTime())
-                            .concat(item.getDepatureTime()));
-            if (filterTimeStamp.equals(timestamp)) {
+            if (new Timestamp(new Date().getTime()).equals(timestamp)) {
                 departureTime =  dateFormat.format(timestamp);
                 departureRelativeTime = "In " + DateUtil.getRelativeTime(timestamp.getTime(), System.currentTimeMillis());
                 infoContent += "In " + DateUtil.getRelativeTime(timestamp.getTime(), System.currentTimeMillis());
@@ -118,7 +114,6 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
                 infoContent += departureRelativeTime;
 
             }
-
             tvTime.setText(departureTime);
             mTrainArrivalTime.setText(departureRelativeTime);
             mTrainInformation.setContentDescription(infoContent);
