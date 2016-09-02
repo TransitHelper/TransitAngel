@@ -151,8 +151,6 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
-        } else if (item.getItemId() == R.id.action_favorite) {
-            Toast.makeText(this, "Under developement", Toast.LENGTH_LONG).show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -181,7 +179,7 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         return false;
     }
 
-    @OnClick(R.id.fabStartTrip)
+    @OnClick(R.id.btnStartTrip)
     public void startTrip() {
         TrainStop lastStop = getStopFromId(toStation);
         if (lastStop == null) {

@@ -30,6 +30,7 @@
             android:layout_height="wrap_content"
             tools:text="Trip from Mountain view to San Fransisco"
             android:layout_toRightOf="@+id/ivIcon"
+            android:textSize="12sp"
             android:layout_toLeftOf="@+id/more"/>
 
         <TextView
