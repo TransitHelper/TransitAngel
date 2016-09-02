@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.accessibility.AccessibilityManager;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -840,5 +841,15 @@ public class TransitManager {
 
     public interface NearestStopResponseHandler {
         public void nearestStop(boolean isSuccess,Stop stop);
+    }
+
+    public boolean isAccessibilityEnabled() {
+        AccessibilityManager am = (AccessibilityManager) mApplicationContext.getSystemService(Context.ACCESSIBILITY_SERVICE);
+        return am.isEnabled();
+    }
+
+    public boolean isExploreByTouchEnabled(){
+        AccessibilityManager am = (AccessibilityManager) mApplicationContext.getSystemService(Context.ACCESSIBILITY_SERVICE);
+        return am.isTouchExplorationEnabled();
     }
 }
