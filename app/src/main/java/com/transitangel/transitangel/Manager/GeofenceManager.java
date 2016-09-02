@@ -135,10 +135,21 @@ public class GeofenceManager {
         }
         else {
             if ( !isRemoveGeofences && this.trainStopFenceToAdd  != null ) {
-                addGeofenceOnConnectedHandle();
+                try {
+                    addGeofenceOnConnectedHandle();
+                } catch (java.lang.IllegalStateException e) {
+                    e.printStackTrace();
+                    sendError();
+                }
             }
             else {
-                removeGeofenceOnConnectHandle();
+
+                try {
+                    removeGeofenceOnConnectHandle();
+                } catch (java.lang.IllegalStateException e) {
+                    e.printStackTrace();
+                    sendError();
+                }
             }
         }
 
@@ -235,6 +246,9 @@ public class GeofenceManager {
                 @Override
                 public void onResult(Status status) {
                     if (status.isSuccess()) {
+                        if (listener != null) {
+                            listener.onGeofencesUpdated();
+                        }
                         //TODO handle this on main thread
                         //removeSavedGeofences();
                     } else {
