@@ -212,9 +212,22 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
                 .setMessage("Are you sure you want to start new trip")
                 .setPositiveButton("Start Trip", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        GeofenceManager.getSharedInstance().removeAllGeofences(getmGeofenceManagerListener());//Have not tested
+                        GeofenceManager.getSharedInstance().removeAllGeofences(new GeofenceManager.GeofenceManagerListener() {
+                            @Override
+                            public void onGeofencesUpdated() {
+                                //start trip
+                                startNewTrip();
+                            }
+
+                            @Override
+                            public void onError() {
+                                //start trip
+                                startNewTrip();
+
+                            }
+                        });//Have not tested
                         RemoveCurrentTripAlarms();
-                        startNewTrip();
+
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

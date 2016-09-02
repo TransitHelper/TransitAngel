@@ -110,7 +110,7 @@ public class NearByFragment extends Fragment {
         }
      }
 
-    public void loadCurrentStops() {
+    public void  loadCurrentStops() {
         CaltrainTransitManager.getSharedInstance().getNearestStop(getContext(), new TransitManager.NearestStopResponseHandler() {
             @Override
             public void nearestStop(boolean isSuccess, Stop stop) {
