@@ -2,6 +2,7 @@ package com.transitangel.transitangel.home;
 
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,7 +16,6 @@ import android.widget.TextView;
 
 import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
-import com.transitangel.transitangel.Manager.TransitManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.model.Transit.Stop;
 import com.transitangel.transitangel.model.Transit.Train;
@@ -80,27 +80,27 @@ public class NearByFragment extends Fragment {
     }
 
     public void  loadCurrentStops() {
-        CaltrainTransitManager.getSharedInstance().getNearestStop(getContext(), new TransitManager.NearestStopResponseHandler() {
+        new AsyncTask<Void, Void, Void>() {
             @Override
-            public void nearestStop(boolean isSuccess, Stop stop) {
-                if (isSuccess) {
-                    saveCaltrainTrain(stop);
-                    BartTransitManager.getSharedInstance().getNearestStop(getContext(), new TransitManager.NearestStopResponseHandler() {
-                        @Override
-                        public void nearestStop(boolean isSuccess, Stop stop) {
-                            if (isSuccess) {
-                                saveBarCurrentStop(stop);
+            protected Void doInBackground(Void... voids) {
+                CaltrainTransitManager.getSharedInstance().getNearestStop(getContext(), (isSuccess, stop) -> {
+                    if (isSuccess) {
+                        saveCaltrainTrain(stop);
+                        BartTransitManager.getSharedInstance().getNearestStop(getContext(), (isSuccess1, stop1) -> {
+                            if (isSuccess1) {
+                                saveBarCurrentStop(stop1);
                                 loadAllStations();
                             } else {
                                 failedToLoad();
                             }
-                        }
-                    });
-                } else {
-                    failedToLoad();
-                }
+                        });
+                    } else {
+                        failedToLoad();
+                    }
+                });
+                return null;
             }
-        });
+        }.execute();
     }
 
     private void loadAllStations() {
@@ -195,7 +195,6 @@ public class NearByFragment extends Fragment {
                 }
 
                 progressBar.setVisibility(View.GONE);
-
 
                 // Else leave it
                 switchOrder();
