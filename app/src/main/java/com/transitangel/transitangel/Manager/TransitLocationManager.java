@@ -44,6 +44,8 @@ public class TransitLocationManager implements com.google.android.gms.location.L
     protected Context activityContext;
     protected LocationResponseHandler activityLocationResponseHandler;
 
+    public LatLng cachedLocation = new LatLng(0,0);
+
     public static synchronized TransitLocationManager getSharedInstance() {
         if ( sInstance == null ) {
             sInstance = new TransitLocationManager();
@@ -57,6 +59,10 @@ public class TransitLocationManager implements com.google.android.gms.location.L
 
     public interface LocationResponseHandler {
         public void OnLocationReceived (boolean isSuccess, LatLng latLng);
+    }
+
+    public LatLng getCachedLocation() {
+        return cachedLocation;
     }
 
     private GoogleApiClient.ConnectionCallbacks getLocationListener =
@@ -115,6 +121,7 @@ public class TransitLocationManager implements com.google.android.gms.location.L
                 // Print current location if not null
                 Log.d("DEBUG", "current location: " + mCurrentLocation.toString());
                 LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+                cachedLocation = latLng;
                 activityLocationResponseHandler.OnLocationReceived(true, latLng);
             }
             else {
@@ -245,5 +252,6 @@ public class TransitLocationManager implements com.google.android.gms.location.L
 
         return (gps_enabled && network_enabled);
     }
+
 
 }

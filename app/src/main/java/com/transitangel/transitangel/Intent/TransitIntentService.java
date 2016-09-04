@@ -80,8 +80,9 @@ public class TransitIntentService extends IntentService {
             Map<String, ?> keys = prefs.getAll();
             for (Map.Entry<String, ?> entry : keys.entrySet()) {
                 String jsonString = prefs.getString(entry.getKey(), null);
-                trainStopFence = gson.fromJson(jsonString, TrainStopFence.class);
-                if (trainStopFence.getFenceId().equals(geofenceId)) {
+               TrainStopFence fence = gson.fromJson(jsonString, TrainStopFence.class);
+                if (fence.getFenceId().equalsIgnoreCase(geofenceId)) {
+                    trainStopFence = fence;
                     geofenceName = trainStopFence.getTrainStop().getName();
                     break;
                 }

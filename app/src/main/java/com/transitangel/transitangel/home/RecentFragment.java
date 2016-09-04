@@ -168,7 +168,7 @@ public class RecentFragment extends Fragment implements RecentAdapter.OnItemClic
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_create_shortcut:
-                        Toast.makeText(getActivity(), "Create a shortcut here", Toast.LENGTH_LONG).show();
+                      //  Toast.makeText(getActivity(), "Create a shortcut here", Toast.LENGTH_LONG).show();
                         if (trip.getType() == TAConstants.TRANSIT_TYPE.BART) {
                             BartTransitManager.getSharedInstance().createShortCut(trip);
                         } else {
