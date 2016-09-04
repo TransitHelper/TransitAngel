@@ -136,6 +136,7 @@ public class NearByFragment extends Fragment {
                                 startActivity(intent);
                             }
                         });
+                        caltrain.setClickable(true);
                     }
 
                     // If there are any visible from the previous, refresh
@@ -179,6 +180,7 @@ public class NearByFragment extends Fragment {
                                 startActivity(intent);
                             }
                         });
+                        bart.setClickable(true);
                     }
 
                     // If there are any visible from the previous, refresh
