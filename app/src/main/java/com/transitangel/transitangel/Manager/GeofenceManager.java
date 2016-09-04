@@ -143,12 +143,13 @@ public class GeofenceManager {
                 }
             }
             else {
-
-                try {
-                    removeGeofenceOnConnectHandle();
-                } catch (java.lang.IllegalStateException e) {
-                    e.printStackTrace();
-                    sendError();
+                if ( isRemoveGeofences) {
+                    try {
+                        removeGeofenceOnConnectHandle();
+                    } catch (java.lang.IllegalStateException e) {
+                        e.printStackTrace();
+                        sendError();
+                    }
                 }
             }
         }
@@ -207,6 +208,11 @@ public class GeofenceManager {
             // for ActivityCompat#requestPermissions for more details.
 
         }
+
+        if ( !googleApiClient.isConnected()) {
+            sendError(); //google api client is not connected
+            return;
+        }
         PendingResult<Status> result = LocationServices.GeofencingApi.addGeofences(
                 googleApiClient, getAddGeofencingRequest(), pendingIntent);
 
@@ -218,6 +224,7 @@ public class GeofenceManager {
                 Log.d(TAG, "geo fence result");
                 if (status.isSuccess()) {
                     // 4. If successful, save the geofence
+                    Log.d("Add Geofence","Successfully added geofence");
                     saveGeofence();
                 } else {
                     // 5. If not successful, log and send an error
@@ -236,7 +243,7 @@ public class GeofenceManager {
             removeIds.add(trainStopFence.getFenceId());
         }
 
-        if (removeIds.size() > 0) {
+        if (removeIds.size() > 0 && googleApiClient.isConnected()) {
             // 2. Use GoogleApiClient and the GeofencingApi to remove the geofences
             PendingResult<Status> result = LocationServices.GeofencingApi.removeGeofences(
                     googleApiClient, removeIds);
@@ -257,6 +264,10 @@ public class GeofenceManager {
                     }
                 }
             });
+        }
+        else {
+            //either google api is not connected or the removeIds size is 0
+            sendError();
         }
     }
 
@@ -302,10 +313,12 @@ public class GeofenceManager {
         }
         this.listener = listener;
         connectWithCallbacks(connectionRemoveListener);
+        //removeSavedGeofences(); //??
     }
 
     //removes from shared prefs
     private void removeSavedGeofences() {
+        //TODO run this on main thread
         SharedPreferences.Editor editor = prefs.edit();
 
         try {
@@ -327,6 +340,7 @@ public class GeofenceManager {
         }
         catch(java.util.ConcurrentModificationException exception ) {
             //TODO handle this modification on a UI thread
+            Log.d("Exception","Encountered exception while removing geofences from shared pref");
         }
 
 

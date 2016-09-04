@@ -10,9 +10,11 @@ import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 import com.google.gson.Gson;
 import com.transitangel.transitangel.Manager.GeofenceManager;
-import com.transitangel.transitangel.R;
+import com.transitangel.transitangel.Manager.PrefManager;
 import com.transitangel.transitangel.home.HomeActivity;
+import com.transitangel.transitangel.model.Transit.Stop;
 import com.transitangel.transitangel.model.Transit.TrainStopFence;
+import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.notifications.NotificationProvider;
 import com.transitangel.transitangel.utils.TAConstants;
 
@@ -88,18 +90,41 @@ public class TransitIntentService extends IntentService {
             if ( trainStopFence != null ) {
 
                 //check if it is the last geofence
-//                Trip trip = PrefManager.getOnGoingTrip();
-//                if ( trip != null ) {
-//                    Stop finalStop = trip.getToStop();
-//                    String stopIdForFence = trainStopFence.getTrainStop().getStopId();
-//                    if ( stopIdForFence.equalsIgnoreCase(finalStop.getId())) {
-//                        //this is the last stop
-//
-//                    }
-//                }
+                Trip trip = PrefManager.getOnGoingTrip();
+                if ( trip != null ) {
+                    Stop finalStop = trip.getToStop();
+                    String stopIdForFence = trainStopFence.getTrainStop().getStopId();
+                    if ( stopIdForFence.equalsIgnoreCase(finalStop.getId())) {
+                        //this is the last stop
+                        //end the ongoing the notification
+                        NotificationProvider.getInstance().endOngoingNotification(this);
+
+                        //show the destination is approaching
+                        String notificationContent = "Approaching " + trainStopFence.getTrainStop().getName();
+
+                        Intent intent = new Intent(this, HomeActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        //TODO verify text
+                        NotificationProvider.getInstance().showBigTextNotification(this, intent, "This is your final destination", notificationContent);
+
+                        //remove all geofences
+                        GeofenceManager.getSharedInstance().removeAllGeofences(new GeofenceManager.GeofenceManagerListener() {
+                            @Override
+                            public void onGeofencesUpdated() {
+                                Log.d("Geofence Success","Successfully removed all geofences");
+                            }
+
+                            @Override
+                            public void onError() {
+                                Log.d("Geofence Error","Error removing all geofences");
+                            }
+                        });
+                        return;
+                    }
+                }
 
                 //TODO decide proper notification name
-                String notificationContent = "Entered " + trainStopFence.getTrainStop().getName();
+                String notificationContent = "Approaching " + trainStopFence.getTrainStop().getName();
                 NotificationProvider.getInstance().updateTripStartedNotification(this,notificationContent);
 
                 //remove that geofence
@@ -118,13 +143,14 @@ public class TransitIntentService extends IntentService {
                 });
             }
 
-
+           /*
             String contextText = String.format(this.getResources().getString(R.string.Notification_Text), geofenceName);
 
             Intent intent = new Intent(this, HomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
             NotificationProvider.getInstance().showBigTextNotification(this, intent, getString(R.string.Notification_Title), contextText);
+            */
         }
     }
 

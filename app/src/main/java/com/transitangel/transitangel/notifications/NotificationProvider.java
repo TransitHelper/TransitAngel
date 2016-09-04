@@ -1,7 +1,6 @@
 package com.transitangel.transitangel.notifications;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -168,17 +167,24 @@ public class NotificationProvider {
         TTSManager.getSharedInstance().speak(contentTitle);
     }
 
+    public void endOngoingNotification(Context context){
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.cancel(NOTIFICATION_ONGOING_ID);
+        //remove the ongoing trip
+        PrefManager.removeOnGoingTrip();
+    }
+
     public void showBigTextNotification(Context context, Intent intent, String title, String contentText) {
         // 1. Create a NotificationManager
-        NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(context);;
 
         // 2. Create a PendingIntent
         PendingIntent pendingNotificationIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // 3. Create and send a notification
-        Notification notification = new android.support.v7.app.NotificationCompat.Builder(context)
-                .setSmallIcon(R.mipmap.ic_launcher)
+        Notification notification = new NotificationCompat.Builder(context)
+                .setSmallIcon(R.drawable.train)
                 .setContentTitle(title)
                 .setContentText(contentText)
                 .setContentIntent(pendingNotificationIntent)
