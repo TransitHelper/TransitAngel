@@ -40,7 +40,9 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
             network_enabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
         } catch (Exception ex) {
         }
-        if (!gps_enabled && !network_enabled && isTripValid(tripId)) {
+        if (!gps_enabled && !network_enabled) {
+            Log.e("TripID", tripId);
+            Log.e("PrefTripId", PrefManager.getOnGoingTrip().getTripId());
             String notificationMessage;
             Timestamp stopTimeStamp = DateUtil.getTimeStamp(nextStop.getArrrivalTime());
             long minutes = getTimeStampDifference(stopTimeStamp);
@@ -63,8 +65,6 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
     }
 
     private boolean isTripValid(String tripId) {
-        Log.e("TripID", tripId);
-        Log.e("PrefTripId", PrefManager.getOnGoingTrip().getTripId());
         if (PrefManager.getOnGoingTrip() == null) return true;
         if (PrefManager.getOnGoingTrip().getTripId() == tripId) return true;
         else {
