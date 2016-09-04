@@ -159,4 +159,6 @@
     <string name="schedule_screen_label">Schedule Screen</string>
     <string name="trip_details_screen_label">Trip Details Screen</string>
     <string name="ongoing_label">Ongoing Trip Screen</string>
+    <string name="no_caltrain">No Caltrains at this moment.</string>
+    <string name="no_bart">No Barts at this moment.</string>
 </resources>

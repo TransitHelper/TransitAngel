@@ -2,12 +2,13 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/first_line_bart"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:padding="8dp"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:visibility="gone">
     <ImageView
         android:id="@+id/ivIcon"
         android:layout_width="wrap_content"
