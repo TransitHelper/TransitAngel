@@ -209,6 +209,14 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        //check if the current tab is live , if so "refresh"
+        if ( tabLayout.getSelectedTabPosition() == 2 ) {
+           LiveTripFragment liveTripFragment = (LiveTripFragment) adapter.getRegisteredFragment(2);
+            if (liveTripFragment != null ) {
+                liveTripFragment.displayOnGoingTrip();
+            }
+        }
     }
 
     @Override

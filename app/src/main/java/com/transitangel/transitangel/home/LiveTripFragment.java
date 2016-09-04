@@ -83,7 +83,7 @@ public class LiveTripFragment extends Fragment implements StationsAdapter.OnItem
         displayOnGoingTrip();
     }
 
-    private void displayOnGoingTrip() {
+    public void displayOnGoingTrip() {
         Trip trip = PrefManager.getOnGoingTrip();
         if (trip != null) {
             btnCancelTrip.setVisibility(View.VISIBLE);
