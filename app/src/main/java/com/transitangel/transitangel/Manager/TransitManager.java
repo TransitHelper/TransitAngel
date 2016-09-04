@@ -796,7 +796,13 @@ public class TransitManager {
                 minDistance = distanceToStop;
             } else if (distanceToStop < minDistance) {
                 minDistance = distanceToStop;
+                //figure out the distance to second nearest stop
+                secondMinDistance = distance(nearestStop.getLatitude(), nearestStop.getLongitude(), stopLat, stopLon);
+                //assign existing nearest stop to second nearest stop
+                TrainStop temp = nearestStop;
                 nearestStop = stop;
+                secondNearestStop = temp;
+
             } else if (secondNearestStop == null) {
                 secondNearestStop = stop;
                 double distanceToSeondNearestStop = distance(lat, lon, stopLat, stopLon);
