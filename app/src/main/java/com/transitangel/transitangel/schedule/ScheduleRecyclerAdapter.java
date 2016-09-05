@@ -11,6 +11,7 @@ import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.model.Transit.TrainStop;
 import com.transitangel.transitangel.model.scheduleItem;
 import com.transitangel.transitangel.utils.DateUtil;
+import com.transitangel.transitangel.utils.TAConstants;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -30,6 +31,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
 
     private Context context;
     private Calendar mCalendar;
+    private TAConstants.TRANSIT_TYPE mTransitType;
 
     public interface OnItemClickListener {
         void onItemClick(int position);
@@ -37,7 +39,10 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
 
     private OnItemClickListener onItemClickListener;
 
-    public ScheduleRecyclerAdapter(Context context, List<scheduleItem> recentsItemList, OnItemClickListener onItemClickListener) {
+    public ScheduleRecyclerAdapter(Context context, List<scheduleItem> recentsItemList,
+                                   OnItemClickListener onItemClickListener
+            , TAConstants.TRANSIT_TYPE type) {
+        mTransitType = type;
         this.recentsItemList = recentsItemList;
         this.context = context;
         this.onItemClickListener = onItemClickListener;
@@ -74,10 +79,10 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         TextView mTrainArrivalTime;
 
         @BindView(R.id.duration)
-        TextView mJourneyTime;
+        TextView mRelativeDepartureTime;
 
         @BindView(R.id.time)
-        TextView tvTime;
+        TextView mDepatureTime;
 
 
         public ScheduleViewHolder(View v) {
@@ -97,28 +102,36 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
 
         public void bindTrainData(scheduleItem item) {
             String departureTime = "";
-            String info = item.getTrain().getNumber() + " " + item.getFrom() + "-" + item.getTo();
-            String infoContent = "Train Number " + item.getTrain().getNumber() + " From " + item.getFrom() + " to " + item.getTo();
-            mTrainInformation.setText(info);
-            final Timestamp timestamp =DateUtil.getTimeStamp(item.getDepatureTime());
-            List<TrainStop> mTrainStop = item.getTrain().getTrainStopsBetween(item.getFromStopID(),item.getToStopID());
-            final Timestamp destinationArrivalTime =DateUtil.getTimeStamp(mTrainStop.get(mTrainStop.size() - 1).getArrrivalTime());
-            String departureRelativeTime;
-            if (new Timestamp(new Date().getTime()).equals(timestamp)) {
-                departureTime =  dateFormat.format(timestamp);
-                departureRelativeTime = "In " + DateUtil.getRelativeTime(timestamp.getTime(), System.currentTimeMillis());
-                infoContent += "In " + DateUtil.getRelativeTime(timestamp.getTime(), System.currentTimeMillis());
-            } else {
-                departureTime =  dateFormat.format(timestamp);
-                departureRelativeTime = "At " + dateFormat.format(timestamp);
-                infoContent += departureRelativeTime;
-            }
+            String info = item.getFrom() + "-" + item.getTo();
+            String infoContent;
 
-            tvTime.setText(departureTime);
+            if (mTransitType == TAConstants.TRANSIT_TYPE.CALTRAIN) {
+                mTrainInformation.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.train_red),
+                        null, null, null);
+                info = item.getTrain().getNumber() + " " + info;
+                infoContent = "Train Number " + item.getTrain().getNumber() + " From " + item.getFrom() + " to " + item.getTo();
+            } else {
+                infoContent = "Train From " + item.getFrom() + " to " + item.getTo();
+            }
+            mTrainInformation.setText(info);
+            final Timestamp timestamp = DateUtil.getTimeStamp(item.getDepatureTime());
+            List<TrainStop> mTrainStop = item.getTrain().getTrainStopsBetween(item.getFromStopID(), item.getToStopID());
+            final Timestamp destinationArrivalTime = DateUtil.getTimeStamp(mTrainStop.get(mTrainStop.size() - 1).getArrrivalTime());
+            String departureRelativeTime;
+            departureTime = dateFormat.format(timestamp);
+            if (new Timestamp(new Date().getTime()).after(timestamp)) {
+                departureRelativeTime = "At " + dateFormat.format(timestamp);
+
+            } else {
+                departureRelativeTime = "In " + DateUtil.getRelativeTime(timestamp.getTime(), System.currentTimeMillis());
+            }
+            infoContent += departureRelativeTime;
+            mDepatureTime.setText(departureTime);
+            mRelativeDepartureTime.setText("(" + departureRelativeTime + ")");
             mTrainArrivalTime.setText(departureRelativeTime);
             mTrainInformation.setContentDescription(infoContent);
-            mJourneyTime.setText("(" + DateUtil.getRelativeTime(destinationArrivalTime.getTime(), timestamp.getTime()) + ")");
-            mJourneyTime.setContentDescription("Arrives destination at" + dateFormat.format(destinationArrivalTime.getTime()));
+            mTrainArrivalTime.setText(dateFormat.format(destinationArrivalTime));
+            mTrainArrivalTime.setContentDescription("Arrives destination at" + dateFormat.format(destinationArrivalTime));
         }
     }
 }

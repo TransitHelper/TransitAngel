@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/action_caltrain"
-          android:orderInCategory="1"
-          android:title="Caltrain"/>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_caltrain"
+        android:icon="@drawable/ic_caltrain"
+        android:orderInCategory="1"
+        android:title="Caltrain"
+        app:showAsAction="withText" />
 
-    <item android:id="@+id/action_bart"
-          android:orderInCategory="2"
-          android:title="Bart"/>
+    <item
+        android:id="@+id/action_bart"
+        android:icon="@drawable/ic_bart"
+        android:orderInCategory="2"
+        android:title="Bart"
+        app:showAsAction="withText" />
 </menu>

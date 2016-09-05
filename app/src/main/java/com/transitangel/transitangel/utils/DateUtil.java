@@ -13,10 +13,15 @@ public class DateUtil {
         long diff = time - time2;
         long diffMinutes = diff / (60 * 1000) % 60;
         long diffHours = diff / (60 * 60 * 1000) % 24;
-        if (diffHours < 0 || diffMinutes < 0)
+        if ((diffHours < 0 || diffMinutes < 0) || (diffHours == 0 && diffMinutes == 0)) {
             return timeFormat.format(time);
-        else
-            return diffHours + " hr " + diffMinutes + "mins";
+        } else {
+            if (diffHours == 0)
+                return diffMinutes + "mins";
+            else {
+                return diffHours + " hr " + diffMinutes + "mins";
+            }
+        }
     }
 
     public static Timestamp getTimeStamp(String time) {
