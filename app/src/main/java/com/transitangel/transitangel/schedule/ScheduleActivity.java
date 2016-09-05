@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuInflater;
@@ -122,6 +124,8 @@ public class ScheduleActivity extends AppCompatActivity {
         PopupMenu popup = new PopupMenu(this, view);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.item_popup_schedules, popup.getMenu());
+        MenuPopupHelper menuHelper = new MenuPopupHelper(this, (MenuBuilder) popup.getMenu(), view);
+        menuHelper.setForceShowIcon(true);
         popup.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_caltrain:
@@ -139,7 +143,7 @@ public class ScheduleActivity extends AppCompatActivity {
             }
             return false;
         });
-        popup.show();
+        menuHelper.show();
     }
 
     interface onBackPressedListener {

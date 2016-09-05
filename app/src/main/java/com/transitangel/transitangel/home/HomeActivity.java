@@ -112,6 +112,7 @@ public class HomeActivity extends AppCompatActivity {
         adapter = new HomePagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount());
         homePager.setAdapter(adapter);
+        homePager.setPageTransformer(true, new DepthPageTransformer());
         homePager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         homePager.setOffscreenPageLimit(3);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -127,7 +128,7 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                tab.getCustomView().setContentDescription(titles[tab.getPosition()] + " " +getString(R.string.content_description_unselected));
+                tab.getCustomView().setContentDescription(titles[tab.getPosition()] + " " + getString(R.string.content_description_unselected));
             }
 
             @Override
@@ -217,9 +218,9 @@ public class HomeActivity extends AppCompatActivity {
         super.onResume();
 
         //check if the current tab is live , if so "refresh"
-        if ( tabLayout.getSelectedTabPosition() == 2 ) {
-           LiveTripFragment liveTripFragment = (LiveTripFragment) adapter.getRegisteredFragment(2);
-            if (liveTripFragment != null ) {
+        if (tabLayout.getSelectedTabPosition() == 2) {
+            LiveTripFragment liveTripFragment = (LiveTripFragment) adapter.getRegisteredFragment(2);
+            if (liveTripFragment != null) {
                 liveTripFragment.displayOnGoingTrip();
             }
         }

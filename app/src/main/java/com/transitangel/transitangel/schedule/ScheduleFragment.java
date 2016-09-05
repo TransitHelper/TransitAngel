@@ -116,7 +116,8 @@ public class ScheduleFragment extends Fragment
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_schedule, container, false);
         ButterKnife.bind(this, view);
-        mRecyclerViewAdapter = new ScheduleRecyclerAdapter(getContext(), mRecentItems, this);
+        mRecyclerViewAdapter = new ScheduleRecyclerAdapter(getContext(), mRecentItems,
+                this, TAConstants.TRANSIT_TYPE.CALTRAIN);
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setNestedScrollingEnabled(true);

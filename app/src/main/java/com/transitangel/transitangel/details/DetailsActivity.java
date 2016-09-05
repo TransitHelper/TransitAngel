@@ -82,7 +82,6 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     private TrainStop selectedStop;
     private Trip selectedTrip;
     private Trip trip;
-    private ArrayList<PendingIntent> mPendingIntents = new ArrayList<>();
     private ArrayList<TrainStop> mAlarmStops = new ArrayList<>();
     private ArrayList<TrainStop> geofenceStops = new ArrayList<>();
     HashMap<String, Stop> stopHashMap = new HashMap<>();
@@ -114,13 +113,13 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
             type = TAConstants.TRANSIT_TYPE.BART;
             stopHashMap = BartTransitManager.getSharedInstance().getStopLookup();
         }
+        mStops.get(mStops.size() - 1).setNotify(true);
+        mAlarmStops.add(mStops.get(mStops.size() - 1));
         setSupportActionBar(toolbar);
         tvTitle.setText("#" + train.getNumber());
         tvTitle.setContentDescription(getString(R.string.content_description_train_number) + train.getNumber());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(null);
-
-        // Create the recents adapter.
         adapter = new StationsAdapter(this, mStops, StationsAdapter.ITEM_DETAIL);
         rvStationList.setAdapter(adapter);
         rvStationList.setLayoutManager(new LinearLayoutManager(this));
@@ -285,7 +284,7 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
 
     }
 
-    //recursively add geofence , add the next fence only when the fence has been updated
+
     private void addGeoFenceToSelectedStops(Trip trip) {
         if (geofenceStops.size() > 0) {
             try {

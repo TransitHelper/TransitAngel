@@ -118,7 +118,8 @@ public class BartScheduleFragment extends Fragment
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_schedule, container, false);
         ButterKnife.bind(this, view);
-        mRecyclerViewAdapter = new ScheduleRecyclerAdapter(getContext(), mRecentItems, this);
+        mRecyclerViewAdapter = new ScheduleRecyclerAdapter(getContext(), mRecentItems,
+                this, TAConstants.TRANSIT_TYPE.BART);
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setNestedScrollingEnabled(true);
@@ -172,19 +173,19 @@ public class BartScheduleFragment extends Fragment
 
         String noFromStationSelected = getString(R.string.select_from_station);
         String noToStation = getString(R.string.select_to_station);
-        String toStation =stopHashMap.containsKey(mToStationId) ? stopHashMap.get(mToStationId).getName() : noToStation;
+        String toStation = stopHashMap.containsKey(mToStationId) ? stopHashMap.get(mToStationId).getName() : noToStation;
         String fromStation = stopHashMap.containsKey(mFromStationId) ? stopHashMap.get(mFromStationId).getName() : noFromStationSelected;
 
         mToStation.setText(toStation);
         mFromStation.setText(fromStation);
 
-        if(stopHashMap.containsKey(mToStationId)) {
+        if (stopHashMap.containsKey(mToStationId)) {
             mToStation.setContentDescription(getString(R.string.to_station_set) + toStation);
         } else {
             mToStation.setContentDescription(getString(R.string.no_to_station_set));
         }
 
-        if(stopHashMap.containsKey(mFromStationId)) {
+        if (stopHashMap.containsKey(mFromStationId)) {
             mFromStation.setContentDescription(getString(R.string.from_station_set) + fromStation);
         } else {
             mFromStation.setContentDescription(getString(R.string.no_from_station_set));
