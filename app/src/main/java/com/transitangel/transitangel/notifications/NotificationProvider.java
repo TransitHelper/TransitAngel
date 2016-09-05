@@ -188,8 +188,8 @@ public class NotificationProvider {
                 .setContentTitle(title)
                 .setContentText(contentText)
                 .setContentIntent(pendingNotificationIntent)
-                .setStyle(new android.support.v7.app.NotificationCompat.BigTextStyle().bigText(contentText))
-                .setPriority(android.support.v7.app.NotificationCompat.PRIORITY_HIGH)
+                .setTicker(title).setDefaults(NotificationCompat.DEFAULT_ALL) // Required to show like phone call notifications
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true)
                 .build();
 
