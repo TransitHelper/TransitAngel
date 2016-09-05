@@ -134,7 +134,7 @@ public class OnGoingActivity extends AppCompatActivity implements StationsAdapte
     @Override
     public void onCheckBoxSelected(View view, int position) {
         ArrayList<TrainStop> visibleStopsList = adapter.getVisibleStops();
-        String contentDescription = getString(R.string.content_description_train_arriving) + visibleStopsList.get(position).getName()
+        String contentDescription = visibleStopsList.get(position).getName()
                 + getString(R.string.content_description_station)
                 +  visibleStopsList.get(position).getDepartureTime()
                 + getString(R.string.notification_selected);
@@ -144,7 +144,7 @@ public class OnGoingActivity extends AppCompatActivity implements StationsAdapte
     @Override
     public void onCheckBoxUnSelected(View view, int position) {
         ArrayList<TrainStop> visibleStopsList = adapter.getVisibleStops();
-        String contentDescription = getString(R.string.content_description_train_arriving) + visibleStopsList.get(position).getName()
+        String contentDescription = visibleStopsList.get(position).getName()
                 + getString(R.string.content_description_station)
                 +  visibleStopsList.get(position).getDepartureTime()
                 + getString(R.string.tap_to_add_notifications);

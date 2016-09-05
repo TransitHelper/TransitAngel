@@ -23,6 +23,7 @@
             android:layout_margin="8dp"
             android:layout_marginBottom="4dp"
             android:contentDescription="@string/content_description_from_icon"
+            android:importantForAccessibility="no"
             android:src="@drawable/ic_start" />
 
         <TextView
@@ -33,7 +34,7 @@
             android:layout_marginBottom="12dp"
             android:layout_toRightOf="@+id/from_station_icon"
             android:background="@drawable/station_background"
-            android:text="From Station"
+            android:text="@string/from_station"
             android:textSize="16sp" />
 
         <ImageView
@@ -47,6 +48,7 @@
             android:layout_marginTop="8dp"
             android:layout_toStartOf="@+id/from_station"
             android:contentDescription="@string/content_description_to_icon"
+            android:importantForAccessibility="no"
             android:src="@drawable/ic_room_white_36dp" />
 
         <TextView
@@ -57,7 +59,7 @@
             android:layout_below="@+id/from_station"
             android:layout_toRightOf="@+id/to_station_icon"
             android:background="@drawable/station_background"
-            android:text="To Station"
+            android:text="@string/to_station"
             android:textSize="16sp" />
 
     </RelativeLayout>

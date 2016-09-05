@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -170,10 +169,27 @@ public class BartScheduleFragment extends Fragment
     private void updateStationLabels(boolean isSwapStation) {
         ((ScheduleActivity) getActivity()).BART_TO_STATION = mToStationId;
         ((ScheduleActivity) getActivity()).BART_FROM_STATION = mFromStationId;
-        mToStation.setText(stopHashMap.containsKey(mToStationId) ?
-                stopHashMap.get(mToStationId).getName() : "Select To Station");
-        mFromStation.setText(stopHashMap.containsKey(mFromStationId) ?
-                stopHashMap.get(mFromStationId).getName() : "Select From Station");
+
+        String noFromStationSelected = getString(R.string.select_from_station);
+        String noToStation = getString(R.string.select_to_station);
+        String toStation =stopHashMap.containsKey(mToStationId) ? stopHashMap.get(mToStationId).getName() : noToStation;
+        String fromStation = stopHashMap.containsKey(mFromStationId) ? stopHashMap.get(mFromStationId).getName() : noFromStationSelected;
+
+        mToStation.setText(toStation);
+        mFromStation.setText(fromStation);
+
+        if(stopHashMap.containsKey(mToStationId)) {
+            mToStation.setContentDescription(getString(R.string.to_station_set) + toStation);
+        } else {
+            mToStation.setContentDescription(getString(R.string.no_to_station_set));
+        }
+
+        if(stopHashMap.containsKey(mFromStationId)) {
+            mFromStation.setContentDescription(getString(R.string.from_station_set) + fromStation);
+        } else {
+            mFromStation.setContentDescription(getString(R.string.no_from_station_set));
+        }
+
         refreshTrainSchedule();
     }
 

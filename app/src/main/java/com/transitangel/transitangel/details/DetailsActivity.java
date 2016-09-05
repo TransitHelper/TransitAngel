@@ -117,7 +117,7 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         mAlarmStops.add(mStops.get(mStops.size() - 1));
         setSupportActionBar(toolbar);
         tvTitle.setText("#" + train.getNumber());
-        tvTitle.setContentDescription("Train number " + train.getNumber());
+        tvTitle.setContentDescription(getString(R.string.content_description_train_number) + train.getNumber());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(null);
         adapter = new StationsAdapter(this, mStops, StationsAdapter.ITEM_DETAIL);
@@ -157,7 +157,7 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     @Override
     public void onCheckBoxSelected(View view, int position) {
         ArrayList<TrainStop> visibleStopsList = adapter.getVisibleStops();
-        String contentDescription = getString(R.string.content_description_train_arriving) + visibleStopsList.get(position).getName()
+        String contentDescription = visibleStopsList.get(position).getName()
                 + getString(R.string.content_description_station)
                 + visibleStopsList.get(position).getDepartureTime()
                 + getString(R.string.notification_selected);
@@ -169,8 +169,7 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     @Override
     public void onCheckBoxUnSelected(View view, int position) {
         ArrayList<TrainStop> visibleStopsList = adapter.getVisibleStops();
-        String contentDescription = getString(R.string.content_description_train_arriving)
-                + visibleStopsList.get(position).getName()
+        String contentDescription = visibleStopsList.get(position).getName()
                 + getString(R.string.content_description_station)
                 + visibleStopsList.get(position).getDepartureTime()
                 + getString(R.string.tap_to_add_notifications);
@@ -266,6 +265,8 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         addGeoFencesandAlarm();
         startOnGoingNotification(trip);
         TransitManager.getSharedInstance().saveRecentTrip(trip);
+
+        Toast.makeText(DetailsActivity.this, getString(R.string.trip_started), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, HomeActivity.class);
         intent.setAction(HomeActivity.ACTION_SHOW_ONGOING);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

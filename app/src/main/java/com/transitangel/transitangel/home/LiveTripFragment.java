@@ -46,6 +46,7 @@ import rx.subscriptions.CompositeSubscription;
 public class LiveTripFragment extends Fragment implements StationsAdapter.OnItemClickListener {
 
     public static final String TAG = LiveTripFragment.class.getSimpleName();
+
     private CompositeSubscription mSubscription = new CompositeSubscription();
     @BindView(R.id.rvStationList)
     RecyclerView rvStationList;
@@ -127,7 +128,7 @@ public class LiveTripFragment extends Fragment implements StationsAdapter.OnItem
     @Override
     public void onCheckBoxSelected(View view, int position) {
         ArrayList<TrainStop> visibleStopsList = adapter.getVisibleStops();
-        String contentDescription = getString(R.string.content_description_train_arriving) + visibleStopsList.get(position).getName()
+        String contentDescription = visibleStopsList.get(position).getName()
                 + getString(R.string.content_description_station)
                 + visibleStopsList.get(position).getDepartureTime()
                 + getString(R.string.notification_selected);
@@ -142,7 +143,7 @@ public class LiveTripFragment extends Fragment implements StationsAdapter.OnItem
     @Override
     public void onCheckBoxUnSelected(View view, int position) {
         ArrayList<TrainStop> visibleStopsList = adapter.getVisibleStops();
-        String contentDescription = getString(R.string.content_description_train_arriving) + visibleStopsList.get(position).getName()
+        String contentDescription = visibleStopsList.get(position).getName()
                 + getString(R.string.content_description_station)
                 + visibleStopsList.get(position).getDepartureTime()
                 + getString(R.string.tap_to_add_notifications);
