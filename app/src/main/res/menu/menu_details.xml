@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_search"
-        android:hint="Search Station Name"
+        android:hint="@string/search_station_name_hint"
         android:icon="@drawable/search"
         android:orderInCategory="1"
-        android:title="Search"
+        android:title="@string/search"
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="always" />
 </menu>
