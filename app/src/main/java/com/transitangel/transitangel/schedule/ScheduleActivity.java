@@ -22,8 +22,8 @@ public class ScheduleActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @BindView(R.id.tvTitle)
-    TextView mTitle;
+    @BindView(R.id.tvChangeService)
+    TextView mtvChangeService;
     @BindView(R.id.fragment_container)
     FrameLayout mFrameLayout;
 
@@ -49,14 +49,14 @@ public class ScheduleActivity extends AppCompatActivity {
         if (mTransitType == null || mTransitType == TAConstants.TRANSIT_TYPE.CALTRAIN) {
             CAL_FROM_STATION = getIntent().getStringExtra(FROM_STATION_ID);
             CAL_TO_STATION = getIntent().getStringExtra(TO_STATION_ID);
-            mTitle.setText("Schedule: Caltrain");
-            mTitle.setContentDescription("Schedule for Caltrain, tap to select other service");
+            mtvChangeService.setText(getString(R.string.schedule_caltrain));
+            mtvChangeService.setContentDescription(getString(R.string.change_service, getString(R.string.schedule_caltrain)));
             loadCalTrainFragment(true);
         } else {
             BART_FROM_STATION = getIntent().getStringExtra(FROM_STATION_ID);
             BART_TO_STATION = getIntent().getStringExtra(TO_STATION_ID);
-            mTitle.setText("Schedule: Bart");
-            mTitle.setContentDescription("Schedule for Bart, tap to select other service");
+            mtvChangeService.setText(getString(R.string.schedule_bart));
+            mtvChangeService.setContentDescription(getString(R.string.change_service, getString(R.string.schedule_bart)));
             loadBartFragment(true);
         }
     }
@@ -105,12 +105,7 @@ public class ScheduleActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(null);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mTitle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showPopup(view);
-            }
-        });
+        mtvChangeService.setOnClickListener(view -> showPopup(view));
     }
 
     @Override
@@ -127,25 +122,22 @@ public class ScheduleActivity extends AppCompatActivity {
         PopupMenu popup = new PopupMenu(this, view);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.item_popup_schedules, popup.getMenu());
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_caltrain:
-                        mTitle.setText("Schedule: Caltrain");
-                        mTitle.setContentDescription("Schedule for Caltrain, tap to select other service");
-                        mTransitType = TAConstants.TRANSIT_TYPE.CALTRAIN;
-                        loadCalTrainFragment(true);
-                        return true;
-                    case R.id.action_bart:
-                        mTitle.setText("Schedule: Bart");
-                        mTitle.setContentDescription("Schedule for Bart, tap to select other service");
-                        mTransitType = TAConstants.TRANSIT_TYPE.BART;
-                        loadBartFragment(true);
-                        return true;
-                }
-                return false;
+        popup.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.action_caltrain:
+                    mtvChangeService.setText(getString(R.string.schedule_caltrain));
+                    mtvChangeService.setContentDescription(getString(R.string.change_service, getString(R.string.schedule_caltrain)));
+                    mTransitType = TAConstants.TRANSIT_TYPE.CALTRAIN;
+                    loadCalTrainFragment(true);
+                    return true;
+                case R.id.action_bart:
+                    mtvChangeService.setText(getString(R.string.schedule_bart));
+                    mtvChangeService.setContentDescription(getString(R.string.change_service, getString(R.string.schedule_bart)));
+                    mTransitType = TAConstants.TRANSIT_TYPE.BART;
+                    loadBartFragment(true);
+                    return true;
             }
+            return false;
         });
         popup.show();
     }

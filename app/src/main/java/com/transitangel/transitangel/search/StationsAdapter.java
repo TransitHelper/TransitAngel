@@ -149,7 +149,7 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
         }
 
-        String contentDescription = context.getString(R.string.content_description_train_arriving) + visibleStopsList.get(position).getName()
+        String contentDescription = visibleStopsList.get(position).getName()
                 + context.getString(R.string.content_description_station)
                 + formattedTime
                 + (viewHolder.mSetAlarm.isChecked() ? context.getString(R.string.notification_selected) : context.getString(R.string.tap_to_add_notifications));

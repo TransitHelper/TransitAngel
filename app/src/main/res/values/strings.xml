@@ -134,8 +134,7 @@
     <string name="no_live_trip">No live trip right now</string>
     <string name="tap_to_add_notifications">. Tap to add notification.</string>
     <string name="notification_selected">. Notification selected.</string>
-    <string name="content_description_train_arriving">"Train arriving on "</string>
-    <string name="content_description_station">"Station , at "</string>
+    <string name="content_description_station">"Station , arriving at "</string>
     <string name="recent_trips">Recent Trip</string>
     <string name="recent_search">Recent Search</string>
     <string name="content_description_recent_search_header">Recent Search Section</string>
@@ -161,4 +160,20 @@
     <string name="ongoing_label">Ongoing Trip Screen</string>
     <string name="no_caltrain">No Caltrains at this moment.</string>
     <string name="no_bart">No Barts at this moment.</string>
+    <string name="from_station">From Station</string>
+    <string name="to_station">To Station</string>
+    <string name="select_from_station">Select From station</string>
+    <string name="select_to_station">Select to station</string>
+    <string name="from_station_set">From station set to&#160;</string>
+    <string name="to_station_set">To station set to&#160;</string>
+    <string name="no_to_station_set">No to station set</string>
+    <string name="no_from_station_set">No from station set</string>
+    <string name="schedule_caltrain">Caltrain</string>
+    <string name="schedule_bart">Bart</string>
+    <string name="schedule_title">Schedule:</string>
+    <string name="change_service">Change %1$s service</string>
+    <string name="trip_started">Trip Started</string>
+    <string name="search">Search stations</string>
+    <string name="search_station_name_hint">Search Station Name</string>
+    <string name="content_description_train_number">"Train number "</string>
 </resources>
