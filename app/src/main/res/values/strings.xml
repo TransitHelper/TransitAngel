@@ -126,7 +126,7 @@
     <string name="nearby_caltrain_title">Nearby Caltrain Stations</string>
     <string name="nearby_bart_title">Nearby Bart Stations</string>
     <string name="recent_search_to">&#160;to&#160;</string>
-    <string name="nearby_error_text">Error while getting the train information.</string>
+    <string name="nearby_error_text">Error while getting nearby train information.</string>
     <string name="content_description_from_icon">From station icon</string>
     <string name="content_description_during_icon">During trip icon</string>
     <string name="content_description_to_icon">To station icon</string>
@@ -176,4 +176,6 @@
     <string name="search">Search stations</string>
     <string name="search_station_name_hint">Search Station Name</string>
     <string name="content_description_train_number">"Train number "</string>
+    <string name="show_all_trips">show all trips</string>
+    <string name="no_recent_trips_or_searches">No Recent trips or searches</string>
 </resources>

@@ -73,13 +73,12 @@ public class RecentFragment extends Fragment implements RecentAdapter.OnItemClic
         adapter.setOnMoreMenuClickListener(this);
         rvRecents.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvRecents.setNestedScrollingEnabled(false);
-
     }
 
     @Override
     public void onItemClick(int position) {
         if(adapter.getItemViewType(position) == RecentAdapter.RECENT_TRIP_ITEM_VIEW_MORE_TYPE) {
-            Toast.makeText(getActivity(), "show all trips", Toast.LENGTH_LONG);
+            Toast.makeText(getActivity(), getString(R.string.show_all_trips), Toast.LENGTH_LONG);
         } else if(adapter.getItemViewType(position) == RecentAdapter.RECENT_TRIP_ITEM_TYPE) {
             // Subtract the position of header
             position = adapter.getRecentTripPosition(position);
@@ -142,6 +141,12 @@ public class RecentFragment extends Fragment implements RecentAdapter.OnItemClic
             updateList();
         }
 
+        if(recentTripLists.isEmpty() && searchTripLists.isEmpty()) {
+            showNoRecentTrips();
+        } else {
+            hideNoRecentTrips();
+        }
+
     }
 
     private void updateList() {
@@ -180,5 +185,13 @@ public class RecentFragment extends Fragment implements RecentAdapter.OnItemClic
             }
         });
         popup.show();
+    }
+
+    private void showNoRecentTrips() {
+        tvNoRecents.setVisibility(View.VISIBLE);
+    }
+
+    private void hideNoRecentTrips() {
+        tvNoRecents.setVisibility(View.GONE);
     }
 }

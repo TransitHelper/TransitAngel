@@ -5,12 +5,12 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -37,6 +37,9 @@ public class NearByFragment extends Fragment {
     @BindView(R.id.card_view_bart)
     View cardViewBart;
 
+    @BindView(R.id.srlNearbyContainer)
+    SwipeRefreshLayout srlNearbyContainer;
+
     @BindView(R.id.card_view_caltrain)
     View cardViewCaltrain;
 
@@ -45,9 +48,6 @@ public class NearByFragment extends Fragment {
 
     @BindView(R.id.caltrain_container)
     LinearLayout caltrainContainer;
-
-    @BindView(R.id.progressBar)
-    ProgressBar progressBar;
 
     @BindView(R.id.errorText)
     TextView errorText;
@@ -78,8 +78,12 @@ public class NearByFragment extends Fragment {
     }
 
     private void init() {
-        progressBar.setVisibility(View.VISIBLE);
+        srlNearbyContainer.post(() -> {
+           srlNearbyContainer.setRefreshing(true);
+        });
+
         loadCurrentStops();
+        srlNearbyContainer.setOnRefreshListener(() -> loadCurrentStops());
     }
 
     public void loadCurrentStops() {
@@ -87,20 +91,40 @@ public class NearByFragment extends Fragment {
             @Override
             protected Void doInBackground(Void... voids) {
                 CaltrainTransitManager.getSharedInstance().getNearestStop(getContext(), (isSuccess, stop) -> {
-                    if (isSuccess) {
-                        saveCaltrainTrain(stop);
-                        BartTransitManager.getSharedInstance().getNearestStop(getContext(), (isSuccess1, stop1) -> {
-                            if (isSuccess1) {
-                                saveBarCurrentStop(stop1);
-                                loadAllStations();
-                            } else {
-                                failedToLoad();
-                            }
-                        });
-                    } else {
-                        failedToLoad();
-                    }
+                    loadBart(isSuccess, stop);
                 });
+                return null;
+            }
+        }.execute();
+    }
+
+    private void loadBart(boolean isSuccess, Stop stop) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                if (isSuccess) {
+                    saveCaltrainTrain(stop);
+                    BartTransitManager.getSharedInstance().getNearestStop(getContext(), (isSuccess, stop) -> {
+                        loadAllStations(isSuccess, stop);
+                    });
+                } else {
+                    failedToLoad();
+                }
+                return null;
+            }
+        }.execute();
+    }
+
+    private void loadAllStations(boolean isSuccess, Stop stop) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                if (isSuccess) {
+                    saveBarCurrentStop(stop);
+                    loadAllStations();
+                } else {
+                    failedToLoad();
+                }
                 return null;
             }
         }.execute();
@@ -110,6 +134,10 @@ public class NearByFragment extends Fragment {
         final ArrayList<Train> calTrainList = CaltrainTransitManager.getSharedInstance().fetchTrainsDepartingFromStation(currentCalStop.getId(), 3);
         final ArrayList<Train> bartTrainList = BartTransitManager.getSharedInstance().fetchTrainsDepartingFromStation(currentBartStop.getId(), 3);
         getActivity().runOnUiThread(() -> {
+            if(errorText.isShown()) {
+                errorText.setVisibility(View.GONE);
+            }
+
             int calTrainSize = calTrainList.size() > 3 ? 3 : calTrainList.size();
             if (calTrainSize != 0) {
                 tvNoCaltrain.setVisibility(View.GONE);
@@ -197,7 +225,7 @@ public class NearByFragment extends Fragment {
                 bartContainer.setVisibility(View.GONE);
             }
 
-            progressBar.setVisibility(View.GONE);
+            srlNearbyContainer.setRefreshing(false);
         });
 
         boolean isBartNearest = TransitManager.getSharedInstance().isBartNearest(currentCalStop,currentBartStop);
@@ -254,12 +282,15 @@ public class NearByFragment extends Fragment {
     }
 
     private void failedToLoad() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                progressBar.setVisibility(View.GONE);
-                errorText.setVisibility(View.VISIBLE);
-            }
+        getActivity().runOnUiThread(() -> {
+            srlNearbyContainer.setRefreshing(false);
+            errorText.setVisibility(View.VISIBLE);
+            caltrainContainer.setVisibility(View.GONE);
+            bartContainer.setVisibility(View.GONE);
         });
+    }
+
+    public void noLocationPermissionGranted() {
+        failedToLoad();
     }
 }
