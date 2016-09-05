@@ -249,7 +249,12 @@ public class NearByFragment extends Fragment {
     }
 
     private void failedToLoad() {
-        progressBar.setVisibility(View.GONE);
-        errorText.setVisibility(View.VISIBLE);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.setVisibility(View.GONE);
+                errorText.setVisibility(View.VISIBLE);
+            }
+        });
     }
 }

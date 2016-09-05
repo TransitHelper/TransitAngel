@@ -13,6 +13,9 @@ public class TAConstants {
     public static String HomeScreenSettings = "HOME_SCREEN_SETTINGS";
     public static String AlarmIntents = "ALARM_PENDING_INTENTS";
     public static final int ALARM_REQUEST_CODE = 111;
+    public static String DATE_FORMAT = "MM/dd/yyyy";
+    public static String TIME_FORMAT = "HH:mm";
+    public static String ACC_DATE_FORMAT = "d MMM yyyy";
 
 
 }

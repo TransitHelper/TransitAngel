@@ -378,7 +378,7 @@ public class TransitManager {
                         return 0;
                     }
                     //check departure from the first stop?
-                    String t1Departure = t1.getTrainStops().get(0).getDepartureTime();
+                    String t1Departure = t1.getTrainStop(fromStopId).getDepartureTime();
                     String[] parts = t1Departure.split(":");
                     Calendar cal = Calendar.getInstance();
                     cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(parts[0]));
@@ -386,7 +386,7 @@ public class TransitManager {
                     Date t1DepartureTime = cal.getTime();
 
                     //check departure for t2
-                    String t2Departure = t2.getTrainStops().get(0).getDepartureTime();
+                    String t2Departure = t2.getTrainStop(fromStopId).getDepartureTime();
                     String[] parts2 = t2Departure.split(":");
                     Calendar cal2 = Calendar.getInstance();
                     cal2.set(Calendar.HOUR_OF_DAY, Integer.parseInt(parts2[0]));

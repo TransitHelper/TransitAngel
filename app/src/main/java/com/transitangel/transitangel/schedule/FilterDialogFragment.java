@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -18,7 +19,6 @@ import android.widget.TimePicker;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.utils.TAConstants;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -32,15 +32,19 @@ public class FilterDialogFragment extends DialogFragment
         DatePickerDialog.OnDateSetListener {
 
     private static FilterChangedListener mFilterChanged;
-    @BindView(R.id.txtDate)
-    TextView mSelectDate;
-    @BindView(R.id.txtTime)
-    TextView mSelectTime;
-    private String mDateFormat = "MM/dd/yyyy";
-    private String mTimeFormat = "HH:mm";
+    @BindView(R.id.layout_date)
+    ViewGroup mLayoutDate;
+    @BindView(R.id.layout_time)
+    ViewGroup mLayoutTime;
+    TextView mSelectedDate;
+    TextView mDateLabel;
+    TextView mTimeLabel;
+    TextView mSelectedTime;
     private static Calendar calendar = Calendar.getInstance();
     private static Context mContext;
     private static TAConstants.TRANSIT_TYPE mTransitType;
+    private SimpleDateFormat mDateFormat = new SimpleDateFormat(TAConstants.DATE_FORMAT);
+    private SimpleDateFormat mTimeFormat = new SimpleDateFormat(TAConstants.TIME_FORMAT);
 
     public static FilterDialogFragment newInstance(Context context, FilterChangedListener filterChangedListener, TAConstants.TRANSIT_TYPE type) {
         FilterDialogFragment newDialogFragment = new FilterDialogFragment();
@@ -60,21 +64,28 @@ public class FilterDialogFragment extends DialogFragment
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View container = inflater.inflate(R.layout.filter, null);
+        View container = inflater.inflate(R.layout.custom_dialog, null);
         ButterKnife.bind(this, container);
-        DateFormat df = new SimpleDateFormat(mDateFormat);
-        String date = df.format(calendar.getTime());
-        mSelectDate.setText(date);
-        DateFormat tf = new SimpleDateFormat(mTimeFormat);
-        mSelectTime.setText(tf.format(calendar.getTime()));
-        View view = inflater.inflate(R.layout.dialog_custom_title, null);
-        builder.setCustomTitle(view);
+        String date = mDateFormat.format(calendar.getTime());
+        SimpleDateFormat descriptionFormat = new SimpleDateFormat(TAConstants.ACC_DATE_FORMAT);
+        mSelectedDate = (TextView) mLayoutDate.findViewById(R.id.value);
+        mDateLabel = (TextView) mLayoutDate.findViewById(R.id.label);
+        mDateLabel.setText("Date ");
+        mSelectedDate.setText(date);
+        mLayoutDate.setContentDescription("Selected Date" +
+                descriptionFormat.format(calendar.getTime()) + ". Tap to change");
+        mSelectedTime = (TextView) mLayoutTime.findViewById(R.id.value);
+        mTimeLabel = (TextView) mLayoutTime.findViewById(R.id.label);
+        mTimeLabel.setText("Time ");
+        String time = mTimeFormat.format(calendar.getTime());
+        mSelectedTime.setText(time);
+        mLayoutTime.setContentDescription("Selected Time " + time + ". Tap to change");
         builder.setView(container);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                mFilterChanged.onFilterChanged(calendar,mTransitType);
+                mFilterChanged.onFilterChanged(calendar, mTransitType);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -83,9 +94,19 @@ public class FilterDialogFragment extends DialogFragment
                 dialog.cancel();
             }
         });
+
         setListeners();
         setValues();
         AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener( new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface arg0) {
+                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).
+                        setTextColor(getResources().getColor(R.color.colorPrimary));
+                alertDialog.getButton(android.support.v7.app.AlertDialog.BUTTON_POSITIVE)
+                        .setTextColor(getResources().getColor(R.color.colorPrimary));
+            }
+        });
         return alertDialog;
     }
 
@@ -97,7 +118,7 @@ public class FilterDialogFragment extends DialogFragment
         calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY) + 1);
     }
 
-    @OnClick(R.id.txtDate)
+    @OnClick(R.id.layout_date)
     public void showDatePicker() {
         Calendar mDateCal = getMidnightInUTC(Calendar.getInstance());
         int year = mDateCal.get(Calendar.YEAR);
@@ -107,7 +128,7 @@ public class FilterDialogFragment extends DialogFragment
         datePickerDialog.show();
     }
 
-    @OnClick(R.id.txtTime)
+    @OnClick(R.id.layout_time)
     public void showTimePicker() {
         Calendar c = java.util.Calendar.getInstance();
         int hour = c.get(Calendar.HOUR_OF_DAY);
@@ -116,12 +137,6 @@ public class FilterDialogFragment extends DialogFragment
         timePickerDialog.show();
     }
 
-    public static String getDate(long date) {
-        if (date == 0)
-            return "";
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-        return dateFormat.format(date);
-    }
 
     @NonNull
     public static Calendar getMidnightInUTC(@NonNull Calendar calendar) {
@@ -138,9 +153,10 @@ public class FilterDialogFragment extends DialogFragment
 
     @Override
     public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
-        mSelectTime.setText(hourOfDay + ":" + minute);
+        mSelectedTime.setText(hourOfDay + ":" + minute);
         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         calendar.set(Calendar.MINUTE, minute);
+        mLayoutTime.setContentDescription("Selected time " + mTimeFormat.format(calendar.getTime()) + "Tap to change");
     }
 
     @Override
@@ -148,8 +164,10 @@ public class FilterDialogFragment extends DialogFragment
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, monthOfYear);
         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        DateFormat df = new SimpleDateFormat(mDateFormat);
-        String date = df.format(calendar.getTime());
-        mSelectDate.setText(date);
+        String date = new SimpleDateFormat(TAConstants.DATE_FORMAT).format(calendar.getTime());
+        mSelectedDate.setText(date);
+        mLayoutDate.setContentDescription("Selected date " +
+                new SimpleDateFormat(TAConstants.ACC_DATE_FORMAT).format(calendar.getTime())
+                + " Tap to change");
     }
 }

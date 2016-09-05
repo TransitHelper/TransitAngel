@@ -10,15 +10,8 @@
         <item name="colorControlActivated">@color/colorPrimary</item>
         <item name="colorControlHighlight">@color/colorPrimary</item>
         <item name="android:spinnerItemStyle">@style/mySpinnerItemStyle</item>
+        <item name="android:dialogTheme">@style/AppDialogTheme</item>
     </style>
-
-    <style name="AppThemeActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
 
     <style name="mySpinnerItemStyle" parent="@android:style/Widget.Holo.DropDownItem.Spinner">
         <item name="android:textColor">@android:color/white</item>
@@ -28,4 +21,18 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowTitleStyle">@style/DialogWindowTitle</item>
+    </style>
+
+    <style name="DialogWindowTitle" parent="Base.DialogWindowTitle.AppCompat">
+        <item name="android:gravity">left</item>
+        <item name="android:textAppearance">@style/DialogWindowTitleText</item>
+    </style>
+
+    <style name="DialogWindowTitleText" parent="@android:style/TextAppearance.DialogWindowTitle">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
 </resources>
