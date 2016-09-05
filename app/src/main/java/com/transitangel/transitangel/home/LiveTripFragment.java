@@ -172,9 +172,10 @@ public class LiveTripFragment extends Fragment implements StationsAdapter.OnItem
 
     @OnClick(R.id.btnCancelTrip)
     public void onCancelTrip() {
-        PrefManager.removeOnGoingTrip();
-        // Remove the persistent notification.
+       //Remove Notification FIRST before removing persistent notification
         NotificationProvider.getInstance().dismissOnGoingNotification(getActivity());
+        // Remove the persistent notification.
+        PrefManager.removeOnGoingTrip();
         // Refresh the ongoing trip tab.
         displayOnGoingTrip();
         Toast.makeText(getActivity(), "Trip Cancelled.", Toast.LENGTH_SHORT).show();

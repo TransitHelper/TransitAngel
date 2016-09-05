@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
+import com.transitangel.transitangel.Manager.TransitManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.model.Transit.Stop;
 import com.transitangel.transitangel.model.Transit.Train;
@@ -30,6 +31,8 @@ import butterknife.ButterKnife;
 
 public class NearByFragment extends Fragment {
 
+
+    private static final String TAG = NearByFragment.class.getSimpleName();
 
     @BindView(R.id.card_view_bart)
     View cardViewBart;
@@ -79,7 +82,7 @@ public class NearByFragment extends Fragment {
         loadCurrentStops();
     }
 
-    public void  loadCurrentStops() {
+    public void loadCurrentStops() {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
@@ -107,105 +110,107 @@ public class NearByFragment extends Fragment {
         final ArrayList<Train> calTrainList = CaltrainTransitManager.getSharedInstance().fetchTrainsDepartingFromStation(currentCalStop.getId(), 3);
         final ArrayList<Train> bartTrainList = BartTransitManager.getSharedInstance().fetchTrainsDepartingFromStation(currentBartStop.getId(), 3);
         getActivity().runOnUiThread(() -> {
-                int calTrainSize = calTrainList.size() > 3 ? 3 : calTrainList.size();
-                if(calTrainSize != 0) {
-                    tvNoCaltrain.setVisibility(View.GONE);
-                    caltrainContainer.setVisibility(View.VISIBLE);
-                    View caltrain;
-                    int caltrainCount = 0;
-                    for (; caltrainCount < calTrainSize; caltrainCount++) {
-                        caltrain = caltrainContainer.findViewById(getCaltrainId(caltrainCount));
-                        // Check near by station and add it in the following way:
-                        ImageView icon = (ImageView) caltrain.findViewById(R.id.ivIcon);
-                        TextView trainInfo = (TextView) caltrain.findViewById(R.id.tvTrainInfo);
-                        TextView trainDeparture = (TextView) caltrain.findViewById(R.id.tvDeparture);
-                        icon.setImageResource(R.drawable.train_red);
-                        Train train = calTrainList.get(caltrainCount);
-                        final TrainStop currentStop = getCurrentStop(currentCalStop.getId(), train);
-                        final TrainStop lastStop = train.getTrainStops().get(train.getTrainStops().size() - 1);
-                        trainInfo.setText(getString(R.string.nearby_train, currentStop.getName(), lastStop.getName()));
-                        trainDeparture.setText(getString(R.string.nearby_scheduled_at, currentStop.getDepartureTime()));
-                        caltrain.setVisibility(View.VISIBLE);
-                        caltrain.setOnClickListener((View view) -> {
-                            if (currentCalStop != null) {
-                                //start the schedule by setting the from station
-                                Intent intent = new Intent(getActivity(), ScheduleActivity.class);
-                                intent.putExtra(ScheduleActivity.ARG_TRANSIT_TYPE, TAConstants.TRANSIT_TYPE.CALTRAIN);
-                                intent.putExtra(ScheduleActivity.FROM_STATION_ID, currentStop.getStopId());
-                                intent.putExtra(ScheduleActivity.TO_STATION_ID, lastStop.getStopId());
-                                startActivity(intent);
-                            }
-                        });
-                        caltrain.setClickable(true);
-                    }
-
-                    // If there are any visible from the previous, refresh
-                    while(caltrainCount <= 3) {
-                        caltrain = caltrainContainer.findViewById(getCaltrainId(caltrainCount));
-                        caltrain.setVisibility(View.GONE);
-                        caltrainCount++;
-                    }
-                } else {
-                    tvNoCaltrain.setVisibility(View.VISIBLE);
-                    caltrainContainer.setVisibility(View.GONE);
+            int calTrainSize = calTrainList.size() > 3 ? 3 : calTrainList.size();
+            if (calTrainSize != 0) {
+                tvNoCaltrain.setVisibility(View.GONE);
+                caltrainContainer.setVisibility(View.VISIBLE);
+                View caltrain;
+                int caltrainCount = 0;
+                for (; caltrainCount < calTrainSize; caltrainCount++) {
+                    caltrain = caltrainContainer.findViewById(getCaltrainId(caltrainCount));
+                    // Check near by station and add it in the following way:
+                    ImageView icon = (ImageView) caltrain.findViewById(R.id.ivIcon);
+                    TextView trainInfo = (TextView) caltrain.findViewById(R.id.tvTrainInfo);
+                    TextView trainDeparture = (TextView) caltrain.findViewById(R.id.tvDeparture);
+                    icon.setImageResource(R.drawable.train_red);
+                    Train train = calTrainList.get(caltrainCount);
+                    final TrainStop currentStop = getCurrentStop(currentCalStop.getId(), train);
+                    final TrainStop lastStop = train.getTrainStops().get(train.getTrainStops().size() - 1);
+                    trainInfo.setText(getString(R.string.nearby_train, currentStop.getName(), lastStop.getName()));
+                    trainDeparture.setText(getString(R.string.nearby_scheduled_at, currentStop.getDepartureTime()));
+                    caltrain.setVisibility(View.VISIBLE);
+                    caltrain.setOnClickListener((View view) -> {
+                        if (currentCalStop != null) {
+                            //start the schedule by setting the from station
+                            Intent intent = new Intent(getActivity(), ScheduleActivity.class);
+                            intent.putExtra(ScheduleActivity.ARG_TRANSIT_TYPE, TAConstants.TRANSIT_TYPE.CALTRAIN);
+                            intent.putExtra(ScheduleActivity.FROM_STATION_ID, currentStop.getStopId());
+                            intent.putExtra(ScheduleActivity.TO_STATION_ID, lastStop.getStopId());
+                            startActivity(intent);
+                        }
+                    });
+                    caltrain.setClickable(true);
                 }
 
-                int bartTrainSize = bartTrainList.size() > 3 ? 3 : bartTrainList.size();
+                // If there are any visible from the previous, refresh
+                while (caltrainCount <= 3) {
+                    caltrain = caltrainContainer.findViewById(getCaltrainId(caltrainCount));
+                    caltrain.setVisibility(View.GONE);
+                    caltrainCount++;
+                }
+            } else {
+                tvNoCaltrain.setVisibility(View.VISIBLE);
+                caltrainContainer.setVisibility(View.GONE);
+            }
 
-                if(bartTrainSize != 0) {
-                    tvNoBart.setVisibility(View.GONE);
-                    bartContainer.setVisibility(View.VISIBLE);
-                    int bartCount = 0;
-                    View bart;
-                    for (bartCount = 0; bartCount < bartTrainSize; bartCount++) {
-                        // Check near by station and add it in the following way:
-                        bart = bartContainer.findViewById(getBartId(bartCount));
-                        ImageView icon = (ImageView) bart.findViewById(R.id.ivIcon);
-                        icon.setImageResource(R.drawable.train_blue);
-                        TextView trainInfo = (TextView) bart.findViewById(R.id.tvTrainInfo);
-                        TextView trainDeparture = (TextView) bart.findViewById(R.id.tvDeparture);
-                        Train train = bartTrainList.get(bartCount);
-                        TrainStop currentStop = getCurrentStop(currentBartStop.getId(), train);
-                        TrainStop lastStop = train.getTrainStops().get(train.getTrainStops().size() - 1);
-                        trainInfo.setText(getString(R.string.nearby_train, currentStop.getName(), lastStop.getName()));
-                        trainDeparture.setText(getString(R.string.nearby_scheduled_at, currentStop.getDepartureTime()));
-                        bart.setVisibility(View.VISIBLE);
-                        bart.setOnClickListener((View view) -> {
-                            if (currentBartStop != null) {
-                                //start the schedule by setting the from station
-                                Intent intent = new Intent(getActivity(), ScheduleActivity.class);
-                                intent.putExtra(ScheduleActivity.ARG_TRANSIT_TYPE, TAConstants.TRANSIT_TYPE.BART);
-                                intent.putExtra(ScheduleActivity.FROM_STATION_ID, currentStop.getStopId());
-                                intent.putExtra(ScheduleActivity.TO_STATION_ID, lastStop.getStopId());
-                                startActivity(intent);
-                            }
-                        });
-                        bart.setClickable(true);
-                    }
+            int bartTrainSize = bartTrainList.size() > 3 ? 3 : bartTrainList.size();
 
-                    // If there are any visible from the previous, refresh
-                    while(bartCount <= 3) {
-                        bart = bartContainer.findViewById(getBartId(bartCount));
-                        bart.setVisibility(View.GONE);
-                        bartCount++;
-                    }
-                } else  {
-                    tvNoBart.setVisibility(View.VISIBLE);
-                    bartContainer.setVisibility(View.GONE);
+            if (bartTrainSize != 0) {
+                tvNoBart.setVisibility(View.GONE);
+                bartContainer.setVisibility(View.VISIBLE);
+                int bartCount = 0;
+                View bart;
+                for (bartCount = 0; bartCount < bartTrainSize; bartCount++) {
+                    // Check near by station and add it in the following way:
+                    bart = bartContainer.findViewById(getBartId(bartCount));
+                    ImageView icon = (ImageView) bart.findViewById(R.id.ivIcon);
+                    icon.setImageResource(R.drawable.train_blue);
+                    TextView trainInfo = (TextView) bart.findViewById(R.id.tvTrainInfo);
+                    TextView trainDeparture = (TextView) bart.findViewById(R.id.tvDeparture);
+                    Train train = bartTrainList.get(bartCount);
+                    TrainStop currentStop = getCurrentStop(currentBartStop.getId(), train);
+                    TrainStop lastStop = train.getTrainStops().get(train.getTrainStops().size() - 1);
+                    trainInfo.setText(getString(R.string.nearby_train, currentStop.getName(), lastStop.getName()));
+                    trainDeparture.setText(getString(R.string.nearby_scheduled_at, currentStop.getDepartureTime()));
+                    bart.setVisibility(View.VISIBLE);
+                    bart.setOnClickListener((View view) -> {
+                        if (currentBartStop != null) {
+                            //start the schedule by setting the from station
+                            Intent intent = new Intent(getActivity(), ScheduleActivity.class);
+                            intent.putExtra(ScheduleActivity.ARG_TRANSIT_TYPE, TAConstants.TRANSIT_TYPE.BART);
+                            intent.putExtra(ScheduleActivity.FROM_STATION_ID, currentStop.getStopId());
+                            intent.putExtra(ScheduleActivity.TO_STATION_ID, lastStop.getStopId());
+                            startActivity(intent);
+                        }
+                    });
+                    bart.setClickable(true);
                 }
 
-                progressBar.setVisibility(View.GONE);
+                // If there are any visible from the previous, refresh
+                while (bartCount <= 3) {
+                    bart = bartContainer.findViewById(getBartId(bartCount));
+                    bart.setVisibility(View.GONE);
+                    bartCount++;
+                }
+            } else {
+                tvNoBart.setVisibility(View.VISIBLE);
+                bartContainer.setVisibility(View.GONE);
+            }
 
-                // Else leave it
-                switchOrder();
-            });
+            progressBar.setVisibility(View.GONE);
+        });
+
+        boolean isBartNearest = TransitManager.getSharedInstance().isBartNearest(currentCalStop,currentBartStop);
+        if ( isBartNearest) {
+            switchOrder();
+        }
     }
 
 
     private void switchOrder() {
-        RelativeLayout.LayoutParams bartParms = (RelativeLayout.LayoutParams)cardViewBart.getLayoutParams();
+        RelativeLayout.LayoutParams bartParms = (RelativeLayout.LayoutParams) cardViewBart.getLayoutParams();
         bartParms.removeRule(RelativeLayout.BELOW);
-        RelativeLayout.LayoutParams caltrainParams = (RelativeLayout.LayoutParams)cardViewCaltrain.getLayoutParams();
+        RelativeLayout.LayoutParams caltrainParams = (RelativeLayout.LayoutParams) cardViewCaltrain.getLayoutParams();
         caltrainParams.addRule(RelativeLayout.BELOW, R.id.card_view_bart);
     }
 
@@ -232,8 +237,8 @@ public class NearByFragment extends Fragment {
     }
 
     private TrainStop getCurrentStop(String id, Train train) {
-        for(TrainStop stop: train.getTrainStops()) {
-            if(stop.getStopId().equalsIgnoreCase(id)) {
+        for (TrainStop stop : train.getTrainStops()) {
+            if (stop.getStopId().equalsIgnoreCase(id)) {
                 return stop;
             }
         }

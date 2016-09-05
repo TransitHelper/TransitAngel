@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.accessibility.AccessibilityManager;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
@@ -612,7 +613,10 @@ public class TransitManager {
 
         if (isExisting) {
             //move the position
+            Trip existing = items.get(currentIndex);
             items.remove(currentIndex);
+            //set the same trip id to make sure short cuts work
+            trip.setTripId(existing.getTripId());
             items.add(0, trip);
         } else {
             //add the item
@@ -867,5 +871,23 @@ public class TransitManager {
     public boolean isExploreByTouchEnabled(){
         AccessibilityManager am = (AccessibilityManager) mApplicationContext.getSystemService(Context.ACCESSIBILITY_SERVICE);
         return am.isTouchExplorationEnabled();
+    }
+
+
+    //NOTE: Relies on cached location
+    public boolean isBartNearest(Stop caltrainStop, Stop bartStop) {
+        LatLng cachedLocation = TransitLocationManager.getSharedInstance().getCachedLocation();
+        double calLat = Double.parseDouble(caltrainStop.getLatitude());
+        double calLong = Double.parseDouble(caltrainStop.getLongitude());
+        double calDistance = distance(calLat,calLong,
+                cachedLocation.latitude,cachedLocation.longitude);
+        double bartLat = Double.parseDouble(bartStop.getLatitude());
+        double bartLong = Double.parseDouble(bartStop.getLongitude());
+        double bartDistance = distance(bartLat,bartLong,cachedLocation.latitude,cachedLocation.longitude);
+
+        if (bartDistance < calDistance ) {
+            return true;
+        }
+        return false;
     }
 }

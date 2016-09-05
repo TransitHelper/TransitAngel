@@ -74,4 +74,8 @@ public class Trip {
     public Trip() {
         tripId = UUID.randomUUID().toString();
     }
+
+    public void setTripId(String tripId) {
+        this.tripId = tripId;
+    }
 }

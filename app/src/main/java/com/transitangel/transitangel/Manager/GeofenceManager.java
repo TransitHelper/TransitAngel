@@ -26,6 +26,7 @@ import com.transitangel.transitangel.utils.PermissionUtils;
 import com.transitangel.transitangel.utils.TAConstants;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -164,15 +165,14 @@ public class GeofenceManager {
 
     private void saveGeofence() {
         trainStopFences.add(trainStopFenceToAdd);
-        if (listener != null) {
-            listener.onGeofencesUpdated();
-        }
-
         //save to pref
         String json = gson.toJson(trainStopFenceToAdd);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(trainStopFenceToAdd.getFenceId(), json);
         editor.apply();
+        if (listener != null) {
+            listener.onGeofencesUpdated();
+        }
     }
 
     private void loadGeofences() {
@@ -257,7 +257,7 @@ public class GeofenceManager {
                             listener.onGeofencesUpdated();
                         }
                         //TODO handle this on main thread
-                        //removeSavedGeofences();
+                        removeSavedGeofences();
                     } else {
                         Log.e(TAG, "Removing geofence failed: " + status.getStatusMessage());
                         sendError();
@@ -313,25 +313,23 @@ public class GeofenceManager {
         }
         this.listener = listener;
         connectWithCallbacks(connectionRemoveListener);
-        //removeSavedGeofences(); //??
     }
 
     //removes from shared prefs
     private void removeSavedGeofences() {
-        //TODO run this on main thread
+
         SharedPreferences.Editor editor = prefs.edit();
 
         try {
             Boolean isChanged = false;
             for (TrainStopFence trainStopFence : trainStopFencesToRemove) {
 
-                for ( TrainStopFence existingFence : trainStopFences ) {
-                    //check if fence id matches existing fences and remove the existing fences
+                for (Iterator<TrainStopFence> iterator = trainStopFences.iterator(); iterator.hasNext();) {
+                    TrainStopFence existingFence = iterator.next();
                     if ( trainStopFence.getFenceId().equalsIgnoreCase(existingFence.getFenceId())) {
-                        isChanged = true;
+                        // Remove the current element from the iterator and the list.
                         editor.remove(existingFence.getFenceId());
-                        trainStopFences.remove(existingFence);
-
+                        iterator.remove();
                     }
                 }
             }
