@@ -3,6 +3,7 @@ package com.transitangel.transitangel.home;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.design.widget.TabLayout;
@@ -185,14 +186,19 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == TransitLocationManager.GET_LOCATION_REQUEST_CODE) {
-            //reload the recents fragment
-            NearByFragment nearByFragment = (NearByFragment) adapter.getRegisteredFragment(0); //first fragment
-            if (nearByFragment != null) {
-                nearByFragment.loadCurrentStops();
+            NearByFragment nearByFragment = (NearByFragment) adapter.getRegisteredFragment(0);
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //reload the recents fragment
+                if (nearByFragment != null) {
+                    nearByFragment.loadCurrentStops();
+                }
+            } else {
+                nearByFragment.noLocationPermissionGranted();
             }
-
         } else if (requestCode == TransitLocationManager.GET_UPDATES_LOCATION_REQUEST_CODE) {
-            TransitLocationManager.getSharedInstance().getLocationUpdates(this);
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                TransitLocationManager.getSharedInstance().getLocationUpdates(this);
+            }
         }
     }
 
