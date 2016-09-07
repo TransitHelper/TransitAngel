@@ -178,4 +178,6 @@
     <string name="content_description_train_number">"Train number "</string>
     <string name="show_all_trips">show all trips</string>
     <string name="no_recent_trips_or_searches">No Recent trips or searches</string>
+    <string name="transition_schedule">transition_schedule</string>
+    <string name="transition_details">transition_details</string>
 </resources>

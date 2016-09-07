@@ -22,6 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_toRightOf="@+id/ivIcon"
+        android:transitionName="fromStation"
         tools:text="Leaving from Mtv towards SFO"/>
 
     <TextView

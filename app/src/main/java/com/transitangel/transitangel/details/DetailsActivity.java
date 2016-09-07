@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.MenuItemCompat;
@@ -95,6 +96,10 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     }
 
     private void init() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            tvTitle.setTransitionName(getString(R.string.transition_details));
+        }
+
         serviceType = getIntent().getStringExtra(EXTRA_SERVICE);
         train = getIntent().getParcelableExtra(EXTRA_TRAIN);
         fromStation = getIntent().getStringExtra(EXTRA_FROM_STATION_ID);
@@ -140,7 +145,6 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         EditText et = (EditText) searchView.findViewById(searchEditId);
         et.setTextColor(Color.WHITE);
         et.setHintTextColor(Color.WHITE);
-
         return true;
     }
 
@@ -148,7 +152,7 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            finish();
+            supportFinishAfterTransition();
             return true;
         }
         return super.onOptionsItemSelected(item);

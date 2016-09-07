@@ -145,7 +145,7 @@ public class HomeActivity extends AppCompatActivity {
                 recents.setContentDescription(getString(R.string.recents_unselected));
                 liveTrip.setContentDescription(getString(R.string.live_trip_selected));
             } else if (action.equalsIgnoreCase(ACTION_TRIP_CANCELLED)) {
-                Toast.makeText(this, "Show on cancelled trip clicked.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Trip cancelled.", Toast.LENGTH_LONG).show();
             } else if (action.equalsIgnoreCase(ACTION_SHORTCUT)) {
                 String tripId = getIntent().getStringExtra(EXTRA_SHORTCUT_TRIP_ID);
                 ArrayList<Trip> cachedRecentTrip = TransitManager.getSharedInstance().fetchRecentTripList();

@@ -1,6 +1,7 @@
 package com.transitangel.transitangel.home;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -37,7 +38,7 @@ public class RecentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private Context context;
 
     public interface OnItemClickListener {
-        void onItemClick(int position);
+        void onItemClick(View view, int position);
     }
 
     public interface OnMoreMenuClickListener {
@@ -75,6 +76,9 @@ public class RecentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             viewHolder = new RecentHeaderViewHolder(view);
         } else if(viewType == RECENT_TRIP_ITEM_TYPE) {
             View view = inflater.inflate(R.layout.item_recents_trip, parent, false);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                view.setTransitionName(context.getString(R.string.transition_details));
+            }
             viewHolder = new RecentTripItemViewHolder(view, onItemClickListener, onMoreMenuClickListener);
         } else if(viewType == RECENT_TRIP_ITEM_VIEW_MORE_TYPE) {
             View view = inflater.inflate(R.layout.item_see_all_trips, parent, false);
