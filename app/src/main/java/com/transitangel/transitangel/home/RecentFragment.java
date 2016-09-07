@@ -2,8 +2,11 @@ package com.transitangel.transitangel.home;
 
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -76,7 +79,7 @@ public class RecentFragment extends Fragment implements RecentAdapter.OnItemClic
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onItemClick(View view, int position) {
         if(adapter.getItemViewType(position) == RecentAdapter.RECENT_TRIP_ITEM_VIEW_MORE_TYPE) {
             Toast.makeText(getActivity(), getString(R.string.show_all_trips), Toast.LENGTH_LONG);
         } else if(adapter.getItemViewType(position) == RecentAdapter.RECENT_TRIP_ITEM_TYPE) {
@@ -92,7 +95,13 @@ public class RecentFragment extends Fragment implements RecentAdapter.OnItemClic
             intent.putExtra(DetailsActivity.EXTRA_TRAIN, trip.getSelectedTrain());
             intent.putExtra(DetailsActivity.EXTRA_FROM_STATION_ID, trip.getFromStop().getId());
             intent.putExtra(DetailsActivity.EXTRA_TO_STATION_ID, trip.getToStop().getId());
-            startActivity(intent);
+            String transitionName = "";
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                transitionName = view.getTransitionName();
+            }
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), view, transitionName);
+            getActivity().startActivity(intent, options.toBundle());
+
         } else if(adapter.getItemViewType(position) ==  RecentAdapter.RECENT_SEARCH_ITEM_TYPE) {
             // Subtract header and recent trips
             position = adapter.getSearchListPosition(position);
@@ -102,7 +111,10 @@ public class RecentFragment extends Fragment implements RecentAdapter.OnItemClic
             intent.putExtra(ScheduleActivity.ARG_TRANSIT_TYPE, type);
             intent.putExtra(ScheduleActivity.FROM_STATION_ID, trip.getFromStop().getId());
             intent.putExtra(ScheduleActivity.TO_STATION_ID, trip.getToStop().getId());
-            startActivity(intent);
+            Pair<View, String> p1 = Pair.create(view, "fromStation");
+            Pair<View, String> p2 = Pair.create(view, "toStation");
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), p1, p2);
+            startActivity(intent, options.toBundle());
         }
     }
 

@@ -4,7 +4,9 @@ package com.transitangel.transitangel.home;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,6 +87,7 @@ public class NearByFragment extends Fragment {
 
         loadCurrentStops();
         srlNearbyContainer.setOnRefreshListener(() -> loadCurrentStops());
+        srlNearbyContainer.setColorSchemeColors(getResources().getColor(R.color.colorPrimaryDark));
     }
 
     public void loadCurrentStops() {
@@ -149,7 +152,7 @@ public class NearByFragment extends Fragment {
                     caltrain = caltrainContainer.findViewById(getCaltrainId(caltrainCount));
                     // Check near by station and add it in the following way:
                     ImageView icon = (ImageView) caltrain.findViewById(R.id.ivIcon);
-                    TextView trainInfo = (TextView) caltrain.findViewById(R.id.tvTrainInfo);
+                    final TextView trainInfo = (TextView) caltrain.findViewById(R.id.tvTrainInfo);
                     TextView trainDeparture = (TextView) caltrain.findViewById(R.id.tvDeparture);
                     icon.setImageResource(R.drawable.train_red);
                     Train train = calTrainList.get(caltrainCount);
@@ -165,7 +168,10 @@ public class NearByFragment extends Fragment {
                             intent.putExtra(ScheduleActivity.ARG_TRANSIT_TYPE, TAConstants.TRANSIT_TYPE.CALTRAIN);
                             intent.putExtra(ScheduleActivity.FROM_STATION_ID, currentStop.getStopId());
                             intent.putExtra(ScheduleActivity.TO_STATION_ID, lastStop.getStopId());
-                            startActivity(intent);
+                            Pair<View, String> p1 = Pair.create(trainInfo, "fromStation");
+                            Pair<View, String> p2 = Pair.create(trainInfo, "toStation");
+                            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), p1, p2);
+                            startActivity(intent, options.toBundle());
                         }
                     });
                     caltrain.setClickable(true);
@@ -194,7 +200,7 @@ public class NearByFragment extends Fragment {
                     bart = bartContainer.findViewById(getBartId(bartCount));
                     ImageView icon = (ImageView) bart.findViewById(R.id.ivIcon);
                     icon.setImageResource(R.drawable.train_blue);
-                    TextView trainInfo = (TextView) bart.findViewById(R.id.tvTrainInfo);
+                    final TextView trainInfo = (TextView) bart.findViewById(R.id.tvTrainInfo);
                     TextView trainDeparture = (TextView) bart.findViewById(R.id.tvDeparture);
                     Train train = bartTrainList.get(bartCount);
                     TrainStop currentStop = getCurrentStop(currentBartStop.getId(), train);
@@ -209,7 +215,10 @@ public class NearByFragment extends Fragment {
                             intent.putExtra(ScheduleActivity.ARG_TRANSIT_TYPE, TAConstants.TRANSIT_TYPE.BART);
                             intent.putExtra(ScheduleActivity.FROM_STATION_ID, currentStop.getStopId());
                             intent.putExtra(ScheduleActivity.TO_STATION_ID, lastStop.getStopId());
-                            startActivity(intent);
+                            Pair<View, String> p1 = Pair.create(trainInfo, "fromStation");
+                            Pair<View, String> p2 = Pair.create(trainInfo, "toStation");
+                            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), p1, p2);
+                            startActivity(intent, options.toBundle());
                         }
                     });
                     bart.setClickable(true);

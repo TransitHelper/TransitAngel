@@ -33,12 +33,17 @@ public class ScheduleActivity extends AppCompatActivity {
     public static final String FROM_STATION_ID = "from_station_id";
     public static final String TO_STATION_ID = "to_station_id";
     public static final String ARG_TRANSIT_TYPE = "transit_type";
+    public static final String FROM_STATION_TRANSITION = "from_station_transition";
+    public static final String TO_STATION_TRANSITION = "to_station_transition";
+
     public static String BART_FROM_STATION;
     public static String BART_TO_STATION;
     public static String CAL_FROM_STATION;
     public static String CAL_TO_STATION;
     private static TAConstants.TRANSIT_TYPE mTransitType;
     private static String FRAG_TAG;
+    private String fromStationTransition = "";
+    private String toStationTransition = "";
 
 
     @Override
@@ -48,6 +53,10 @@ public class ScheduleActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mTransitType = (TAConstants.TRANSIT_TYPE) getIntent().getSerializableExtra(ARG_TRANSIT_TYPE);
         setUpTitle();
+
+        fromStationTransition = getIntent().getStringExtra(FROM_STATION_TRANSITION);
+        toStationTransition = getIntent().getStringExtra(TO_STATION_TRANSITION);
+
         if (mTransitType == null || mTransitType == TAConstants.TRANSIT_TYPE.CALTRAIN) {
             CAL_FROM_STATION = getIntent().getStringExtra(FROM_STATION_ID);
             CAL_TO_STATION = getIntent().getStringExtra(TO_STATION_ID);
@@ -96,7 +105,7 @@ public class ScheduleActivity extends AppCompatActivity {
                 onBackPressedListener currentFragment = (onBackPressedListener) getSupportFragmentManager().findFragmentByTag(FRAG_TAG);
                 if (currentFragment != null)
                     currentFragment.onBackPressed();
-                finish();
+                supportFinishAfterTransition();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -1,6 +1,7 @@
 package com.transitangel.transitangel.schedule;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +36,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
     private TAConstants.TRANSIT_TYPE mTransitType;
 
     public interface OnItemClickListener {
-        void onItemClick(int position);
+        void onItemClick(View view, int position);
     }
 
     private OnItemClickListener onItemClickListener;
@@ -57,7 +58,11 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
     public ScheduleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.item_schedule, parent, false);
-        return new ScheduleViewHolder(view);
+        ScheduleViewHolder scheduleViewHolder = new ScheduleViewHolder(view);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            scheduleViewHolder.mTrainInformation.setTransitionName(context.getString(R.string.transition_details));
+        }
+        return scheduleViewHolder;
     }
 
 
@@ -93,7 +98,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
                 public void onClick(View v) {
                     if (onItemClickListener != null) {
                         //TODO: go to information page
-                        onItemClickListener.onItemClick(getPosition());
+                        onItemClickListener.onItemClick(mTrainInformation, getLayoutPosition());
                     }
                 }
 
