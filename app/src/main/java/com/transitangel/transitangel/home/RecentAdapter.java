@@ -76,10 +76,10 @@ public class RecentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             viewHolder = new RecentHeaderViewHolder(view);
         } else if(viewType == RECENT_TRIP_ITEM_TYPE) {
             View view = inflater.inflate(R.layout.item_recents_trip, parent, false);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                view.setTransitionName(context.getString(R.string.transition_details));
-            }
             viewHolder = new RecentTripItemViewHolder(view, onItemClickListener, onMoreMenuClickListener);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                ((RecentTripItemViewHolder)viewHolder).tvTrainInfo.setTransitionName(context.getString(R.string.transition_details));
+            }
         } else if(viewType == RECENT_TRIP_ITEM_VIEW_MORE_TYPE) {
             View view = inflater.inflate(R.layout.item_see_all_trips, parent, false);
             viewHolder = new SeeAllRecentTripViewHolder(view, onItemClickListener);
@@ -156,8 +156,7 @@ public class RecentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             position = getSearchListPosition(position);
             RecentSearchItemViewHolder recentItemViewHolder = (RecentSearchItemViewHolder)holder;
             Trip currentTrip = recentSearchItemList.get(position);
-            recentItemViewHolder.tvFrom.setText(currentTrip.getFromStop().getName() + context.getString(R.string.recent_search_to));
-            recentItemViewHolder.tvTo.setText(currentTrip.getToStop().getName());
+            recentItemViewHolder.tvFrom.setText(currentTrip.getFromStop().getName() + context.getString(R.string.recent_search_to) + " " + currentTrip.getToStop().getName());
             recentItemViewHolder.parent.setContentDescription(context.getString(R.string.contentdescription_from_to, currentTrip.getFromStop().getName(), currentTrip.getToStop().getName()));
             if(currentTrip.getType() == TAConstants.TRANSIT_TYPE.BART) {
                 recentItemViewHolder.ivIcon.setImageResource(R.drawable.train_blue);

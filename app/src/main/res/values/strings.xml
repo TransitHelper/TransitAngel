@@ -180,4 +180,5 @@
     <string name="no_recent_trips_or_searches">No Recent trips or searches</string>
     <string name="transition_schedule">transition_schedule</string>
     <string name="transition_details">transition_details</string>
+    <string name="train_details_title">Train#</string>
 </resources>

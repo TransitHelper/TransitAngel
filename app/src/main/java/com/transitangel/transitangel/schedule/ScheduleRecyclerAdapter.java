@@ -58,10 +58,11 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
     public ScheduleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.item_schedule, parent, false);
+        ScheduleViewHolder scheduleViewHolder = new ScheduleViewHolder(view);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            view.setTransitionName(context.getString(R.string.transition_details));
+            scheduleViewHolder.mTrainInformation.setTransitionName(context.getString(R.string.transition_details));
         }
-        return new ScheduleViewHolder(view);
+        return scheduleViewHolder;
     }
 
 
@@ -97,7 +98,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
                 public void onClick(View v) {
                     if (onItemClickListener != null) {
                         //TODO: go to information page
-                        onItemClickListener.onItemClick(v, getLayoutPosition());
+                        onItemClickListener.onItemClick(mTrainInformation, getLayoutPosition());
                     }
                 }
 

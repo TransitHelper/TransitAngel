@@ -121,7 +121,7 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         mStops.get(mStops.size() - 1).setNotify(true);
         mAlarmStops.add(mStops.get(mStops.size() - 1));
         setSupportActionBar(toolbar);
-        tvTitle.setText("#" + train.getNumber());
+        tvTitle.setText(getString(R.string.train_details_title) + train.getNumber());
         tvTitle.setContentDescription(getString(R.string.content_description_train_number) + train.getNumber());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(null);

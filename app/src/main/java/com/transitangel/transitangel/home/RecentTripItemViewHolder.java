@@ -45,7 +45,7 @@ public class RecentTripItemViewHolder extends RecyclerView.ViewHolder implements
         if(view.getId() == R.id.more) {
             onMoreMenuClickListener.onMenuItemClicked(getLayoutPosition(), view);
         } else {
-            onItemClickListener.onItemClick(view, getLayoutPosition());
+            onItemClickListener.onItemClick(tvTrainInfo, getLayoutPosition());
         }
     }
 }
