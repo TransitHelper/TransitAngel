@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -250,12 +251,19 @@ public class ScheduleFragment extends Fragment
         intent.putExtra(DetailsActivity.EXTRA_TRAIN, mRecentItems.get(position).getTrain());
         intent.putExtra(DetailsActivity.EXTRA_FROM_STATION_ID, mFromStationId);
         intent.putExtra(DetailsActivity.EXTRA_TO_STATION_ID, mToStationId);
-        String transitionName = "";
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            transitionName = view.getTransitionName();
+
+
+        if (!TransitManager.getSharedInstance().isAccessibilityEnabled()) {
+            String transitionName = "";
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                transitionName = view.getTransitionName();
+            }
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), view, transitionName);
+            getActivity().startActivityForResult(intent, RESULT_DETAILS, options.toBundle());
         }
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), view, transitionName);
-        getActivity().startActivityForResult(intent, RESULT_DETAILS, options.toBundle());
+        else {
+            ActivityCompat.startActivity(getActivity(), intent, null);
+        }
     }
 
 
