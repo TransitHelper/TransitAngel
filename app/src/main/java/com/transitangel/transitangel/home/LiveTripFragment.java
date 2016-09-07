@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -116,6 +117,8 @@ public class LiveTripFragment extends Fragment implements StationsAdapter.OnItem
             mNoLiveTrip.setVisibility(View.VISIBLE);
             mEmptyTextView = (TextView) mNoLiveTrip.findViewById(R.id.empty_state_description);
             mEmptyTextView.setText(R.string.no_live_trip);
+            ImageView icon = (ImageView) mNoLiveTrip.findViewById(R.id.image_empty_state);
+            icon.setImageResource(R.drawable.train_blue_bart);
         }
     }
 

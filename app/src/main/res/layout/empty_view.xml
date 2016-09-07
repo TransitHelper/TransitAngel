@@ -15,14 +15,13 @@
         android:layout_centerInParent="true"
         android:gravity="center_horizontal"
         android:textColor="@color/textSecondary"
-        android:textSize="18sp"/>
+        android:textSize="18sp" />
 
     <ImageView
         android:id="@+id/image_empty_state"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_above="@id/empty_state_description"
-        android:layout_centerInParent="true"
-        android:src="@drawable/train_blue_bart" />
+        android:layout_centerInParent="true" />
 
 </RelativeLayout>

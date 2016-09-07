@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -203,6 +204,8 @@ public class RecentFragment extends Fragment implements RecentAdapter.OnItemClic
         mEmptyView.setVisibility(View.VISIBLE);
         mEmptyTextView = (TextView) mEmptyView.findViewById(R.id.empty_state_description);
         mEmptyTextView.setText(R.string.no_recent_trips_or_searches);
+        ImageView icon = (ImageView) mEmptyView.findViewById(R.id.image_empty_state);
+        icon.setImageResource(R.drawable.train_blue_bart);
     }
 
     private void hideNoRecentTrips() {

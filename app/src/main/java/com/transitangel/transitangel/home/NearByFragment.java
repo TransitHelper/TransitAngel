@@ -297,6 +297,8 @@ public class NearByFragment extends Fragment {
             mEmptyView.setVisibility(View.VISIBLE);
             mEmptyTextView = (TextView) mEmptyView.findViewById(R.id.empty_state_description);
             mEmptyTextView.setText(R.string.nearby_error_text);
+            ImageView icon = (ImageView) mEmptyView.findViewById(R.id.image_empty_state);
+            icon.setImageResource(R.drawable.train_blue_bart);
             caltrainContainer.setVisibility(View.GONE);
             bartContainer.setVisibility(View.GONE);
         });

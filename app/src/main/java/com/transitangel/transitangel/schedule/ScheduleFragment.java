@@ -127,7 +127,7 @@ public class ScheduleFragment extends Fragment
         TextView textView = (TextView) emptyView.findViewById(R.id.empty_state_description);
         textView.setText(R.string.empty_results);
         ImageView icon = (ImageView) emptyView.findViewById(R.id.image_empty_state);
-        icon.setImageResource(R.mipmap.ic_train);
+        icon.setImageResource(R.drawable.train_blue_bart);
         mRecyclerView.setEmptyView(emptyView);
         refreshTrainSchedule();
         return view;
