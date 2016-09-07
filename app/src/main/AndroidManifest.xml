@@ -36,7 +36,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".schedule.ScheduleActivity"
-            android:label="@string/schedule_screen_label"
             android:screenOrientation="portrait" />
         <activity
             android:name=".details.DetailsActivity"

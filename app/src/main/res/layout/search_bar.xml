@@ -15,5 +15,6 @@
         android:drawableLeft="@drawable/search_gray"
         android:drawablePadding="10dp"
         android:layout_margin="10dp"
+        android:transitionName="@string/transition_schedule"
         android:elevation="3dp"/>
 </LinearLayout>

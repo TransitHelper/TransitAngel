@@ -21,6 +21,6 @@ public class SeeAllRecentTripViewHolder extends RecyclerView.ViewHolder implemen
 
     @Override
     public void onClick(View view) {
-        onItemClickListener.onItemClick(getLayoutPosition());
+        onItemClickListener.onItemClick(view, getLayoutPosition());
     }
 }

@@ -3,7 +3,9 @@ package com.transitangel.transitangel.schedule;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
@@ -100,7 +102,6 @@ public class BartScheduleFragment extends Fragment
     }
 
     private void InitializeData() {
-        mCalendar = Calendar.getInstance();
         mStops = BartTransitManager.getSharedInstance().getStops();
         stopHashMap = BartTransitManager.getSharedInstance().getStopLookup();
         if (mFromStationId == null) {
@@ -244,13 +245,18 @@ public class BartScheduleFragment extends Fragment
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onItemClick(View view, int position) {
         Intent intent = new Intent(getActivity(), DetailsActivity.class);
         intent.putExtra(DetailsActivity.EXTRA_SERVICE, DetailsActivity.EXTRA_SERVICE_BART);
         intent.putExtra(DetailsActivity.EXTRA_TRAIN, mRecentItems.get(position).getTrain());
         intent.putExtra(DetailsActivity.EXTRA_FROM_STATION_ID, mFromStationId);
         intent.putExtra(DetailsActivity.EXTRA_TO_STATION_ID, mToStationId);
-        getActivity().startActivityForResult(intent, RESULT_DETAILS, null);
+        String transitionName = "";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            transitionName = view.getTransitionName();
+        }
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), view, transitionName);
+        getActivity().startActivityForResult(intent, RESULT_DETAILS, options.toBundle());
     }
 
 

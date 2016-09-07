@@ -45,7 +45,7 @@ public class RecentSearchItemViewHolder extends RecyclerView.ViewHolder implemen
         if(view.getId() == R.id.more) {
             onMoreMenuClickListener.onMenuItemClicked(getLayoutPosition(), view);
         } else {
-            onItemClickListener.onItemClick(getLayoutPosition());
+            onItemClickListener.onItemClick(tvFrom, getLayoutPosition());
         }
     }
 }
