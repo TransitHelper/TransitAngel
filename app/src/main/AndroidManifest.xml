@@ -47,7 +47,7 @@
             android:label="@string/ongoing_label"
             android:screenOrientation="portrait" />
 
-        <servicee
+        <service
             android:name=".Intent.TransitIntentService" />
         <service
             android:name=".notifications.DismissService"
