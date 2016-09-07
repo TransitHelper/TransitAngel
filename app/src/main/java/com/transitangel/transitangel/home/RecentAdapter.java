@@ -159,9 +159,9 @@ public class RecentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             recentItemViewHolder.tvFrom.setText(currentTrip.getFromStop().getName() + context.getString(R.string.recent_search_to) + " " + currentTrip.getToStop().getName());
             recentItemViewHolder.parent.setContentDescription(context.getString(R.string.contentdescription_from_to, currentTrip.getFromStop().getName(), currentTrip.getToStop().getName()));
             if(currentTrip.getType() == TAConstants.TRANSIT_TYPE.BART) {
-                recentItemViewHolder.ivIcon.setImageResource(R.drawable.train_red);
-            } else {
                 recentItemViewHolder.ivIcon.setImageResource(R.drawable.train_blue);
+            } else {
+                recentItemViewHolder.ivIcon.setImageResource(R.drawable.train_red);
             }
         }
 
