@@ -1,35 +1,29 @@
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:andorid="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@android:color/white">
 
-    <android.support.v7.widget.RecyclerView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/rvStationList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="10dp"
-        android:layout_marginBottom="60dp"/>
+        android:layout_marginBottom="60dp"
+        android:paddingTop="10dp" />
 
-    <TextView
-        android:id="@+id/tvNoLiveTrip"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/no_live_trip"
-        android:textSize="18sp"
-        android:gravity="center"
-        android:padding="16dp"/>
+    <include
+        layout="@layout/empty_view"
+        android:id="@+id/emptyView" />
 
     <Button
         android:id="@+id/btnCancelTrip"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="@string/live_trip_cancel_trip_button"
         android:layout_gravity="bottom"
+        android:layout_marginBottom="8dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginBottom="8dp"
-        android:textColor="@android:color/white"
-        android:background="@color/colorPrimaryDark"/>
+        android:background="@color/colorPrimaryDark"
+        android:text="@string/live_trip_cancel_trip_button"
+        android:textColor="@android:color/white" />
 </FrameLayout>

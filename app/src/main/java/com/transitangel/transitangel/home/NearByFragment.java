@@ -49,8 +49,8 @@ public class NearByFragment extends Fragment {
     @BindView(R.id.caltrain_container)
     LinearLayout caltrainContainer;
 
-    @BindView(R.id.errorText)
-    TextView errorText;
+    @BindView(R.id.emptyView)
+    ViewGroup mEmptyView;
 
     @BindView(R.id.no_caltrains)
     TextView tvNoCaltrain;
@@ -60,6 +60,7 @@ public class NearByFragment extends Fragment {
 
     private Stop currentCalStop;
     private Stop currentBartStop;
+    private TextView mEmptyTextView;
 
     public NearByFragment() {
     }
@@ -134,8 +135,8 @@ public class NearByFragment extends Fragment {
         final ArrayList<Train> calTrainList = CaltrainTransitManager.getSharedInstance().fetchTrainsDepartingFromStation(currentCalStop.getId(), 3);
         final ArrayList<Train> bartTrainList = BartTransitManager.getSharedInstance().fetchTrainsDepartingFromStation(currentBartStop.getId(), 3);
         getActivity().runOnUiThread(() -> {
-            if(errorText.isShown()) {
-                errorText.setVisibility(View.GONE);
+            if(mEmptyView.isShown()) {
+                mEmptyView.setVisibility(View.GONE);
             }
 
             int calTrainSize = calTrainList.size() > 3 ? 3 : calTrainList.size();
@@ -284,7 +285,9 @@ public class NearByFragment extends Fragment {
     private void failedToLoad() {
         getActivity().runOnUiThread(() -> {
             srlNearbyContainer.setRefreshing(false);
-            errorText.setVisibility(View.VISIBLE);
+            mEmptyView.setVisibility(View.VISIBLE);
+            mEmptyTextView = (TextView) mEmptyView.findViewById(R.id.empty_state_description);
+            mEmptyTextView.setText(R.string.nearby_error_text);
             caltrainContainer.setVisibility(View.GONE);
             bartContainer.setVisibility(View.GONE);
         });

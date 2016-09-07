@@ -57,7 +57,7 @@
             android:paddingLeft="4dp"
             android:paddingTop="3dp"
             android:text="Leaving in 15 min"
-            android:textColor="@color/textSpecialInfoColor"
+            android:textColor="@color/on_schedule"
             android:textSize="11sp"
             android:layout_alignBottom="@+id/time"
             android:importantForAccessibility="no"

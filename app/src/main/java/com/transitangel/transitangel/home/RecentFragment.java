@@ -34,11 +34,11 @@ public class RecentFragment extends Fragment implements RecentAdapter.OnItemClic
     @BindView(R.id.rvRecents)
     RecyclerView rvRecents;
 
-    @BindView(R.id.tvNoRecents)
-    TextView tvNoRecents;
+    @BindView(R.id.emptyView)
+    ViewGroup mEmptyView;
 
     private RecentAdapter adapter;
-
+    private TextView mEmptyTextView;
     private ArrayList<Trip> recentTripLists;
     private ArrayList<Trip> searchTripLists;
 
@@ -188,10 +188,12 @@ public class RecentFragment extends Fragment implements RecentAdapter.OnItemClic
     }
 
     private void showNoRecentTrips() {
-        tvNoRecents.setVisibility(View.VISIBLE);
+        mEmptyView.setVisibility(View.VISIBLE);
+        mEmptyTextView = (TextView) mEmptyView.findViewById(R.id.empty_state_description);
+        mEmptyTextView.setText(R.string.no_recent_trips_or_searches);
     }
 
     private void hideNoRecentTrips() {
-        tvNoRecents.setVisibility(View.GONE);
+        mEmptyView.setVisibility(View.GONE);
     }
 }

@@ -51,8 +51,8 @@ public class LiveTripFragment extends Fragment implements StationsAdapter.OnItem
     @BindView(R.id.rvStationList)
     RecyclerView rvStationList;
 
-    @BindView(R.id.tvNoLiveTrip)
-    TextView tvNoLiveTrip;
+    @BindView(R.id.emptyView)
+    ViewGroup mNoLiveTrip;
 
     @BindView(R.id.btnCancelTrip)
     Button btnCancelTrip;
@@ -62,7 +62,7 @@ public class LiveTripFragment extends Fragment implements StationsAdapter.OnItem
     private TAConstants.TRANSIT_TYPE type;
     private ArrayList<TrainStop> mAlarmStops = new ArrayList<>();
     private ArrayList<TrainStop> mPrevSelectedStops = new ArrayList();
-
+    private TextView mEmptyTextView;
     HashMap<String, Stop> stopHashMap = new HashMap<>();
 
     public LiveTripFragment() {}
@@ -89,7 +89,8 @@ public class LiveTripFragment extends Fragment implements StationsAdapter.OnItem
         if (trip != null) {
             btnCancelTrip.setVisibility(View.VISIBLE);
             rvStationList.setVisibility(View.VISIBLE);
-            tvNoLiveTrip.setVisibility(View.GONE);
+            mNoLiveTrip.setVisibility(View.GONE);
+
             type = trip.getType();
             mStops = trip.getSelectedTrain().getTrainStopsBetween(trip.getFromStop().getId(), trip.getToStop().getId());
             mSubscription.add(getCurrentStops(mStops).subscribeOn(Schedulers.newThread())
@@ -112,7 +113,9 @@ public class LiveTripFragment extends Fragment implements StationsAdapter.OnItem
             // Display empty screen
             rvStationList.setVisibility(View.GONE);
             btnCancelTrip.setVisibility(View.GONE);
-            tvNoLiveTrip.setVisibility(View.VISIBLE);
+            mNoLiveTrip.setVisibility(View.VISIBLE);
+            mEmptyTextView = (TextView) mNoLiveTrip.findViewById(R.id.empty_state_description);
+            mEmptyTextView.setText(R.string.no_live_trip);
         }
     }
 
@@ -173,7 +176,7 @@ public class LiveTripFragment extends Fragment implements StationsAdapter.OnItem
 
     @OnClick(R.id.btnCancelTrip)
     public void onCancelTrip() {
-       //Remove Notification FIRST before removing persistent notification
+        //Remove Notification FIRST before removing persistent notification
         NotificationProvider.getInstance().dismissOnGoingNotification(getActivity());
         // Remove the persistent notification.
         PrefManager.removeOnGoingTrip();

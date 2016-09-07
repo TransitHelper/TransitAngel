@@ -125,7 +125,7 @@ public class BartScheduleFragment extends Fragment
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setNestedScrollingEnabled(true);
         View emptyView = mViewStub.inflate();
-        TextView textView = (TextView) emptyView.findViewById(R.id.text_empty_state_description);
+        TextView textView = (TextView) emptyView.findViewById(R.id.empty_state_description);
         textView.setText(R.string.empty_results);
         ImageView icon = (ImageView) emptyView.findViewById(R.id.image_empty_state);
         icon.setImageResource(R.mipmap.ic_train);
