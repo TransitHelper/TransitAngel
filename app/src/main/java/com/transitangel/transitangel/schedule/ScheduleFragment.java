@@ -100,6 +100,7 @@ public class ScheduleFragment extends Fragment
     }
 
     private void InitializeData() {
+        mCalendar = Calendar.getInstance();
         mStops = CaltrainTransitManager.getSharedInstance().getStops();
         stopHashMap = CaltrainTransitManager.getSharedInstance().getStopLookup();
         if (mFromStationId == null) {

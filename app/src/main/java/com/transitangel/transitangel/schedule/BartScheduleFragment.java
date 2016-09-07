@@ -100,6 +100,7 @@ public class BartScheduleFragment extends Fragment
     }
 
     private void InitializeData() {
+        mCalendar = Calendar.getInstance();
         mStops = BartTransitManager.getSharedInstance().getStops();
         stopHashMap = BartTransitManager.getSharedInstance().getStopLookup();
         if (mFromStationId == null) {

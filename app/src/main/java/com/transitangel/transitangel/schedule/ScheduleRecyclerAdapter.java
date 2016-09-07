@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.transitangel.transitangel.R;
@@ -76,13 +77,12 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         TextView mTrainInformation;
 
         @BindView(R.id.status)
-        TextView mTrainArrivalTime;
-
-        @BindView(R.id.duration)
-        TextView mRelativeDepartureTime;
+        TextView mRelativeDepatureTime;
 
         @BindView(R.id.time)
         TextView mDepatureTime;
+        @BindView(R.id.imageView)
+        ImageView mImageView;
 
 
         public ScheduleViewHolder(View v) {
@@ -106,11 +106,10 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
             String infoContent;
 
             if (mTransitType == TAConstants.TRANSIT_TYPE.CALTRAIN) {
-                mTrainInformation.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.train_red),
-                        null, null, null);
                 info = item.getTrain().getNumber() + " " + info;
                 infoContent = "Train Number " + item.getTrain().getNumber() + " From " + item.getFrom() + " to " + item.getTo();
             } else {
+                mImageView.setImageResource(R.drawable.train_blue);
                 infoContent = "Train From " + item.getFrom() + " to " + item.getTo();
             }
             mTrainInformation.setText(info);
@@ -123,15 +122,12 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
                 departureRelativeTime = "At " + dateFormat.format(timestamp);
 
             } else {
-                departureRelativeTime = "In " + DateUtil.getRelativeTime(timestamp.getTime(), System.currentTimeMillis());
+                departureRelativeTime = DateUtil.getRelativeTime(timestamp.getTime(), System.currentTimeMillis());
             }
-            infoContent += departureRelativeTime;
-            mDepatureTime.setText(departureTime);
-            mRelativeDepartureTime.setText("(" + departureRelativeTime + ")");
-            mTrainArrivalTime.setText(departureRelativeTime);
+            infoContent += ", is at " + dateFormat.format(timestamp) + ". Arrives destination at" + dateFormat.format(destinationArrivalTime);
             mTrainInformation.setContentDescription(infoContent);
-            mTrainArrivalTime.setText(dateFormat.format(destinationArrivalTime));
-            mTrainArrivalTime.setContentDescription("Arrives destination at" + dateFormat.format(destinationArrivalTime));
+            mDepatureTime.setText(departureTime + " - " + dateFormat.format(destinationArrivalTime));
+            mRelativeDepatureTime.setText(departureRelativeTime);
         }
     }
 }
