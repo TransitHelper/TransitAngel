@@ -10,6 +10,7 @@ import com.transitangel.transitangel.model.Transit.Train;
 import com.transitangel.transitangel.utils.TAConstants;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -82,13 +83,39 @@ public class BartTransitManager extends TransitManager {
             , boolean shouldIncludeAllTrainsForThatDay // includes all the trains for that day irrespective of time
 
     ) {
-        return fetchTrains(fromStopId
+        ArrayList<Train> trains =  fetchTrains(fromStopId
                 ,toStopId
                 ,limit
                 ,leavingAfter
                 ,shouldIncludeAllTrainsForThatDay
                 ,getServices()
         );
+
+        //filter trains based on saturday , sunday for bart
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+        if ( day == Calendar.SATURDAY ) {
+            //include only saturday // remove sunday
+            ArrayList<Train> filteredTrains = new ArrayList<Train>();
+            for ( Train train : trains ) {
+                if ( train.getName().contains("Saturday")) {
+                    filteredTrains.add(train);
+                }
+            }
+            return filteredTrains;
+        }
+        else if ( day == Calendar.SUNDAY ) {
+            ArrayList<Train> filteredTrains = new ArrayList<Train>();
+            for ( Train train : trains ) {
+                if ( train.getName().contains("Sunday")) {
+                    filteredTrains.add(train);
+                }
+            }
+            return filteredTrains;
+        }
+
+        return trains;
     }
 
     //Given a destination and the hour limit, fetch all the trains which will arrive at the destination
@@ -110,7 +137,33 @@ public class BartTransitManager extends TransitManager {
             String toStopId //to station
             , int hourLimit //
     ) {
-        return fetchTrainsDepartingFromStation(toStopId,hourLimit,getServices());
+        ArrayList<Train> trains =  fetchTrainsDepartingFromStation(toStopId,hourLimit,getServices());
+
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+        if ( day == Calendar.SATURDAY ) {
+            //include only saturday // remove sunday
+            ArrayList<Train> filteredTrains = new ArrayList<Train>();
+            for ( Train train : trains ) {
+                if ( train.getName().contains("Saturday")) {
+                    filteredTrains.add(train);
+                }
+            }
+            return filteredTrains;
+        }
+        else if ( day == Calendar.SUNDAY ) {
+            ArrayList<Train> filteredTrains = new ArrayList<Train>();
+            for ( Train train : trains ) {
+                if ( train.getName().contains("Sunday")) {
+                    filteredTrains.add(train);
+                }
+            }
+            return filteredTrains;
+        }
+
+        return trains;
+
     }
 
     public ArrayList<Service> getServices() {
