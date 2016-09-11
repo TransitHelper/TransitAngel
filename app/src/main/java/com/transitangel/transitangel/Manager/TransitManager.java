@@ -292,6 +292,7 @@ public class TransitManager {
             , int limit // number of results to return, 0 or -ve implies no limit
             , Date leavingAfter //determines its a weekday/weekend , defaults to today
             , boolean shouldIncludeAllTrainsForThatDay // includes all the trains for that day irrespective of time
+            , boolean showPastTrains //includes only the trains whose arrival time is before leaving after time
             , ArrayList<Service> trainServices
 
     ) {
@@ -358,7 +359,13 @@ public class TransitManager {
 
                             Date arrivalTime = cal.getTime();
                             //add only if the arrival time is after the leavingAfter time
-                            if (arrivalTime.after(leavingAfter)) {
+                            if ( showPastTrains && arrivalTime.before(leavingAfter)) {
+                                trains.add(train);
+                                //reset the from stop and to stop to avoid duplicates
+                                fromStop = null;
+                                toStop = null;
+                            }
+                            else if (!showPastTrains && arrivalTime.after(leavingAfter)) {
                                 trains.add(train);
                                 //reset the from stop and to stop to avoid duplicates
                                 fromStop = null;
@@ -400,8 +407,12 @@ public class TransitManager {
         }
 
 
-        if (limit > 0 && trains.size() > limit) {
-            List<Train> limitList = trains.subList(0, limit - 1);
+        if (limit > 0 && trains.size() > limit && !showPastTrains) {
+            List<Train> limitList = trains.subList(0, limit);
+            return new ArrayList<>(limitList);
+        }
+        else if ( showPastTrains && limit > 0 && trains.size()>limit) {
+            List<Train> limitList = trains.subList(trains.size()-limit, trains.size());
             return new ArrayList<>(limitList);
         }
 

@@ -123,6 +123,7 @@ public class CaltrainTransitManager extends TransitManager {
             , int limit // number of results to return, 0 or -ve implies no limit
             , Date leavingAfter //determines its a weekday/weekend , defaults to today
             , boolean shouldIncludeAllTrainsForThatDay // includes all the trains for that day irrespective of time
+            , boolean showPastTrains //includes only the trains whose arrival time is before leaving after time
 
     ) {
         return fetchTrains(fromStopId
@@ -130,6 +131,7 @@ public class CaltrainTransitManager extends TransitManager {
                 ,limit
                 ,leavingAfter
                 ,shouldIncludeAllTrainsForThatDay
+                ,showPastTrains
                 ,getServices()
                );
     }

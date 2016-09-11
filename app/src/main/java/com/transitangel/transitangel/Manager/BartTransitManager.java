@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by vidhurvoora on 8/18/16.
@@ -81,13 +82,15 @@ public class BartTransitManager extends TransitManager {
             , int limit // number of results to return, 0 or -ve implies no limit
             , Date leavingAfter //determines its a weekday/weekend , defaults to today
             , boolean shouldIncludeAllTrainsForThatDay // includes all the trains for that day irrespective of time
+            , boolean showPastTrains //includes only the trains whose arrival time is before leaving after time
 
     ) {
         ArrayList<Train> trains =  fetchTrains(fromStopId
                 ,toStopId
-                ,limit
+                ,-1 //first get all then filter for bart
                 ,leavingAfter
                 ,shouldIncludeAllTrainsForThatDay
+                , showPastTrains
                 ,getServices()
         );
 
@@ -103,7 +106,8 @@ public class BartTransitManager extends TransitManager {
                     filteredTrains.add(train);
                 }
             }
-            return filteredTrains;
+            trains.clear();
+            trains.addAll(filteredTrains);
         }
         else if ( day == Calendar.SUNDAY ) {
             ArrayList<Train> filteredTrains = new ArrayList<Train>();
@@ -112,7 +116,18 @@ public class BartTransitManager extends TransitManager {
                     filteredTrains.add(train);
                 }
             }
-            return filteredTrains;
+            trains.clear();
+            trains.addAll(filteredTrains);
+        }
+
+        //check if limit is there
+        if (limit > 0 && trains.size() > limit && !showPastTrains) {
+            List<Train> limitList = trains.subList(0, limit);
+            return new ArrayList<>(limitList);
+        }
+        else if ( showPastTrains && limit > 0 && trains.size()>limit) {
+            List<Train> limitList = trains.subList(trains.size()-limit, trains.size());
+            return new ArrayList<>(limitList);
         }
 
         return trains;

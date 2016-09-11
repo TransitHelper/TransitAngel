@@ -139,7 +139,7 @@ public class BartScheduleFragment extends Fragment
     private void getTrainSchedule() {
         ArrayList<Train> trains = new ArrayList<>();
         Date date = mCalendar.getTime();
-        trains = BartTransitManager.getSharedInstance().fetchTrains(mFromStationId, mToStationId, 5, date, false);
+        trains = BartTransitManager.getSharedInstance().fetchTrains(mFromStationId, mToStationId, 5, date, false,false);
         mRecentItems.clear();
         for (Train train : trains) {
             ArrayList<TrainStop> mTrainStop = train.getTrainStopsBetween(mFromStationId, mToStationId);

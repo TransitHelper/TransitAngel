@@ -138,7 +138,7 @@ public class ScheduleFragment extends Fragment
         ArrayList<Train> trains = new ArrayList<>();
         Date date = mCalendar.getTime();
         trains = CaltrainTransitManager.getSharedInstance().fetchTrains(mFromStationId, mToStationId,
-                5, date, false);
+                5, date, false,false);
         mRecentItems.clear();
         for (Train train : trains) {
             ArrayList<TrainStop> mTrainStop = train.getTrainStopsBetween(mFromStationId, mToStationId);

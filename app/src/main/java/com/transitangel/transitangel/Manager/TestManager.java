@@ -50,7 +50,7 @@ public class TestManager {
 
         ArrayList<Stop>caltrainStops = CaltrainTransitManager.getSharedInstance().getLocalStops();
 
-        ArrayList<Train> calTrainsToMtv = CaltrainTransitManager.getSharedInstance().fetchTrains("70011","70211",-1,new Date(),false);
+        ArrayList<Train> calTrainsToMtv = CaltrainTransitManager.getSharedInstance().fetchTrains("70011","70211",-1,new Date(),false,true);
         if ( calTrainsToMtv.size() > 0 ) {
             Train train  =  calTrainsToMtv.get(0);
             ArrayList<TrainStop> trainStops = train.getTrainStopsBetween("70011","70211");
@@ -77,7 +77,7 @@ public class TestManager {
 //        Log.d("Bart Services", bartServices.toString());
 //        // fetch trains from Fremont to Daly City
 //        //last boolean to include all trains irrespective of that day time or not
-//        ArrayList<Train> bartTrains = BartTransitManager.getSharedInstance().fetchTrains("12018519", "12018513", -1, new Date(), true);
+//        ArrayList<Train> bartTrains = BartTransitManager.getSharedInstance().fetchTrains("12018519", "12018513", -1, new Date(), false,false);
 //        Log.d("Fremont to DalyCity", bartTrains.toString());
 //        ArrayList<Train> arrivingBartTrains = BartTransitManager.getSharedInstance().fetchTrainsArrivingAtDestination("12018519", 4);
 //        Log.d("Bart arriving fremont", arrivingBartTrains.toString());
