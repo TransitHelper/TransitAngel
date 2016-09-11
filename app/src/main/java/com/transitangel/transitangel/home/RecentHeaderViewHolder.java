@@ -14,9 +14,9 @@ import butterknife.ButterKnife;
  */
 public class RecentHeaderViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.header)
-    TextView header;
+    public TextView header;
+    public View parent;
 
-    View parent;
     public RecentHeaderViewHolder(View itemView) {
         super(itemView);
         this.parent = itemView;

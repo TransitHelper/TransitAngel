@@ -10,9 +10,9 @@ import butterknife.ButterKnife;
  */
 public class SeeAllRecentTripViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-    RecentAdapter.OnItemClickListener onItemClickListener;
+    OnItemClickListener onItemClickListener;
 
-    public SeeAllRecentTripViewHolder(View itemView, RecentAdapter.OnItemClickListener onItemClickListener) {
+    public SeeAllRecentTripViewHolder(View itemView, OnItemClickListener onItemClickListener) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         this.onItemClickListener = onItemClickListener;

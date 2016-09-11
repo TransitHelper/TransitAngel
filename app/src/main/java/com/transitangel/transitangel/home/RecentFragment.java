@@ -12,7 +12,6 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -23,6 +22,7 @@ import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
 import com.transitangel.transitangel.Manager.TransitManager;
 import com.transitangel.transitangel.R;
+import com.transitangel.transitangel.alltrips.SeeAllTripActivity;
 import com.transitangel.transitangel.details.DetailsActivity;
 import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.schedule.ScheduleActivity;
@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RecentFragment extends Fragment implements RecentAdapter.OnItemClickListener, RecentAdapter.OnMoreMenuClickListener {
+public class RecentFragment extends Fragment implements OnItemClickListener, OnMoreMenuClickListener {
 
     @BindView(R.id.rvRecents)
     RecyclerView rvRecents;
@@ -83,6 +83,8 @@ public class RecentFragment extends Fragment implements RecentAdapter.OnItemClic
     public void onItemClick(View view, int position) {
         if(adapter.getItemViewType(position) == RecentAdapter.RECENT_TRIP_ITEM_VIEW_MORE_TYPE) {
             Toast.makeText(getActivity(), getString(R.string.show_all_trips), Toast.LENGTH_LONG);
+            Intent intent = new Intent(getActivity(), SeeAllTripActivity.class);
+            getActivity().startActivity(intent);
         } else if(adapter.getItemViewType(position) == RecentAdapter.RECENT_TRIP_ITEM_TYPE) {
             // Subtract the position of header
             position = adapter.getRecentTripPosition(position);
@@ -181,21 +183,18 @@ public class RecentFragment extends Fragment implements RecentAdapter.OnItemClic
         PopupMenu popup = new PopupMenu(getActivity(), view);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.item_popup_menu, popup.getMenu());
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_create_shortcut:
-                      //  Toast.makeText(getActivity(), "Create a shortcut here", Toast.LENGTH_LONG).show();
-                        if (trip.getType() == TAConstants.TRANSIT_TYPE.BART) {
-                            BartTransitManager.getSharedInstance().createShortCut(trip);
-                        } else {
-                            CaltrainTransitManager.getSharedInstance().createShortCut(trip);
-                        }
-                        return true;
-                }
-                return false;
+        popup.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.action_create_shortcut:
+                  //  Toast.makeText(getActivity(), "Create a shortcut here", Toast.LENGTH_LONG).show();
+                    if (trip.getType() == TAConstants.TRANSIT_TYPE.BART) {
+                        BartTransitManager.getSharedInstance().createShortCut(trip);
+                    } else {
+                        CaltrainTransitManager.getSharedInstance().createShortCut(trip);
+                    }
+                    return true;
             }
+            return false;
         });
         popup.show();
     }
