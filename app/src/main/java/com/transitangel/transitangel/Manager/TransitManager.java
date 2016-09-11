@@ -9,6 +9,7 @@ import android.view.accessibility.AccessibilityManager;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -600,7 +601,12 @@ public class TransitManager {
         } else {
             itemJSON = itemPref.getString("trips", "");
         }
-        ArrayList<Trip> items = gson.fromJson(itemJSON, type);
+        ArrayList<Trip> items = null;
+        try {
+            items = gson.fromJson(itemJSON, type);
+        } catch (JsonSyntaxException e) {
+            e.printStackTrace();
+        }
         if (items != null) {
             savedItems.addAll(items);
         }

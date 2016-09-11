@@ -63,6 +63,9 @@
         <receiver
             android:name=".details.AlarmBroadcastReceiver"
             android:process=":remote"/>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="0239dcfad8685d2e47878fb4669c30befde5c0ee" />
     </application>
 
 </manifest>
