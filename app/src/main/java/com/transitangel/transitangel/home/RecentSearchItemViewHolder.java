@@ -26,10 +26,10 @@ public class RecentSearchItemViewHolder extends RecyclerView.ViewHolder implemen
 
     View parent;
 
-    private final RecentAdapter.OnItemClickListener onItemClickListener;
-    private final RecentAdapter.OnMoreMenuClickListener onMoreMenuClickListener;
+    private final OnItemClickListener onItemClickListener;
+    private final OnMoreMenuClickListener onMoreMenuClickListener;
 
-    public RecentSearchItemViewHolder(View itemView, RecentAdapter.OnItemClickListener onItemClickListener, RecentAdapter.OnMoreMenuClickListener onMoreMenuClickListener) {
+    public RecentSearchItemViewHolder(View itemView, OnItemClickListener onItemClickListener, OnMoreMenuClickListener onMoreMenuClickListener) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         this.parent = itemView;

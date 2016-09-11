@@ -296,6 +296,7 @@ public class BartScheduleFragment extends Fragment
     protected void onFromStationClick() {
         Intent intent = new Intent(getActivity(), SearchActivity.class);
         intent.putExtra(SearchActivity.EXTRA_SERVICE, SearchActivity.EXTRA_SERVICE_BART);
+        intent.putExtra(SearchActivity.EXTRA_FROM, true);
         intent.putExtra(TO_STATION_ID, mToStationId);
         getActivity().startActivityForResult(intent, RESULT_SEARCH_FROM, null);
     }

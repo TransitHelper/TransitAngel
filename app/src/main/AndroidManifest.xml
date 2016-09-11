@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.transitangel.transitangel">
+<manifest package="com.transitangel.transitangel"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
-    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:name=".TransitAngelApplication"
@@ -20,44 +20,49 @@
             android:name=".home.HomeActivity"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".search.SearchActivity"
             android:label="@string/search_screen_label"
             android:parentActivityName=".home.HomeActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".LocationActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".schedule.ScheduleActivity"
             android:label="@string/schedule_screen_label"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".details.DetailsActivity"
             android:label="@string/trip_details_screen_label"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ongoing.OnGoingActivity"
             android:label="@string/ongoing_label"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".alltrips.SeeAllTripActivity"
+            android:label="@string/content_description_all_trips_screen_title">
+        </activity>
 
         <service
-            android:name=".Intent.TransitIntentService" />
+            android:name=".Intent.TransitIntentService"/>
+
         <service
             android:name=".notifications.DismissService"
-            android:exported="false" />
-        <service
-            android:name=".Intent.ShakerService" />
+            android:exported="false"/>
+
+        <service android:name=".Intent.ShakerService"/>
 
         <receiver
             android:name=".details.AlarmBroadcastReceiver"
-            android:process=":remote" />
-
+            android:process=":remote"/>
     </application>
 
 </manifest>

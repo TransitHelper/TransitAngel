@@ -23,24 +23,17 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:gravity="center_vertical"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-        <TextView
-            android:id="@+id/tvTitle"
-            style="@style/ScheduleTitleStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="-10dp"
-            android:transitionName="@string/transition_schedule"
-            android:text="@string/schedule_title" />
-
+        
         <TextView
             android:id="@+id/tvChangeService"
             style="@style/ScheduleTitleStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="-10dp"
             android:drawablePadding="4dp"
             android:paddingLeft="4dp"
             android:drawableRight="@drawable/ic_arrow_drop_down_white_24dp"
+            android:transitionName="@string/transition_schedule"
             android:clickable="true"
             tools:text="Caltrain"/>
 

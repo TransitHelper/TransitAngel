@@ -17,20 +17,20 @@ public class RecentTripItemViewHolder extends RecyclerView.ViewHolder implements
 
 
     @BindView(R.id.tvTripTo)
-    TextView tvTripTo;
+    public TextView tvTripTo;
     @BindView(R.id.ivIcon)
-    ImageView ivIcon;
+    public ImageView ivIcon;
     @BindView(R.id.tvTrainInfo)
-    TextView tvTrainInfo;
+    public TextView tvTrainInfo;
     @BindView(R.id.more)
-    ImageView more;
+    public ImageView more;
 
-    View parent;
+    public View parent;
 
-    private final RecentAdapter.OnMoreMenuClickListener onMoreMenuClickListener;
-    private final RecentAdapter.OnItemClickListener onItemClickListener;
+    private final OnMoreMenuClickListener onMoreMenuClickListener;
+    private final OnItemClickListener onItemClickListener;
 
-    public RecentTripItemViewHolder(View itemView, RecentAdapter.OnItemClickListener onItemClickListener, RecentAdapter.OnMoreMenuClickListener onMoreMenuClickListener) {
+    public RecentTripItemViewHolder(View itemView, OnItemClickListener onItemClickListener, OnMoreMenuClickListener onMoreMenuClickListener) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         this.parent = itemView;
