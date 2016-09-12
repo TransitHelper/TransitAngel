@@ -14,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
 import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
 import com.transitangel.transitangel.Manager.TransitManager;
@@ -67,6 +69,11 @@ public class SeeAllTripActivity extends AppCompatActivity implements OnItemClick
         adapter.setOnMoreMenuClickListener(this);
         rvRecents.setLayoutManager(new LinearLayoutManager(this));
         rvRecents.setNestedScrollingEnabled(false);
+
+        //Analytics event
+        String isAccessibilityOn = TransitManager.getSharedInstance().isAccessibilityEnabled() ? "true": "false";
+        Answers.getInstance().logCustom(new CustomEvent("All Trips Screen")
+                .putCustomAttribute("Is Accessibility On",isAccessibilityOn));
     }
 
     @Override

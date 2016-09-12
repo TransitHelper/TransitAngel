@@ -14,6 +14,9 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
+import com.transitangel.transitangel.Manager.TransitManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.utils.TAConstants;
 
@@ -70,6 +73,11 @@ public class ScheduleActivity extends AppCompatActivity {
             mtvChangeService.setContentDescription(getString(R.string.change_service, getString(R.string.schedule_bart)));
             loadBartFragment(true);
         }
+
+        //Analytics event
+        String isAccessibilityOn = TransitManager.getSharedInstance().isAccessibilityEnabled() ? "true": "false";
+        Answers.getInstance().logCustom(new CustomEvent("Schedule Screen")
+                .putCustomAttribute("Is Accessibility On",isAccessibilityOn));
     }
 
     private void loadCalTrainFragment(boolean isFromRecent) {

@@ -15,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
 import com.transitangel.transitangel.Intent.ShakerService;
 import com.transitangel.transitangel.Manager.TransitLocationManager;
 import com.transitangel.transitangel.Manager.TransitManager;
@@ -73,6 +75,11 @@ public class HomeActivity extends AppCompatActivity {
         checkTTSIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
         startActivityForResult(checkTTSIntent, MY_DATA_CHECK_CODE);
 
+        //Analytics event
+        String isAccessibilityOn = TransitManager.getSharedInstance().isAccessibilityEnabled() ? "true": "false";
+        Answers.getInstance().logCustom(new CustomEvent("Home Screen")
+                .putCustomAttribute("Is Accessibility On",isAccessibilityOn));
+
     }
 
 
@@ -124,6 +131,12 @@ public class HomeActivity extends AppCompatActivity {
                     ((LiveTripFragment) fragment).onSelected();
                 }
                 tab.getCustomView().setContentDescription(titles[tab.getPosition()] + " " + getString(R.string.content_description_selected));
+
+                //Analytics event
+                String selectedTab = titles[tab.getPosition()] + " " + getString(R.string.content_description_selected);
+                String isAccessibilityOn = TransitManager.getSharedInstance().isAccessibilityEnabled() ? "true": "false";
+                Answers.getInstance().logCustom(new CustomEvent(selectedTab)
+                        .putCustomAttribute("Is Accessibility On",isAccessibilityOn));
             }
 
             @Override

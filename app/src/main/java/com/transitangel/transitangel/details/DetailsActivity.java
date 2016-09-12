@@ -24,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
 import com.google.gson.Gson;
 import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
@@ -129,6 +131,14 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         rvStationList.setAdapter(adapter);
         rvStationList.setLayoutManager(new LinearLayoutManager(this));
         adapter.setOnItemClickListener(this);
+
+        //analytics
+        String isAccessibilityOn = TransitManager.getSharedInstance().isAccessibilityEnabled() ? "true": "false";
+        String trainServiceType = (type == TAConstants.TRANSIT_TYPE.CALTRAIN) ? "Caltrain" : "Bart";
+        Answers.getInstance().logCustom(new CustomEvent("Train Details Screen")
+                .putCustomAttribute("Type",trainServiceType)
+                .putCustomAttribute("Train No",train.getNumber())
+                .putCustomAttribute("Is Accessibility On",isAccessibilityOn));
     }
 
     @Override
@@ -208,6 +218,15 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         }
     }
 
+    public void sendTripStartedAnalyticsEvent(){
+        String isAccessibilityOn = TransitManager.getSharedInstance().isAccessibilityEnabled() ? "true": "false";
+        String trainServiceType = (type == TAConstants.TRANSIT_TYPE.CALTRAIN) ? "Caltrain" : "Bart";
+        Answers.getInstance().logCustom(new CustomEvent("Trip Started!")
+                .putCustomAttribute("Type",trainServiceType)
+                .putCustomAttribute("Train No",train.getNumber())
+                .putCustomAttribute("Is Accessibility On",isAccessibilityOn));
+    }
+
     private void showAlertDialog() {
         //TODO: have custom alertview
         AlertDialog alertDialog = new AlertDialog.Builder(this)
@@ -275,6 +294,8 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         intent.setAction(HomeActivity.ACTION_SHOW_ONGOING);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+
+        sendTripStartedAnalyticsEvent();
     }
 
     private void addGeoFencesandAlarm() {
