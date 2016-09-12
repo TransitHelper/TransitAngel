@@ -131,6 +131,7 @@ public class StationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 viewHolder.mSetAlarm.setChecked(visibleStopsList.get(position).getNotify());
                 params = (RelativeLayout.LayoutParams) viewHolder.trackFinal.getLayoutParams();
                 params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                viewHolder.trackFinal.setVisibility(View.VISIBLE);
                 viewHolder.trackFinal.setLayoutParams(params);
                 if (DateUtil.getTimeStamp(visibleStopsList.get(position).getDepartureTime()).before(now)) {
                     viewHolder.mSetAlarm.setVisibility(View.GONE);
