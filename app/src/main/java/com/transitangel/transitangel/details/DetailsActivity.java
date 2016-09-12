@@ -137,7 +137,6 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         String trainServiceType = (type == TAConstants.TRANSIT_TYPE.CALTRAIN) ? "Caltrain" : "Bart";
         Answers.getInstance().logCustom(new CustomEvent("Train Details Screen")
                 .putCustomAttribute("Type",trainServiceType)
-                .putCustomAttribute("Train No",train.getNumber())
                 .putCustomAttribute("Is Accessibility On",isAccessibilityOn));
     }
 
@@ -223,7 +222,6 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         String trainServiceType = (type == TAConstants.TRANSIT_TYPE.CALTRAIN) ? "Caltrain" : "Bart";
         Answers.getInstance().logCustom(new CustomEvent("Trip Started!")
                 .putCustomAttribute("Type",trainServiceType)
-                .putCustomAttribute("Train No",train.getNumber())
                 .putCustomAttribute("Is Accessibility On",isAccessibilityOn));
     }
 
