@@ -629,7 +629,12 @@ public class TransitManager {
         Type type = new TypeToken<ArrayList<Trip>>() {
         }.getType();
         Gson gson = new Gson();
-        ArrayList<Trip> items = gson.fromJson(existingItemStr, type);
+        ArrayList<Trip> items = null;
+        try {
+            items = gson.fromJson(existingItemStr, type);
+        } catch (JsonSyntaxException e) {
+            e.printStackTrace();
+        }
         if (items == null) {
             items = new ArrayList<Trip>();
         }
