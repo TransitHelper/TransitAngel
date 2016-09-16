@@ -12,6 +12,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTouch;
 import rx.subscriptions.CompositeSubscription;
 
 public class HomeActivity extends AppCompatActivity {
@@ -58,6 +60,8 @@ public class HomeActivity extends AppCompatActivity {
 
     private TextToSpeech myTTS;
     private int MY_DATA_CHECK_CODE = 0;
+    private int x;
+    private int y;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -216,6 +220,15 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
+    @OnTouch(R.id.search)
+    public boolean onSearchTouched(View view, MotionEvent motionEvent) {
+        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            x = (int) motionEvent.getX();
+            y = (int) motionEvent.getY();
+        }
+        return false;
+    }
+
     @OnClick(R.id.search)
     public void onSearchClicked() {
         onScheduleClicked();
@@ -223,6 +236,8 @@ public class HomeActivity extends AppCompatActivity {
 
     public void onScheduleClicked() {
         Intent intent = new Intent(this, ScheduleActivity.class);
+        intent.putExtra(ScheduleActivity.EXTRA_SEARCH_TOUCH_X, x);
+        intent.putExtra(ScheduleActivity.EXTRA_SEARCH_TOUCH_Y, y);
         startActivity(intent);
     }
 
