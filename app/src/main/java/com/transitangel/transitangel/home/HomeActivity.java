@@ -1,9 +1,12 @@
 package com.transitangel.transitangel.home;
 
+import android.animation.Animator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.design.widget.TabLayout;
@@ -14,6 +17,8 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewAnimationUtils;
+import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import com.crashlytics.android.answers.Answers;
@@ -43,6 +48,8 @@ public class HomeActivity extends AppCompatActivity {
     public static final String ACTION_TRIP_CANCELLED = "ACTION_TRIP_CANCELLED";
     public static final String ACTION_SHORTCUT = "ACTION_SHORTCUT";
     public static final String EXTRA_SHORTCUT_TRIP_ID = "EXTRA_SHORTCUT_TRIP_ID";
+    public static final String EXTRA_SEARCH_TOUCH_X = "EXTRA_SEARCH_TOUCH_X";
+    public static final String EXTRA_SEARCH_TOUCH_Y = "EXTRA_SEARCH_TOUCH_Y";
 
     private static SharedPreferences mSharedPreference;
 
@@ -51,6 +58,9 @@ public class HomeActivity extends AppCompatActivity {
 
     @BindView(R.id.home_pager)
     ViewPager homePager;
+
+    @BindView(R.id.clMainContent)
+    View clMainContent;
 
     private HomePagerAdapter adapter;
     private TripHelperApiFactory mTripHelperApiFactory;
@@ -62,6 +72,7 @@ public class HomeActivity extends AppCompatActivity {
     private int MY_DATA_CHECK_CODE = 0;
     private int x;
     private int y;
+    int mXRevealStart, mYRevealStart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +95,10 @@ public class HomeActivity extends AppCompatActivity {
         Answers.getInstance().logCustom(new CustomEvent("Home Screen")
                 .putCustomAttribute("Is Accessibility On",isAccessibilityOn));
 
+        // If we have touch from search which means search has been clicked
+        if(getIntent().hasExtra(EXTRA_SEARCH_TOUCH_X) && getIntent().hasExtra(EXTRA_SEARCH_TOUCH_Y)) {
+            setUpCircularReveal();
+        }
     }
 
 
@@ -176,6 +191,39 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    private void setUpCircularReveal() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            clMainContent.setVisibility(View.INVISIBLE);
+            ViewTreeObserver viewTreeObserver = clMainContent.getViewTreeObserver();
+            if (viewTreeObserver.isAlive()) {
+                viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        circularRevealActivity();
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                            clMainContent.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                        } else {
+                            clMainContent.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void circularRevealActivity() {
+        mXRevealStart = getIntent().getIntExtra(EXTRA_SEARCH_TOUCH_X, 0);
+        mYRevealStart = getIntent().getIntExtra(EXTRA_SEARCH_TOUCH_Y, 0);
+        float finalRadius = Math.max(clMainContent.getWidth(), clMainContent.getHeight());
+        // create the animator for this view (the start radius is zero)
+        Animator circularReveal = ViewAnimationUtils.createCircularReveal(clMainContent, mXRevealStart, mYRevealStart, 0, finalRadius);
+        circularReveal.setDuration(300);
+        // make the view visible and start the animation
+        clMainContent.setVisibility(View.VISIBLE);
+        circularReveal.start();
+    }
+
     private void launchStartTrip(Trip trip) {
 //        Toast.makeText(this, "Short cut clicked from home screen with Trip ID : " + trip.getTripId(), Toast.LENGTH_LONG).show();
         if (trip != null) {
@@ -192,7 +240,6 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
         }
     }
-
 
     private void launchOnGoingScreen() {
         // Set the current item to live notifications.
@@ -260,9 +307,25 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        Fragment fragment = adapter.getRegisteredFragment(homePager.getCurrentItem());
+        if (fragment instanceof onBackPressedListener) {
+            if(!((onBackPressedListener) fragment).onBackPressed()) {
+                return;
+            }
+        }
+        super.onBackPressed();
+
+    }
+
+    @Override
     protected void onDestroy() {
         if (mSubscription != null)
             mSubscription.clear();
         super.onDestroy();
+    }
+
+    interface onBackPressedListener {
+        boolean onBackPressed();
     }
 }

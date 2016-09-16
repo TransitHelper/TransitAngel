@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -40,6 +41,7 @@ import com.transitangel.transitangel.model.Transit.TrainStop;
 import com.transitangel.transitangel.model.Transit.TrainStopFence;
 import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.notifications.NotificationProvider;
+import com.transitangel.transitangel.schedule.ScheduleActivity;
 import com.transitangel.transitangel.search.StationsAdapter;
 import com.transitangel.transitangel.utils.DateUtil;
 import com.transitangel.transitangel.utils.Preconditions;
@@ -54,6 +56,7 @@ import java.util.HashMap;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTouch;
 
 public class DetailsActivity extends AppCompatActivity implements StationsAdapter.OnItemClickListener, SearchView.OnQueryTextListener {
 
@@ -88,6 +91,8 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
     private ArrayList<TrainStop> mAlarmStops = new ArrayList<>();
     private ArrayList<TrainStop> geofenceStops = new ArrayList<>();
     HashMap<String, Stop> stopHashMap = new HashMap<>();
+    private int xStartTripTouch;
+    private int yStartTripTouch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -291,6 +296,8 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         Intent intent = new Intent(this, HomeActivity.class);
         intent.setAction(HomeActivity.ACTION_SHOW_ONGOING);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra(HomeActivity.EXTRA_SEARCH_TOUCH_X, xStartTripTouch);
+        intent.putExtra(HomeActivity.EXTRA_SEARCH_TOUCH_Y, yStartTripTouch);
         startActivity(intent);
 
         sendTripStartedAnalyticsEvent();
@@ -395,5 +402,14 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
                 addGeoFenceToSelectedStops(selectedTrip);
             }
         }
+    }
+
+    @OnTouch(R.id.btnStartTrip)
+    public boolean onSearchTouched(View view, MotionEvent motionEvent) {
+        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            xStartTripTouch = (int) motionEvent.getRawX();
+            yStartTripTouch = (int) motionEvent.getRawY();
+        }
+        return false;
     }
 }
