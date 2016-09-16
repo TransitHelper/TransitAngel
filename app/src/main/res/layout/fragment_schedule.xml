@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".schedule.ScheduleFragment">
+    tools:context=".schedule.ScheduleFragment"
+    android:background="@color/bg_activity_default">
 
     <RelativeLayout
         android:id="@+id/station_selector_container"
