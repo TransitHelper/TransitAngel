@@ -16,8 +16,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
+import com.transitangel.transitangel.Manager.TransitLocationManager;
 import com.transitangel.transitangel.Manager.TransitManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.model.Transit.Stop;
@@ -25,8 +27,14 @@ import com.transitangel.transitangel.model.Transit.Train;
 import com.transitangel.transitangel.model.Transit.TrainStop;
 import com.transitangel.transitangel.schedule.ScheduleActivity;
 import com.transitangel.transitangel.utils.TAConstants;
+import com.uber.sdk.android.rides.RideParameters;
+import com.uber.sdk.android.rides.RideRequestButton;
+import com.uber.sdk.core.auth.Scope;
+import com.uber.sdk.rides.client.ServerTokenSession;
+import com.uber.sdk.rides.client.SessionConfiguration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,9 +68,16 @@ public class NearByFragment extends Fragment {
     @BindView(R.id.no_bart)
     TextView tvNoBart;
 
+    @BindView(R.id.caltrainUberBtn)
+    RideRequestButton caltrainUberButton;
+
+    @BindView(R.id.bartUberBtn)
+    RideRequestButton bartUberButton;
+
     private Stop currentCalStop;
     private Stop currentBartStop;
     private TextView mEmptyTextView;
+    private SessionConfiguration uberSessionConfig;
 
     public NearByFragment() {
     }
@@ -81,6 +96,13 @@ public class NearByFragment extends Fragment {
     }
 
     private void init() {
+
+        uberSessionConfig = new SessionConfiguration.Builder()
+                .setClientId("UEyCTAgOkCzdObRsU39xrnpSnQFGCXgD")
+                .setServerToken("B7JV01T4VB6Tqaat-k4bHwY1TxiVjmsVW6P_EoKU")
+                .setScopes(Arrays.asList(Scope.RIDE_WIDGETS))
+                .build();
+
         srlNearbyContainer.post(() -> {
            srlNearbyContainer.setRefreshing(true);
         });
@@ -285,10 +307,44 @@ public class NearByFragment extends Fragment {
 
     private void saveBarCurrentStop(Stop stop) {
         currentBartStop = stop;
+
+        //set the uber button
+        bartUberButton.setVisibility(View.VISIBLE);
+        double stopLatitude = Double.parseDouble(stop.getLatitude());
+        double stopLongitude = Double.parseDouble(stop.getLongitude());
+        LatLng latLng = TransitLocationManager.getSharedInstance().getCachedLocation();
+        RideParameters rideParams = new RideParameters.Builder()
+                .setPickupLocation(latLng.latitude,latLng.longitude,"Current Location","")
+                .setDropoffLocation(stopLatitude,stopLongitude,stop.getName(),stop.getName()+ " Bart Station")
+                .build();
+
+        ServerTokenSession session = new ServerTokenSession(uberSessionConfig);
+
+        bartUberButton.setRideParameters(rideParams);
+        bartUberButton.setSession(session);
+        bartUberButton.loadRideInformation();
     }
 
     private void saveCaltrainTrain(Stop stop) {
         currentCalStop = stop;
+
+        //set the uber button
+        //set it to visible
+        caltrainUberButton.setVisibility(View.VISIBLE);
+        double stopLatitude = Double.parseDouble(stop.getLatitude());
+        double stopLongitude = Double.parseDouble(stop.getLongitude());
+        LatLng latLng = TransitLocationManager.getSharedInstance().getCachedLocation();
+        RideParameters rideParams = new RideParameters.Builder()
+                .setPickupLocation(latLng.latitude,latLng.longitude,"Current Location","")
+                .setDropoffLocation(stopLatitude,stopLongitude,stop.getName(),stop.getName() + " Caltrain Station")
+                .build();
+
+        ServerTokenSession session = new ServerTokenSession(uberSessionConfig);
+
+        caltrainUberButton.setRideParameters(rideParams);
+        caltrainUberButton.setSession(session);
+        caltrainUberButton.loadRideInformation();
+
     }
 
     private void failedToLoad() {
