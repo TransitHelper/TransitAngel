@@ -143,6 +143,8 @@ public class TestManager {
 //        trips = TransitManager.getSharedInstance().fetchRecentTripList();
 //        Log.d("Trips",trips.toString());
 
+        //        TransitLocationManager.getSharedInstance().setMockLocation(this,37.394458,-122.075954,1500);
+//        TransitLocationManager.getSharedInstance().mockCurrentLocation(this);
     }
 
     private void testHandleOnLocationReceived(boolean isSuccess, LatLng latLng) {
