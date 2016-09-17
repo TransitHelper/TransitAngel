@@ -75,7 +75,7 @@ public class ScheduleFragment extends Fragment
     List<scheduleItem> mRecentItems = new ArrayList<>();
     ScheduleRecyclerAdapter mRecyclerViewAdapter;
     HashMap<String, Stop> stopHashMap = new HashMap<>();
-    public static Calendar mCalendar = Calendar.getInstance();
+    public Calendar mCalendar = Calendar.getInstance();
 
     public ScheduleFragment() {
         // Required empty public constructor
@@ -138,7 +138,7 @@ public class ScheduleFragment extends Fragment
         ArrayList<Train> trains = new ArrayList<>();
         Date date = mCalendar.getTime();
         trains = CaltrainTransitManager.getSharedInstance().fetchTrains(mFromStationId, mToStationId,
-                5, date, false,false);
+                5, date, false, false);
         mRecentItems.clear();
         for (Train train : trains) {
             ArrayList<TrainStop> mTrainStop = train.getTrainStopsBetween(mFromStationId, mToStationId);
@@ -175,19 +175,19 @@ public class ScheduleFragment extends Fragment
 
         String noFromStationSelected = getString(R.string.select_from_station);
         String noToStation = getString(R.string.select_to_station);
-        String toStation =stopHashMap.containsKey(mToStationId) ? stopHashMap.get(mToStationId).getName() : noToStation;
+        String toStation = stopHashMap.containsKey(mToStationId) ? stopHashMap.get(mToStationId).getName() : noToStation;
         String fromStation = stopHashMap.containsKey(mFromStationId) ? stopHashMap.get(mFromStationId).getName() : noFromStationSelected;
 
         mToStation.setText(toStation);
         mFromStation.setText(fromStation);
 
-        if(stopHashMap.containsKey(mToStationId)) {
+        if (stopHashMap.containsKey(mToStationId)) {
             mToStation.setContentDescription(getString(R.string.to_station_set) + toStation);
         } else {
             mToStation.setContentDescription(getString(R.string.no_to_station_set));
         }
 
-        if(stopHashMap.containsKey(mFromStationId)) {
+        if (stopHashMap.containsKey(mFromStationId)) {
             mFromStation.setContentDescription(getString(R.string.from_station_set) + fromStation);
         } else {
             mFromStation.setContentDescription(getString(R.string.no_from_station_set));
@@ -222,6 +222,12 @@ public class ScheduleFragment extends Fragment
     public void onResume() {
         super.onResume();
         updateStationLabels(false);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mCalendar = Calendar.getInstance();
     }
 
     @Override
@@ -260,8 +266,7 @@ public class ScheduleFragment extends Fragment
             }
             ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), view, transitionName);
             getActivity().startActivityForResult(intent, RESULT_DETAILS, options.toBundle());
-        }
-        else {
+        } else {
             ActivityCompat.startActivity(getActivity(), intent, null);
         }
     }
@@ -292,6 +297,7 @@ public class ScheduleFragment extends Fragment
         intent.putExtra(FROM_STATION_ID, mFromStationId);
         getActivity().startActivityForResult(intent, RESULT_SEARCH_TO, null);
     }
+
 
     @OnClick(R.id.from_station)
     protected void onFromStationClick() {

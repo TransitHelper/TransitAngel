@@ -98,7 +98,7 @@ public class FilterDialogFragment extends DialogFragment
         setListeners();
         setValues();
         AlertDialog alertDialog = builder.create();
-        alertDialog.setOnShowListener( new DialogInterface.OnShowListener() {
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface arg0) {
                 alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).
@@ -153,9 +153,9 @@ public class FilterDialogFragment extends DialogFragment
 
     @Override
     public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
-        mSelectedTime.setText(hourOfDay + ":" + minute);
         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         calendar.set(Calendar.MINUTE, minute);
+        mSelectedTime.setText(mTimeFormat.format(calendar.getTime()));
         mLayoutTime.setContentDescription("Selected time " + mTimeFormat.format(calendar.getTime()) + "Tap to change");
     }
 

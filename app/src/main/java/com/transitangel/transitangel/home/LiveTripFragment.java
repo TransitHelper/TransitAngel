@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
 import com.transitangel.transitangel.Manager.PrefManager;
+import com.transitangel.transitangel.Manager.TransitLocationManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.details.AlarmBroadcastReceiver;
 import com.transitangel.transitangel.model.Transit.Stop;
@@ -143,7 +144,7 @@ public class LiveTripFragment extends Fragment implements StationsAdapter.OnItem
         stop.setNotify(true);
         mAlarmStops.add(stop);
         int requestCode = TAConstants.ALARM_REQUEST_CODE + stop.getStopOrder();
-        AddAlaram(stop, requestCode);
+       // AddAlaram(stop, requestCode);
     }
 
     @Override
@@ -158,7 +159,10 @@ public class LiveTripFragment extends Fragment implements StationsAdapter.OnItem
         stop.setNotify(false);
         mAlarmStops.remove(stop);
         int requestCode = TAConstants.ALARM_REQUEST_CODE + stop.getStopOrder();
-        removeAlarm(stop, requestCode);
+//        removeAlarm(stop, requestCode);
+        //mock location
+        TransitLocationManager.getSharedInstance().setMockLocation(getContext(),stop.getLatitude(),stop.getLongitude(),300);
+
     }
 
     private void AddAlaram(TrainStop stop, int requestCode) {

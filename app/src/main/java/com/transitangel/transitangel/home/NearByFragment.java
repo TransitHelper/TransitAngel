@@ -32,6 +32,7 @@ import com.transitangel.transitangel.model.Transit.Stop;
 import com.transitangel.transitangel.model.Transit.Train;
 import com.transitangel.transitangel.model.Transit.TrainStop;
 import com.transitangel.transitangel.schedule.ScheduleActivity;
+import com.transitangel.transitangel.utils.DateUtil;
 import com.transitangel.transitangel.utils.TAConstants;
 import com.uber.sdk.android.rides.RideParameters;
 import com.uber.sdk.android.rides.RideRequestButton;
@@ -140,7 +141,7 @@ public class NearByFragment extends Fragment implements HomeActivity.onBackPress
                 .build();
 
         srlNearbyContainer.post(() -> {
-           srlNearbyContainer.setRefreshing(true);
+            srlNearbyContainer.setRefreshing(true);
         });
 
         loadCurrentStops();
@@ -193,10 +194,12 @@ public class NearByFragment extends Fragment implements HomeActivity.onBackPress
     }
 
     private void loadAllStations() {
-        final ArrayList<Train> calTrainList = CaltrainTransitManager.getSharedInstance().fetchTrainsDepartingFromStation(currentCalStop.getId(), 3);
-        final ArrayList<Train> bartTrainList = BartTransitManager.getSharedInstance().fetchTrainsDepartingFromStation(currentBartStop.getId(), 3);
+        final ArrayList<Train> calTrainList = CaltrainTransitManager.getSharedInstance()
+                .fetchTrainsDepartingFromStation(currentCalStop.getId(), 3);
+        final ArrayList<Train> bartTrainList = BartTransitManager.getSharedInstance()
+                .fetchTrainsDepartingFromStation(currentBartStop.getId(), 3);
         getActivity().runOnUiThread(() -> {
-            if(mEmptyView.isShown()) {
+            if (mEmptyView.isShown()) {
                 mEmptyView.setVisibility(View.GONE);
             }
 
@@ -218,7 +221,8 @@ public class NearByFragment extends Fragment implements HomeActivity.onBackPress
                     final TrainStop lastStop = train.getTrainStops().get(train.getTrainStops().size() - 1);
                     trainInfo.setText(getString(R.string.nearby_train, lastStop.getName()));
                     trainInfo.setContentDescription(getString(R.string.nearby_train_description, currentStop.getName(), lastStop.getName()));
-                    trainDeparture.setText(getString(R.string.nearby_scheduled_at, currentStop.getDepartureTime()));
+                    trainDeparture.setText(getString(R.string.nearby_scheduled_at,
+                            DateUtil.getFormattedTime(currentStop.getDepartureTime())));
                     caltrain.setVisibility(View.VISIBLE);
                     caltrain.setOnClickListener((View view) -> {
                         if (currentCalStop != null) {
@@ -229,7 +233,8 @@ public class NearByFragment extends Fragment implements HomeActivity.onBackPress
                             intent.putExtra(ScheduleActivity.TO_STATION_ID, lastStop.getStopId());
                             Pair<View, String> p1 = Pair.create(trainInfo, "fromStation");
                             Pair<View, String> p2 = Pair.create(trainInfo, "toStation");
-                            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), p1, p2);
+                            ActivityOptionsCompat options = ActivityOptionsCompat
+                                    .makeSceneTransitionAnimation(getActivity(), p1, p2);
                             startActivity(intent, options.toBundle());
                         }
                     });
@@ -266,7 +271,8 @@ public class NearByFragment extends Fragment implements HomeActivity.onBackPress
                     TrainStop lastStop = train.getTrainStops().get(train.getTrainStops().size() - 1);
                     trainInfo.setText(getString(R.string.nearby_train, lastStop.getName()));
                     trainInfo.setContentDescription(getString(R.string.nearby_train_description, currentStop.getName(), lastStop.getName()));
-                    trainDeparture.setText(getString(R.string.nearby_scheduled_at, currentStop.getDepartureTime()));
+                    trainDeparture.setText(getString(R.string.nearby_scheduled_at,
+                            DateUtil.getFormattedTime(currentStop.getDepartureTime())));
                     bart.setVisibility(View.VISIBLE);
                     bart.setOnClickListener((View view) -> {
                         if (currentBartStop != null) {
@@ -277,7 +283,8 @@ public class NearByFragment extends Fragment implements HomeActivity.onBackPress
                             intent.putExtra(ScheduleActivity.TO_STATION_ID, lastStop.getStopId());
                             Pair<View, String> p1 = Pair.create(trainInfo, "fromStation");
                             Pair<View, String> p2 = Pair.create(trainInfo, "toStation");
-                            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), p1, p2);
+                            ActivityOptionsCompat options = ActivityOptionsCompat
+                                    .makeSceneTransitionAnimation(getActivity(), p1, p2);
                             startActivity(intent, options.toBundle());
                         }
                     });
@@ -298,8 +305,8 @@ public class NearByFragment extends Fragment implements HomeActivity.onBackPress
             srlNearbyContainer.setRefreshing(false);
         });
 
-        boolean isBartNearest = TransitManager.getSharedInstance().isBartNearest(currentCalStop,currentBartStop);
-        if ( isBartNearest) {
+        boolean isBartNearest = TransitManager.getSharedInstance().isBartNearest(currentCalStop, currentBartStop);
+        if (isBartNearest) {
             switchOrder();
         }
     }
@@ -355,8 +362,8 @@ public class NearByFragment extends Fragment implements HomeActivity.onBackPress
         double stopLongitude = Double.parseDouble(stop.getLongitude());
         LatLng latLng = TransitLocationManager.getSharedInstance().getCachedLocation();
         RideParameters rideParams = new RideParameters.Builder()
-                .setPickupLocation(latLng.latitude,latLng.longitude,"Current Location","")
-                .setDropoffLocation(stopLatitude,stopLongitude,stop.getName(),stop.getName()+ " Bart Station")
+                .setPickupLocation(latLng.latitude, latLng.longitude, "Current Location", "")
+                .setDropoffLocation(stopLatitude, stopLongitude, stop.getName(), stop.getName() + " Bart Station")
                 .build();
 
         ServerTokenSession session = new ServerTokenSession(uberSessionConfig);
@@ -395,8 +402,8 @@ public class NearByFragment extends Fragment implements HomeActivity.onBackPress
         double stopLongitude = Double.parseDouble(stop.getLongitude());
         LatLng latLng = TransitLocationManager.getSharedInstance().getCachedLocation();
         RideParameters rideParams = new RideParameters.Builder()
-                .setPickupLocation(latLng.latitude,latLng.longitude,"Current Location","")
-                .setDropoffLocation(stopLatitude,stopLongitude,stop.getName(),stop.getName() + " Caltrain Station")
+                .setPickupLocation(latLng.latitude, latLng.longitude, "Current Location", "")
+                .setDropoffLocation(stopLatitude, stopLongitude, stop.getName(), stop.getName() + " Caltrain Station")
                 .build();
 
         ServerTokenSession session = new ServerTokenSession(uberSessionConfig);

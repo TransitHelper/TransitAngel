@@ -7,8 +7,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -253,5 +255,46 @@ public class TransitLocationManager implements com.google.android.gms.location.L
         return (gps_enabled && network_enabled);
     }
 
+    public void setMockLocation(Context context,double latitude, double longitude, float accuracy) {
+        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        try {
+            lm.addTestProvider(LocationManager.GPS_PROVIDER,
+                    "requiresNetwork" == "",
+                    "requiresSatellite" == "",
+                    "requiresCell" == "",
+                    "hasMonetaryCost" == "",
+                    "supportsAltitude" == "",
+                    "supportsSpeed" == "",
+                    "supportsBearing" == "",
+                    android.location.Criteria.POWER_LOW,
+                    android.location.Criteria.ACCURACY_FINE);
+
+            Location newLocation = new Location(LocationManager.GPS_PROVIDER);
+
+            newLocation.setLatitude(latitude);
+            newLocation.setLongitude(longitude);
+            newLocation.setAccuracy(accuracy);
+            newLocation.setTime(System.currentTimeMillis());
+            newLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
+
+            lm.setTestProviderEnabled(LocationManager.GPS_PROVIDER, true);
+            lm.setTestProviderStatus(LocationManager.GPS_PROVIDER, LocationProvider.AVAILABLE, null, System.currentTimeMillis());
+            try {
+                lm.setTestProviderLocation(LocationManager.GPS_PROVIDER, newLocation);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } catch (SecurityException e) {
+            Log.d("Exception","Security Exception occurred");
+        }
+    }
+
+    public void mockCurrentLocation(Context context){
+        double currentLatitude = TransitLocationManager.getSharedInstance().getCachedLocation().latitude;
+        double currentLongitude = TransitLocationManager.getSharedInstance().getCachedLocation().longitude;
+        setMockLocation(context,currentLatitude,currentLongitude,1000);
+    }
 
 }
