@@ -33,4 +33,16 @@ public class DateUtil {
                         .format(new Date())
                         .concat(time));
     }
+
+    public static String getFormattedTime(Timestamp timestamp) {
+        return timeFormat.format(timestamp);
+    }
+
+    public static String getFormattedTime(String time) {
+        Timestamp timestamp=Timestamp.valueOf(
+                new SimpleDateFormat("yyyy-MM-dd ")
+                        .format(new Date())
+                        .concat(time));
+        return getFormattedTime(timestamp);
+    }
 }
