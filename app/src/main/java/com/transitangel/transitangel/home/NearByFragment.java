@@ -1,15 +1,21 @@
 package com.transitangel.transitangel.home;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,17 +36,21 @@ import com.transitangel.transitangel.utils.DateUtil;
 import com.transitangel.transitangel.utils.TAConstants;
 import com.uber.sdk.android.rides.RideParameters;
 import com.uber.sdk.android.rides.RideRequestButton;
+import com.uber.sdk.android.rides.RideRequestButtonCallback;
 import com.uber.sdk.core.auth.Scope;
 import com.uber.sdk.rides.client.ServerTokenSession;
 import com.uber.sdk.rides.client.SessionConfiguration;
+import com.uber.sdk.rides.client.error.ApiError;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnTouch;
 
-public class NearByFragment extends Fragment {
+public class NearByFragment extends Fragment implements HomeActivity.onBackPressedListener {
 
 
     private static final String TAG = NearByFragment.class.getSimpleName();
@@ -53,6 +63,9 @@ public class NearByFragment extends Fragment {
 
     @BindView(R.id.card_view_caltrain)
     View cardViewCaltrain;
+
+    @BindView(R.id.card_view_uber)
+    View cardViewUber;
 
     @BindView(R.id.bart_container)
     LinearLayout bartContainer;
@@ -69,16 +82,39 @@ public class NearByFragment extends Fragment {
     @BindView(R.id.no_bart)
     TextView tvNoBart;
 
+    @BindView(R.id.uber_caltrain_name)
+    TextView uberCaltrainName;
+
+    @BindView(R.id.uber_bart_name)
+    TextView uberBartName;
+
     @BindView(R.id.caltrainUberBtn)
     RideRequestButton caltrainUberButton;
 
     @BindView(R.id.bartUberBtn)
     RideRequestButton bartUberButton;
 
+    @BindView(R.id.uber_bart_container)
+    View uberBartContainer;
+
+    @BindView(R.id.uber_caltrain_container)
+    View uberCaltainConatiner;
+
+    @BindView(R.id.uber_suggestions_container)
+    View uberSuggestionsContainer;
+
+    @BindView(R.id.nearby_caltrain_header)
+    TextView caltrainHeader;
+
+    @BindView(R.id.nearby_header_bart)
+    TextView bartHeader;
+
     private Stop currentCalStop;
     private Stop currentBartStop;
     private TextView mEmptyTextView;
     private SessionConfiguration uberSessionConfig;
+    private float mXUberTouch;
+    private float mYUberTouch;
 
     public NearByFragment() {
     }
@@ -183,7 +219,8 @@ public class NearByFragment extends Fragment {
                     Train train = calTrainList.get(caltrainCount);
                     final TrainStop currentStop = getCurrentStop(currentCalStop.getId(), train);
                     final TrainStop lastStop = train.getTrainStops().get(train.getTrainStops().size() - 1);
-                    trainInfo.setText(getString(R.string.nearby_train, currentStop.getName(), lastStop.getName()));
+                    trainInfo.setText(getString(R.string.nearby_train, lastStop.getName()));
+                    trainInfo.setContentDescription(getString(R.string.nearby_train_description, currentStop.getName(), lastStop.getName()));
                     trainDeparture.setText(getString(R.string.nearby_scheduled_at,
                             DateUtil.getFormattedTime(currentStop.getDepartureTime())));
                     caltrain.setVisibility(View.VISIBLE);
@@ -232,7 +269,8 @@ public class NearByFragment extends Fragment {
                     Train train = bartTrainList.get(bartCount);
                     TrainStop currentStop = getCurrentStop(currentBartStop.getId(), train);
                     TrainStop lastStop = train.getTrainStops().get(train.getTrainStops().size() - 1);
-                    trainInfo.setText(getString(R.string.nearby_train, currentStop.getName(), lastStop.getName()));
+                    trainInfo.setText(getString(R.string.nearby_train, lastStop.getName()));
+                    trainInfo.setContentDescription(getString(R.string.nearby_train_description, currentStop.getName(), lastStop.getName()));
                     trainDeparture.setText(getString(R.string.nearby_scheduled_at,
                             DateUtil.getFormattedTime(currentStop.getDepartureTime())));
                     bart.setVisibility(View.VISIBLE);
@@ -279,6 +317,10 @@ public class NearByFragment extends Fragment {
         bartParms.removeRule(RelativeLayout.BELOW);
         RelativeLayout.LayoutParams caltrainParams = (RelativeLayout.LayoutParams) cardViewCaltrain.getLayoutParams();
         caltrainParams.addRule(RelativeLayout.BELOW, R.id.card_view_bart);
+
+        RelativeLayout.LayoutParams cardViewUberParms = (RelativeLayout.LayoutParams) cardViewUber.getLayoutParams();
+        cardViewUberParms.removeRule(RelativeLayout.BELOW);
+        cardViewUberParms.addRule(RelativeLayout.BELOW, R.id.card_view_caltrain);
     }
 
     private int getCaltrainId(int i) {
@@ -316,7 +358,6 @@ public class NearByFragment extends Fragment {
         currentBartStop = stop;
 
         //set the uber button
-        bartUberButton.setVisibility(View.VISIBLE);
         double stopLatitude = Double.parseDouble(stop.getLatitude());
         double stopLongitude = Double.parseDouble(stop.getLongitude());
         LatLng latLng = TransitLocationManager.getSharedInstance().getCachedLocation();
@@ -326,10 +367,30 @@ public class NearByFragment extends Fragment {
                 .build();
 
         ServerTokenSession session = new ServerTokenSession(uberSessionConfig);
+        bartUberButton.setCallback(new RideRequestButtonCallback() {
+            @Override
+            public void onRideInformationLoaded() {
+                uberBartName.post(() -> {
+                    uberBartContainer.setVisibility(View.VISIBLE);
+                    uberBartName.setText(stop.getName() + " Bart station :");
+                });
+            }
 
+            @Override
+            public void onError(ApiError apiError) {
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+
+            }
+        });
         bartUberButton.setRideParameters(rideParams);
         bartUberButton.setSession(session);
         bartUberButton.loadRideInformation();
+        bartHeader.post(() -> bartHeader.setText(getString(R.string.nearby_bart_title) + stop.getName()));
+
     }
 
     private void saveCaltrainTrain(Stop stop) {
@@ -337,7 +398,6 @@ public class NearByFragment extends Fragment {
 
         //set the uber button
         //set it to visible
-        caltrainUberButton.setVisibility(View.VISIBLE);
         double stopLatitude = Double.parseDouble(stop.getLatitude());
         double stopLongitude = Double.parseDouble(stop.getLongitude());
         LatLng latLng = TransitLocationManager.getSharedInstance().getCachedLocation();
@@ -347,11 +407,57 @@ public class NearByFragment extends Fragment {
                 .build();
 
         ServerTokenSession session = new ServerTokenSession(uberSessionConfig);
+        caltrainUberButton.setCallback(new RideRequestButtonCallback() {
+            @Override
+            public void onRideInformationLoaded() {
+                uberCaltrainName.post(() -> {
+                    uberCaltainConatiner.setVisibility(View.VISIBLE);
+                    uberCaltrainName.setText(stop.getName() + " Caltrain station :");
+                });
+            }
 
+            @Override
+            public void onError(ApiError apiError) {
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+
+            }
+        });
         caltrainUberButton.setRideParameters(rideParams);
         caltrainUberButton.setSession(session);
         caltrainUberButton.loadRideInformation();
+        caltrainHeader.post(() -> caltrainHeader.setText(getString(R.string.nearby_caltrain_title) + stop.getName()));
 
+    }
+
+    @OnClick(R.id.uber_button)
+    public void onUberButtonClicked() {
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            uberSuggestionsContainer.setVisibility(View.VISIBLE);
+        } else {
+            enterReveal();
+        }
+    }
+
+
+    @OnTouch(R.id.uber_button)
+    public boolean onUberButtonTouch(View view, MotionEvent motionEvent) {
+        mXUberTouch = motionEvent.getRawX();
+        mYUberTouch = motionEvent.getRawY();
+        return false;
+    }
+
+
+    @OnClick(R.id.close_button)
+    public void onUberCloseClicked() {
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            uberSuggestionsContainer.setVisibility(View.GONE);
+        } else {
+            exitReveal();
+        }
     }
 
     private void failedToLoad() {
@@ -366,8 +472,62 @@ public class NearByFragment extends Fragment {
             bartContainer.setVisibility(View.GONE);
         });
     }
-
     public void noLocationPermissionGranted() {
         failedToLoad();
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        if(uberSuggestionsContainer.isShown()) {
+            onUberCloseClicked();
+            return false;
+        }
+        return true;
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void enterReveal() {
+        // previously invisible view
+        final View myView = uberSuggestionsContainer;
+
+        // get the center for the clipping circle
+        int cx = (int)mXUberTouch;
+        int cy = (int)mYUberTouch;
+
+        // get the final radius for the clipping circle
+        int finalRadius = Math.max(myView.getWidth(), myView.getHeight()) / 2;
+        Animator anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0, finalRadius);
+        myView.setVisibility(View.VISIBLE);
+        anim.start();
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    void exitReveal() {
+        // previously visible view
+        final View myView = uberSuggestionsContainer;
+
+        // get the center for the clipping circle
+        int cx = (int)mXUberTouch;
+        int cy = (int)mYUberTouch;
+
+        // get the initial radius for the clipping circle
+        int initialRadius = myView.getWidth() / 2;
+
+        // create the animation (the final radius is zero)
+        Animator anim =
+                ViewAnimationUtils.createCircularReveal(myView, cx, cy, initialRadius, 0);
+
+        // make the view invisible when the animation is done
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                myView.setVisibility(View.GONE);
+            }
+        });
+
+        // start the animation
+        anim.start();
     }
 }
