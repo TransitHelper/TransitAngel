@@ -75,7 +75,7 @@ public class BartScheduleFragment extends Fragment
     List<scheduleItem> mRecentItems = new ArrayList<>();
     ScheduleRecyclerAdapter mRecyclerViewAdapter;
     HashMap<String, Stop> stopHashMap = new HashMap<>();
-    public static Calendar mCalendar = Calendar.getInstance();
+    public Calendar mCalendar = Calendar.getInstance();
 
     public BartScheduleFragment() {
         // Required empty public constructor
@@ -87,6 +87,12 @@ public class BartScheduleFragment extends Fragment
         args.putSerializable(ARG_TRANSIT_TYPE, type);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mCalendar = Calendar.getInstance();
     }
 
     @Override
@@ -110,8 +116,6 @@ public class BartScheduleFragment extends Fragment
             if (trip != null && trip.getType() == TAConstants.TRANSIT_TYPE.BART) {
                 mFromStationId = trip.getFromStop().getId();
                 mToStationId = trip.getToStop().getId();
-            } else {
-                //TODO: set nearest location, want to save last known location and get nearest stop
             }
         }
     }
@@ -139,7 +143,7 @@ public class BartScheduleFragment extends Fragment
     private void getTrainSchedule() {
         ArrayList<Train> trains = new ArrayList<>();
         Date date = mCalendar.getTime();
-        trains = BartTransitManager.getSharedInstance().fetchTrains(mFromStationId, mToStationId, 5, date, false,false);
+        trains = BartTransitManager.getSharedInstance().fetchTrains(mFromStationId, mToStationId, 5, date, false, false);
         mRecentItems.clear();
         for (Train train : trains) {
             ArrayList<TrainStop> mTrainStop = train.getTrainStopsBetween(mFromStationId, mToStationId);
@@ -259,8 +263,7 @@ public class BartScheduleFragment extends Fragment
             }
             ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), view, transitionName);
             getActivity().startActivityForResult(intent, RESULT_DETAILS, options.toBundle());
-        }
-        else {
+        } else {
             ActivityCompat.startActivity(getActivity(), intent, null);
         }
     }
