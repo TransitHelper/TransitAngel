@@ -192,6 +192,7 @@
     <string name="notifications_trip_to">"Trip to "</string>
     <string name="notifications_arrive_at">"Arrive at "</string>
     <string name="share_trip">Share Trip</string>
+    <string name="ride_with_uber">Ride with Uber</string>
     <string name="traip_cancelled_messaged">Trip cancelled.</string>
     <string name="trip_subject">Trip Angel: Trip Update</string>
     <string name="uber_suggestions">Uber Suggestions</string>
