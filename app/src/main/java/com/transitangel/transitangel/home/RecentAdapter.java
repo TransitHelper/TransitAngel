@@ -142,11 +142,11 @@ public class RecentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             if (currentTrip.getType() == TAConstants.TRANSIT_TYPE.BART) {
                 recentItemViewHolder.tvTrainInfo.setText(context.getString(R.string.trip_train_without_number,
                         DateUtil.getFormattedTime(mFromTrainStop.getArrrivalTime())));
-                recentItemViewHolder.ivIcon.setImageResource(R.drawable.bart_icon);
+                recentItemViewHolder.ivIcon.setImageResource(R.mipmap.bart_icon);
             } else {
                 recentItemViewHolder.tvTrainInfo.setText(context.getString(R.string.trip_train_number,
                         selectedTrain.getNumber(), DateUtil.getFormattedTime(mFromTrainStop.getArrrivalTime())));
-                recentItemViewHolder.ivIcon.setImageResource(R.mipmap.caltrian_icon);
+                recentItemViewHolder.ivIcon.setImageResource(R.mipmap.caltrain_icon);
             }
         } else if (viewType == RECENT_TRIP_ITEM_VIEW_MORE_TYPE) {
             // Nothing to set here.
@@ -159,9 +159,9 @@ public class RecentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             recentItemViewHolder.parent.setContentDescription(context.getString(R.string.contentdescription_from_to,
                     currentTrip.getFromStop().getName(), currentTrip.getToStop().getName()));
             if (currentTrip.getType() == TAConstants.TRANSIT_TYPE.BART) {
-                recentItemViewHolder.ivIcon.setImageResource(R.drawable.bart_icon);
+                recentItemViewHolder.ivIcon.setImageResource(R.mipmap.bart_icon);
             } else {
-                recentItemViewHolder.ivIcon.setImageResource(R.mipmap.caltrian_icon);
+                recentItemViewHolder.ivIcon.setImageResource(R.mipmap.caltrain_icon);
             }
         }
 

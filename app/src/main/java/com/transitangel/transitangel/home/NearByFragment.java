@@ -219,7 +219,7 @@ public class NearByFragment extends Fragment implements HomeActivity.onBackPress
                     ImageView icon = (ImageView) caltrain.findViewById(R.id.ivIcon);
                     final TextView trainInfo = (TextView) caltrain.findViewById(R.id.tvTrainInfo);
                     TextView trainDeparture = (TextView) caltrain.findViewById(R.id.tvDeparture);
-                    icon.setImageResource(R.mipmap.caltrian_icon);
+                    icon.setImageResource(R.mipmap.caltrain_icon);
                     Train train = calTrainList.get(caltrainCount);
                     final TrainStop currentStop = getCurrentStop(currentCalStop.getId(), train);
                     final TrainStop lastStop = train.getTrainStops().get(train.getTrainStops().size() - 1);
@@ -271,7 +271,7 @@ public class NearByFragment extends Fragment implements HomeActivity.onBackPress
                     // Check near by station and add it in the following way:
                     bart = bartContainer.findViewById(getBartId(bartCount));
                     ImageView icon = (ImageView) bart.findViewById(R.id.ivIcon);
-                    icon.setImageResource(R.drawable.bart_icon);
+                    icon.setImageResource(R.mipmap.bart_icon);
                     final TextView trainInfo = (TextView) bart.findViewById(R.id.tvTrainInfo);
                     TextView trainDeparture = (TextView) bart.findViewById(R.id.tvDeparture);
                     Train train = bartTrainList.get(bartCount);

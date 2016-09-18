@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
@@ -267,8 +268,8 @@ public class TransitLocationManager implements com.google.android.gms.location.L
                     "supportsAltitude" == "",
                     "supportsSpeed" == "",
                     "supportsBearing" == "",
-                    android.location.Criteria.POWER_LOW,
-                    android.location.Criteria.ACCURACY_FINE);
+                    Criteria.POWER_HIGH,
+                    Criteria.ACCURACY_HIGH);
 
             Location newLocation = new Location(LocationManager.GPS_PROVIDER);
 

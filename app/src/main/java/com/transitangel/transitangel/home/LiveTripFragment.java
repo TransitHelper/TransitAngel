@@ -161,7 +161,7 @@ public class LiveTripFragment extends Fragment implements StationsAdapter.OnItem
         int requestCode = TAConstants.ALARM_REQUEST_CODE + stop.getStopOrder();
 //        removeAlarm(stop, requestCode);
         //mock location
-        TransitLocationManager.getSharedInstance().setMockLocation(getContext(),stop.getLatitude(),stop.getLongitude(),300);
+        TransitLocationManager.getSharedInstance().setMockLocation(getContext(),stop.getLatitude(),stop.getLongitude(),50);
 
     }
 
