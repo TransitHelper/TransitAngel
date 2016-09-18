@@ -27,8 +27,6 @@ import com.transitangel.transitangel.Intent.ShakerService;
 import com.transitangel.transitangel.Manager.TransitLocationManager;
 import com.transitangel.transitangel.Manager.TransitManager;
 import com.transitangel.transitangel.R;
-import com.transitangel.transitangel.api.TripHelperApiFactory;
-import com.transitangel.transitangel.api.TripHelplerRequestInterceptor;
 import com.transitangel.transitangel.details.DetailsActivity;
 import com.transitangel.transitangel.model.Transit.Trip;
 import com.transitangel.transitangel.schedule.ScheduleActivity;
@@ -40,7 +38,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTouch;
-import rx.subscriptions.CompositeSubscription;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -66,8 +63,6 @@ public class HomeActivity extends AppCompatActivity {
     View clMainContent;
 
     private HomePagerAdapter adapter;
-    private TripHelperApiFactory mTripHelperApiFactory;
-    private CompositeSubscription mSubscription = new CompositeSubscription();
 
     private String[] titles = {"Near by", "Recents", "Live trip"};
 
@@ -83,8 +78,6 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         init();
-        mTripHelperApiFactory = new TripHelperApiFactory(new TripHelplerRequestInterceptor(this));
-//        TestManager.getSharedInstance().executeSampleAPICalls(this);
         Intent serviceIntent = new Intent(this, ShakerService.class);
         startService(serviceIntent);
 
@@ -325,13 +318,6 @@ public class HomeActivity extends AppCompatActivity {
         }
         super.onBackPressed();
 
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (mSubscription != null)
-            mSubscription.clear();
-        super.onDestroy();
     }
 
     interface onBackPressedListener {

@@ -1,3 +1,8 @@
+apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'me.tatarka.retrolambda'
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -7,16 +12,10 @@ buildscript {
         classpath 'io.fabric.tools:gradle:1.+'
     }
 }
-apply plugin: 'com.android.application'
-apply plugin: 'io.fabric'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
-
-apply plugin: 'com.jakewharton.butterknife'
-apply plugin: 'com.neenbedankt.android-apt'
-apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 24
@@ -59,16 +58,6 @@ dependencies {
     compile "com.jakewharton:butterknife:$rootProject.ext.butterKnifeVersion"
     apt "com.jakewharton:butterknife-compiler:$rootProject.ext.butterKnifeVersion"
 
-    apt "com.google.dagger:dagger-compiler:$rootProject.ext.daggerVersion"
-    provided "org.glassfish:javax.annotation:$rootProject.ext.javaxAnnotationVersion"
-
-    compile "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofitVersion"
-    compile "com.squareup.retrofit2:converter-jackson:$rootProject.ext.retrofitJacksonVersion"
-    compile "com.squareup.retrofit2:adapter-rxjava:$rootProject.ext.retrofitRxjavaVersion"
-    //RxAndroid
-    compile "io.reactivex:rxjava:$rootProject.ext.rxJavaVersion"
-    compile "io.reactivex:rxandroid:$rootProject.ext.rxAndroidVersion"
-
     //permission dispatcher
     apt 'com.github.hotchemi:permissionsdispatcher-processor:2.0.7'
     testCompile 'junit:junit:4.12'
@@ -80,7 +69,6 @@ dependencies {
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile 'com.pixplicity.easyprefs:library:1.8.1@aar'
-    compile 'com.android.support:support-v4:24.2.0'
     compile 'com.uber.sdk:rides-android:0.5.3'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') {
         transitive = true;

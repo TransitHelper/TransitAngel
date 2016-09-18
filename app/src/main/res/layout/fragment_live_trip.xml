@@ -1,20 +1,23 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:andorid="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
-    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/rvStationList"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="60dp"
-        android:paddingTop="10dp" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp">
 
+        <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/rvStationList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="10dp" />
+    </android.support.v4.widget.SwipeRefreshLayout>
     <include
-        layout="@layout/empty_view"
-        android:id="@+id/emptyView" />
-
+        android:id="@+id/emptyView"
+        layout="@layout/empty_view" />
     <Button
         android:id="@+id/btnCancelTrip"
         android:layout_width="match_parent"

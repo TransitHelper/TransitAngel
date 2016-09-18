@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:gravity="center_vertical"
-                android:orientation="vertical"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
 
     <View
         android:id="@+id/vIcon"
@@ -26,7 +26,7 @@
         android:layout_height="3dp"
         android:layout_centerVertical="true"
         android:layout_marginLeft="16dp"
-        android:background="@color/blue_tracks"/>
+        android:background="@color/blue_tracks" />
 
     <View
         android:id="@+id/trackFinal"
@@ -34,8 +34,8 @@
         android:layout_height="6dp"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="8dp"
-        android:visibility="gone"
-        android:background="@color/blue_tracks"/>
+        android:background="@color/blue_tracks"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/tvStopName"
@@ -53,15 +53,19 @@
         android:layout_below="@+id/tvStopName"
         android:layout_toRightOf="@+id/vIcon"
         android:paddingBottom="8dp"
-        android:textSize="13sp"
         android:paddingTop="4dp"
+        android:textSize="13sp"
         tools:text="14:30" />
 
-    <CheckBox
-        android:id="@+id/cb_alarm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+    <ToggleButton
+        android:id="@+id/mock_it"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:textOff=""
+        android:textOn=""
+        android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:button="@drawable/custom_checkbox" />
+        android:layout_alignParentRight="true"
+        android:background="@drawable/mock_selector"
+        android:checked="false" />
 </RelativeLayout>
