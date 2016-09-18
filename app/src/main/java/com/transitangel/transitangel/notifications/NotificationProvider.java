@@ -198,6 +198,11 @@ public class NotificationProvider {
         // 2. Create a PendingIntent
         PendingIntent pendingNotificationIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        Intent callUberIntent = new Intent(context, HomeActivity.class);
+        callUberIntent.setAction(HomeActivity.ACTION_OPEN_UBER);
+        callUberIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent piUber = PendingIntent.getActivity(context, 2, callUberIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
         // 3. Create and send a notification
         Notification notification = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.train)
@@ -207,6 +212,7 @@ public class NotificationProvider {
                 .setTicker(title).setDefaults(NotificationCompat.DEFAULT_ALL) // Required to show like phone call notifications
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true)
+                .addAction(R.drawable.share_variant,context.getString(R.string.ride_with_uber), piUber)
                 .build();
 
         notificationManager.notify(NOTIFICATION_BIG_TEXT, notification);

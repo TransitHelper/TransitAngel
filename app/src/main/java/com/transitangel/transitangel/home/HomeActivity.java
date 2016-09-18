@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -53,6 +54,7 @@ public class HomeActivity extends AppCompatActivity {
     public static final String ACTION_SHARE_TRIP = "ACTION_SHARE_TRIP";
     public static final String ACTION_SHARE_TITLE = "ACTION_SHARE_TITLE";
     public static final String ACTION_SHARE_CONTENT = "ACTION_SHARE_CONTENT";
+    public static final String ACTION_OPEN_UBER = "ACTION_OPEN_UBER";
 
     private static SharedPreferences mSharedPreference;
 
@@ -195,6 +197,23 @@ public class HomeActivity extends AppCompatActivity {
                         launchStartTrip(trip);
                         return;
                     }
+                }
+            }
+            else if (action.equalsIgnoreCase(ACTION_OPEN_UBER)) {
+                try {
+                    PackageManager pm = this.getPackageManager();
+                    pm.getPackageInfo("com.ubercab", PackageManager.GET_ACTIVITIES);
+                    String uri =
+                            "uber://?action=setPickup&pickup=my_location&client_id=UEyCTAgOkCzdObRsU39xrnpSnQFGCXgD";
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(uri));
+                    startActivity(intent);
+                } catch (PackageManager.NameNotFoundException e) {
+                    // No Uber app! Open mobile website.
+                    String url = "https://m.uber.com/sign-up?client_id=UEyCTAgOkCzdObRsU39xrnpSnQFGCXgD";
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(url));
+                    startActivity(i);
                 }
             }
         }
