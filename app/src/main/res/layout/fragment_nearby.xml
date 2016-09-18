@@ -32,7 +32,9 @@
                         xmlns:android="http://schemas.android.com/apk/res/android"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/recylerview_item_padding"
+                        android:paddingTop="@dimen/recylerview_item_padding"
+                        android:paddingBottom="16dp"
+                        android:paddingLeft="16dp"
                         android:orientation="vertical">
 
                         <TextView
@@ -40,6 +42,7 @@
                             style="@style/caption"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
                             android:text="@string/nearby_caltrain_title_default"/>
 
                         <TextView
@@ -84,13 +87,16 @@
                         android:id="@+id/bart_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/recylerview_item_padding"
+                        android:paddingTop="@dimen/recylerview_item_padding"
+                        android:paddingBottom="16dp"
+                        android:paddingLeft="16dp"
                         android:orientation="vertical">
                         <TextView
                             android:id="@+id/nearby_header_bart"
                             style="@style/caption"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
                             android:text="@string/nearby_bart_title_default"/>
 
                         <TextView
@@ -141,9 +147,8 @@
                         android:clickable="true">
 
                         <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_marginLeft="16dp"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
                             android:src="@drawable/uber"/>
 
                         <TextView

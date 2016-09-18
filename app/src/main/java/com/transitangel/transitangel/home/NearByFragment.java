@@ -215,7 +215,7 @@ public class NearByFragment extends Fragment implements HomeActivity.onBackPress
                     ImageView icon = (ImageView) caltrain.findViewById(R.id.ivIcon);
                     final TextView trainInfo = (TextView) caltrain.findViewById(R.id.tvTrainInfo);
                     TextView trainDeparture = (TextView) caltrain.findViewById(R.id.tvDeparture);
-                    icon.setImageResource(R.drawable.train_red);
+                    icon.setImageResource(R.mipmap.caltrian_icon);
                     Train train = calTrainList.get(caltrainCount);
                     final TrainStop currentStop = getCurrentStop(currentCalStop.getId(), train);
                     final TrainStop lastStop = train.getTrainStops().get(train.getTrainStops().size() - 1);
@@ -263,7 +263,7 @@ public class NearByFragment extends Fragment implements HomeActivity.onBackPress
                     // Check near by station and add it in the following way:
                     bart = bartContainer.findViewById(getBartId(bartCount));
                     ImageView icon = (ImageView) bart.findViewById(R.id.ivIcon);
-                    icon.setImageResource(R.drawable.train_blue);
+                    icon.setImageResource(R.drawable.bart_icon);
                     final TextView trainInfo = (TextView) bart.findViewById(R.id.tvTrainInfo);
                     TextView trainDeparture = (TextView) bart.findViewById(R.id.tvDeparture);
                     Train train = bartTrainList.get(bartCount);
@@ -288,6 +288,10 @@ public class NearByFragment extends Fragment implements HomeActivity.onBackPress
                             startActivity(intent, options.toBundle());
                         }
                     });
+                    if (bartCount == (bartTrainSize - 2)) {
+                        View divider = (View) bart.findViewById(R.id.card_divider);
+                        divider.setVisibility(View.GONE);
+                    }
                     bart.setClickable(true);
                 }
 
@@ -435,7 +439,7 @@ public class NearByFragment extends Fragment implements HomeActivity.onBackPress
 
     @OnClick(R.id.uber_button)
     public void onUberButtonClicked() {
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             uberSuggestionsContainer.setVisibility(View.VISIBLE);
         } else {
             enterReveal();
@@ -453,7 +457,7 @@ public class NearByFragment extends Fragment implements HomeActivity.onBackPress
 
     @OnClick(R.id.close_button)
     public void onUberCloseClicked() {
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             uberSuggestionsContainer.setVisibility(View.GONE);
         } else {
             exitReveal();
@@ -472,13 +476,14 @@ public class NearByFragment extends Fragment implements HomeActivity.onBackPress
             bartContainer.setVisibility(View.GONE);
         });
     }
+
     public void noLocationPermissionGranted() {
         failedToLoad();
     }
 
     @Override
     public boolean onBackPressed() {
-        if(uberSuggestionsContainer.isShown()) {
+        if (uberSuggestionsContainer.isShown()) {
             onUberCloseClicked();
             return false;
         }
@@ -492,8 +497,8 @@ public class NearByFragment extends Fragment implements HomeActivity.onBackPress
         final View myView = uberSuggestionsContainer;
 
         // get the center for the clipping circle
-        int cx = (int)mXUberTouch;
-        int cy = (int)mYUberTouch;
+        int cx = (int) mXUberTouch;
+        int cy = (int) mYUberTouch;
 
         // get the final radius for the clipping circle
         int finalRadius = Math.max(myView.getWidth(), myView.getHeight()) / 2;
@@ -508,8 +513,8 @@ public class NearByFragment extends Fragment implements HomeActivity.onBackPress
         final View myView = uberSuggestionsContainer;
 
         // get the center for the clipping circle
-        int cx = (int)mXUberTouch;
-        int cy = (int)mYUberTouch;
+        int cx = (int) mXUberTouch;
+        int cy = (int) mYUberTouch;
 
         // get the initial radius for the clipping circle
         int initialRadius = myView.getWidth() / 2;

@@ -114,7 +114,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
                 info = item.getTrain().getNumber() + " " + info;
                 infoContent = "Train Number " + item.getTrain().getNumber() + " From " + item.getFrom() + " to " + item.getTo();
             } else {
-                mImageView.setImageResource(R.drawable.train_blue);
+                mImageView.setImageResource(R.drawable.bart_icon);
                 infoContent = "Train From " + item.getFrom() + " to " + item.getTo();
             }
             mTrainInformation.setText(info);
