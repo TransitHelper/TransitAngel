@@ -50,6 +50,9 @@ public class HomeActivity extends AppCompatActivity {
     public static final String EXTRA_SHORTCUT_TRIP_ID = "EXTRA_SHORTCUT_TRIP_ID";
     public static final String EXTRA_SEARCH_TOUCH_X = "EXTRA_SEARCH_TOUCH_X";
     public static final String EXTRA_SEARCH_TOUCH_Y = "EXTRA_SEARCH_TOUCH_Y";
+    public static final String ACTION_SHARE_TRIP = "ACTION_SHARE_TRIP";
+    public static final String ACTION_SHARE_TITLE = "ACTION_SHARE_TITLE";
+    public static final String ACTION_SHARE_CONTENT = "ACTION_SHARE_CONTENT";
 
     private static SharedPreferences mSharedPreference;
 
@@ -176,8 +179,14 @@ public class HomeActivity extends AppCompatActivity {
                 nearbyView.setContentDescription(getString(R.string.neaby_unselected));
                 recents.setContentDescription(getString(R.string.recents_unselected));
                 liveTrip.setContentDescription(getString(R.string.live_trip_selected));
+            } else if(action.equalsIgnoreCase(ACTION_SHARE_TRIP)) {
+                Intent share = new Intent(android.content.Intent.ACTION_SEND);
+                share.setType("text/plain");
+                share.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.trip_subject));
+                share.putExtra(Intent.EXTRA_TEXT,getIntent().getStringExtra(ACTION_SHARE_TITLE) + ", " + getIntent().getStringExtra(ACTION_SHARE_CONTENT));
+                startActivity(Intent.createChooser(share, getString(R.string.share_trip)));
             } else if (action.equalsIgnoreCase(ACTION_TRIP_CANCELLED)) {
-                Toast.makeText(this, "Trip cancelled.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.traip_cancelled_messaged), Toast.LENGTH_LONG).show();
             } else if (action.equalsIgnoreCase(ACTION_SHORTCUT)) {
                 String tripId = getIntent().getStringExtra(EXTRA_SHORTCUT_TRIP_ID);
                 ArrayList<Trip> cachedRecentTrip = TransitManager.getSharedInstance().fetchRecentTripList();

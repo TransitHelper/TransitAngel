@@ -239,6 +239,10 @@ public class NearByFragment extends Fragment implements HomeActivity.onBackPress
                         }
                     });
                     caltrain.setClickable(true);
+                    if (caltrainCount == (calTrainSize - 2)) {
+                        View divider = (View) caltrain.findViewById(R.id.card_divider);
+                        divider.setVisibility(View.GONE);
+                    }
                 }
 
                 // If there are any visible from the previous, refresh

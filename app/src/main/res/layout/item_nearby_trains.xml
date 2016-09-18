@@ -6,7 +6,7 @@
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
     android:gravity="center_vertical"
-    android:paddingBottom="4dp"
+    android:layout_marginBottom="4dp"
     android:paddingLeft="4dp"
     android:paddingTop="4dp"
     android:visibility="gone">
@@ -38,15 +38,14 @@
         android:layout_toRightOf="@+id/ivIcon"
         android:textSize="14sp"
         android:textStyle="bold"
-        tools:text="Leaving from Mtv towards SFO" />
+        tools:text="Leaving from Mtv towards SFO"
+        android:layout_marginBottom="12dp"/>
 
     <View
         android:id="@+id/card_divider"
         android:layout_width="match_parent"
-        android:layout_height="1dip"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
         android:layout_alignStart="@+id/tvDeparture"
-        android:layout_below="@id/tvDeparture"
-        android:layout_marginBottom="4dp"
-        android:layout_marginTop="12dp"
-        android:background="@color/divider" />
+        android:background="@color/light_divider" />
 </RelativeLayout>
