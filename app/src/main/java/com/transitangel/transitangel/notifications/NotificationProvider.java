@@ -212,7 +212,7 @@ public class NotificationProvider {
                 .setTicker(title).setDefaults(NotificationCompat.DEFAULT_ALL) // Required to show like phone call notifications
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true)
-                .addAction(R.drawable.share_variant,context.getString(R.string.ride_with_uber), piUber)
+                .addAction(R.drawable.uber_icon,context.getString(R.string.ride_with_uber), piUber)
                 .build();
 
         notificationManager.notify(NOTIFICATION_BIG_TEXT, notification);
