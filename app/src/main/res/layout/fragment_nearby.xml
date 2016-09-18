@@ -186,6 +186,7 @@
         android:padding="@dimen/recylerview_item_padding"
         android:gravity="center"
         android:background="@android:color/white"
+        android:clickable="true"
         android:visibility="gone">
 
         <LinearLayout
@@ -204,7 +205,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Uber Suggestions"
+                    android:text="@string/uber_suggestions"
                     android:textSize="18sp"/>
 
                 <ImageView
@@ -214,6 +215,7 @@
                     android:src="@drawable/close_black"
                     android:scaleType="center"
                     android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/close"
                     android:layout_gravity="right"/>
 
             </LinearLayout>
@@ -234,12 +236,15 @@
                     android:text="Get To Mountain View"
                     android:textSize="14sp"
                     android:textStyle="bold"
+                    android:focusable="true"
+                    android:accessibilityTraversalAfter="@+id/close_button"
                     android:layout_gravity="center_vertical"/>
 
                 <com.uber.sdk.android.rides.RideRequestButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/caltrainUberBtn"
+                    android:accessibilityTraversalAfter="@+id/uber_caltrain_name"
                     uber:ub__style="white"/>
             </LinearLayout>
 
@@ -258,12 +263,15 @@
                     android:text="Mongemery"
                     android:textSize="14sp"
                     android:textStyle="bold"
+                    android:focusable="true"
+                    android:accessibilityTraversalAfter="@+id/caltrainUberBtn"
                     android:layout_gravity="center_vertical"/>
 
                 <com.uber.sdk.android.rides.RideRequestButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/bartUberBtn"
+                    android:accessibilityTraversalAfter="@+id/uber_bart_name"
                     uber:ub__style="white"/>
             </LinearLayout>
 
