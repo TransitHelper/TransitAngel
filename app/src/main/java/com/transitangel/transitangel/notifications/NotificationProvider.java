@@ -40,15 +40,22 @@ public class NotificationProvider {
 
 
         // Get the train details:
-        String title = "Trip to " + trip.getToStop().getName();
+        String title = context.getString(R.string.notifications_trip_to) + trip.getToStop().getName();
         // Set details from the ongoing trip
-        String contentTitle = "Arrive at " + UiUtils.convert24TimeTo12hr(trip.getSelectedTrain().getTrainStop(trip.getToStop().getId()).getArrrivalTime());
+        String contentTitle = context.getString(R.string.notifications_arrive_at) + UiUtils.convert24TimeTo12hr(trip.getSelectedTrain().getTrainStop(trip.getToStop().getId()).getArrrivalTime());
 
         Intent showTrip = new Intent(context, HomeActivity.class);
         showTrip.setAction(HomeActivity.ACTION_SHOW_ONGOING);
         showTrip.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
         PendingIntent piShowTrip = PendingIntent.getActivity(context, 1, showTrip, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        Intent shareTrip = new Intent(context, HomeActivity.class);
+        shareTrip.setAction(HomeActivity.ACTION_SHARE_TRIP);
+        shareTrip.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        shareTrip.putExtra(HomeActivity.ACTION_SHARE_TITLE, title);
+        shareTrip.putExtra(HomeActivity.ACTION_SHARE_CONTENT, contentTitle);
+        PendingIntent piShare = PendingIntent.getActivity(context, 2, shareTrip, PendingIntent.FLAG_CANCEL_CURRENT);
+
         NotificationCompat.Builder notification =
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.train)
@@ -58,6 +65,7 @@ public class NotificationProvider {
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setOngoing(true) // This will make it stick to the top.
                         .addAction(R.drawable.close_notification, context.getString(R.string.cancel_trip_notification), piDismiss)// Dismissed the notification.
+                        .addAction(R.drawable.share_variant, context.getString(R.string.share_trip), piShare)
                         .setContentIntent(piShowTrip);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
@@ -88,8 +96,15 @@ public class NotificationProvider {
         Intent showTrip = new Intent(context, HomeActivity.class);
         showTrip.setAction(HomeActivity.ACTION_SHOW_ONGOING);
         showTrip.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
         PendingIntent piShowTrip = PendingIntent.getActivity(context, 1, showTrip, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        Intent shareTrip = new Intent(context, HomeActivity.class);
+        shareTrip.setAction(HomeActivity.ACTION_SHARE_TRIP);
+        shareTrip.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        shareTrip.putExtra(HomeActivity.ACTION_SHARE_TITLE, title);
+        shareTrip.putExtra(HomeActivity.ACTION_SHARE_CONTENT, contentTitle);
+        PendingIntent piShare = PendingIntent.getActivity(context, 2, shareTrip, PendingIntent.FLAG_CANCEL_CURRENT);
+
         NotificationCompat.Builder notification =
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.train)
@@ -99,6 +114,7 @@ public class NotificationProvider {
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setOngoing(true) // This will make it stick to the top.
                         .addAction(R.drawable.close_notification, context.getString(R.string.cancel_trip_notification), piDismiss)// Dismissed the notification.
+                        .addAction(R.drawable.share_variant, context.getString(R.string.share_trip), piShare)
                         .setContentIntent(piShowTrip);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);

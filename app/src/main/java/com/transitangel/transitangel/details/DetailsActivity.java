@@ -296,8 +296,8 @@ public class DetailsActivity extends AppCompatActivity implements StationsAdapte
         Intent intent = new Intent(this, HomeActivity.class);
         intent.setAction(HomeActivity.ACTION_SHOW_ONGOING);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra(HomeActivity.EXTRA_SEARCH_TOUCH_X, xStartTripTouch);
-        intent.putExtra(HomeActivity.EXTRA_SEARCH_TOUCH_Y, yStartTripTouch);
+//        intent.putExtra(HomeActivity.EXTRA_SEARCH_TOUCH_X, xStartTripTouch);
+//        intent.putExtra(HomeActivity.EXTRA_SEARCH_TOUCH_Y, yStartTripTouch);
         startActivity(intent);
 
         sendTripStartedAnalyticsEvent();
