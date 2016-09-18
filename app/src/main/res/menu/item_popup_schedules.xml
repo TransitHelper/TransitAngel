@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_caltrain"
-        android:icon="@mipmap/caltrian_icon"
+        android:icon="@mipmap/caltrain_icon"
         android:orderInCategory="1"
         android:title="Caltrain"
         app:showAsAction="withText" />
 
     <item
         android:id="@+id/action_bart"
-        android:icon="@drawable/bart_icon"
+        android:icon="@mipmap/bart_icon"
         android:orderInCategory="2"
         android:title="Bart"
         app:showAsAction="withText" />

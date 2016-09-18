@@ -20,7 +20,7 @@
             android:id="@+id/ivIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/caltrian_icon"
+            android:src="@mipmap/caltrain_icon"
             android:layout_alignParentLeft="true"
             android:layout_alignTop="@+id/tvTripTo"
             android:layout_alignBottom="@+id/tvTrainInfo"

@@ -101,10 +101,10 @@ public class SeeAllTripsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             recentItemViewHolder.parent.setContentDescription(context.getString(R.string.contentdescription_recent_trip, fromStop.getName(), toStop.getName(),selectedTrain.getNumber(), selectedTrain.getTrainStop(fromStop.getId()).getArrrivalTime()));
             if(currentTrip.getType() == TAConstants.TRANSIT_TYPE.BART) {
                 recentItemViewHolder.tvTrainInfo.setText(context.getString(R.string.trip_train_without_number, selectedTrain.getTrainStop(fromStop.getId()).getArrrivalTime()));
-                recentItemViewHolder.ivIcon.setImageResource(R.drawable.bart_icon);
+                recentItemViewHolder.ivIcon.setImageResource(R.mipmap.bart_icon);
             } else {
                 recentItemViewHolder.tvTrainInfo.setText(context.getString(R.string.trip_train_number, selectedTrain.getNumber(), selectedTrain.getTrainStop(fromStop.getId()).getArrrivalTime()));
-                recentItemViewHolder.ivIcon.setImageResource(R.mipmap.caltrian_icon);
+                recentItemViewHolder.ivIcon.setImageResource(R.mipmap.caltrain_icon);
             }
         }
     }
