@@ -17,6 +17,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -108,6 +109,9 @@ public class NearByFragment extends Fragment implements HomeActivity.onBackPress
 
     @BindView(R.id.nearby_header_bart)
     TextView bartHeader;
+
+    @BindView(R.id.uber_title)
+    TextView uberSuggestionsTitle;
 
     private Stop currentCalStop;
     private Stop currentBartStop;
@@ -437,7 +441,10 @@ public class NearByFragment extends Fragment implements HomeActivity.onBackPress
         caltrainUberButton.setRideParameters(rideParams);
         caltrainUberButton.setSession(session);
         caltrainUberButton.loadRideInformation();
-        caltrainHeader.post(() -> caltrainHeader.setText(getString(R.string.nearby_caltrain_title) + stop.getName()));
+        caltrainHeader.post(() -> {
+            caltrainHeader.setText(getString(R.string.nearby_caltrain_title) + stop.getName());
+
+        });
 
     }
 
@@ -448,6 +455,7 @@ public class NearByFragment extends Fragment implements HomeActivity.onBackPress
         } else {
             enterReveal();
         }
+        uberSuggestionsContainer.postDelayed(() -> uberSuggestionsTitle.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED), 500);
     }
 
 
