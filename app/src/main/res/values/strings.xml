@@ -188,10 +188,12 @@
     <string name="train_details_title">Train#</string>
     <string name="title_all_trips">All Trips</string>
     <string name="content_description_all_trips_screen_title">All Trips Screen</string>
-    <string name="uber_suggestions_button_text">Uber suggestions to nearest stations</string>
+    <string name="uber_suggestions_button_text">Uber to nearest stations</string>
     <string name="notifications_trip_to">"Trip to "</string>
     <string name="notifications_arrive_at">"Arrive at "</string>
     <string name="share_trip">Share Trip</string>
     <string name="traip_cancelled_messaged">Trip cancelled.</string>
     <string name="trip_subject">Trip Angel: Trip Update</string>
+    <string name="uber_suggestions">Uber Suggestions</string>
+    <string name="close">Close</string>
 </resources>
