@@ -68,6 +68,8 @@ public class LiveTripFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_live_trip, container, false);
         ButterKnife.bind(this, view);
         displayOnGoingTrip();
+        mSwipeRefresh.setOnRefreshListener(this);
+        mSwipeRefresh.setColorSchemeResources(new int[]{R.color.colorPrimary});
         return view;
     }
 
@@ -82,7 +84,6 @@ public class LiveTripFragment extends Fragment
             rvStationList.setVisibility(View.VISIBLE);
             mNoLiveTrip.setVisibility(View.GONE);
             rvStationList.setHasFixedSize(true);
-
             type = trip.getType();
             mStops = trip.getSelectedTrain().getTrainStopsBetween(trip.getFromStop().getId(), trip.getToStop().getId());
             if (type == TAConstants.TRANSIT_TYPE.CALTRAIN) {
@@ -95,6 +96,7 @@ public class LiveTripFragment extends Fragment
             rvStationList.setAdapter(adapter);
             rvStationList.setLayoutManager(mLinearLayoutManager);
             adapter.setOnItemClickListener(this);
+            adapter.setCurrentPosition(adapter.getCurrentPositions());
             mLinearLayoutManager.scrollToPositionWithOffset(adapter.getCurrentPosition(), 0);
         } else {
             // Display empty screen
@@ -106,8 +108,6 @@ public class LiveTripFragment extends Fragment
             ImageView icon = (ImageView) mNoLiveTrip.findViewById(R.id.image_empty_state);
             icon.setImageResource(R.drawable.train_blue_bart);
         }
-        mSwipeRefresh.setOnRefreshListener(this);
-        mSwipeRefresh.setColorSchemeResources(new int[]{R.color.colorPrimary});
     }
 
     @Override
@@ -117,7 +117,9 @@ public class LiveTripFragment extends Fragment
     @Override
     public void onMockSelected(int position) {
         TrainStop stop = mStops.get(position);
-        TransitLocationManager.getSharedInstance().setMockLocation(getContext(), stop.getLatitude(), stop.getLongitude(), 50);
+        TransitLocationManager.getSharedInstance().setMockLocation(getContext(), stop.getLatitude(),
+                stop.getLongitude(), 50);
+        displayOnGoingTrip(position);
     }
 
     @Override
@@ -140,6 +142,40 @@ public class LiveTripFragment extends Fragment
     @Override
     public void onRefresh() {
         displayOnGoingTrip();
-        mSwipeRefresh.setRefreshing(false);
+       mSwipeRefresh.setRefreshing(false);
+    }
+
+    //Mock Location UI for demo
+    public void displayOnGoingTrip(int position) {
+        Trip trip = PrefManager.getOnGoingTrip();
+        if (trip != null) {
+            btnCancelTrip.setVisibility(View.VISIBLE);
+            rvStationList.setVisibility(View.VISIBLE);
+            mNoLiveTrip.setVisibility(View.GONE);
+            rvStationList.setHasFixedSize(true);
+            type = trip.getType();
+            mStops = trip.getSelectedTrain().getTrainStopsBetween(trip.getFromStop().getId(), trip.getToStop().getId());
+            if (type == TAConstants.TRANSIT_TYPE.CALTRAIN) {
+                stopHashMap = CaltrainTransitManager.getSharedInstance().getStopLookup();
+            } else {
+                stopHashMap = BartTransitManager.getSharedInstance().getStopLookup();
+            }
+            mLinearLayoutManager = new LinearLayoutManager(getActivity());
+            adapter = new LiveTripAdapter(getActivity(), mStops);
+            rvStationList.setAdapter(adapter);
+            rvStationList.setLayoutManager(mLinearLayoutManager);
+            adapter.setOnItemClickListener(this);
+            adapter.setCurrentPosition(position+1);
+            mLinearLayoutManager.scrollToPositionWithOffset(position, 0);
+        } else {
+            // Display empty screen
+            rvStationList.setVisibility(View.GONE);
+            btnCancelTrip.setVisibility(View.GONE);
+            mNoLiveTrip.setVisibility(View.VISIBLE);
+            mEmptyTextView = (TextView) mNoLiveTrip.findViewById(R.id.empty_state_description);
+            mEmptyTextView.setText(R.string.no_live_trip);
+            ImageView icon = (ImageView) mNoLiveTrip.findViewById(R.id.image_empty_state);
+            icon.setImageResource(R.drawable.train_blue_bart);
+        }
     }
 }

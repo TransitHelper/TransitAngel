@@ -31,7 +31,7 @@ public class LiveTripAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     DateFormat dateFormat = new SimpleDateFormat("hh:mm a");
     private ArrayList<TrainStop> allStopItemList;
     private OnItemClickListener onItemClickListener;
-    int currentPosition = -1;
+    int currentPosition = 0;
 
 
     private Context context;
@@ -53,12 +53,20 @@ public class LiveTripAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.onItemClickListener = onItemClickListener;
     }
 
+    public void setCurrentPosition(int currentPosition)
+    {
+        this.currentPosition=currentPosition;
+    }
+
+    public int getCurrentPosition(){
+        return currentPosition;
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         RecyclerView.ViewHolder viewHolder = null;
         View view = inflater.inflate(R.layout.item_ongoing, parent, false);
-        currentPosition = -1;
         return new StationStopsViewHolder(view, onItemClickListener);
     }
 
@@ -80,7 +88,6 @@ public class LiveTripAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         StationStopsViewHolder viewHolder = (StationStopsViewHolder) holder;
         RelativeLayout.LayoutParams params;
         // FUTURE USE TO SETUP THE ICONS ON SEARCH
-       currentPosition= getCurrentPosition();
         viewHolder.tvStopName.setText(allStopItemList.get(position).getName());
         Timestamp departureTime = DateUtil.getTimeStamp(allStopItemList.get(position).getDepartureTime());
         String formattedTime = dateFormat.format(departureTime);
@@ -103,7 +110,12 @@ public class LiveTripAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             default:
                 break;
         }
-        viewHolder.mMockIt.setChecked(false);
+        if (context.getResources().getBoolean((R.bool.is_mock_build))) {
+            viewHolder.mMockIt.setChecked(false);
+        }else{
+            viewHolder.mMockIt.setVisibility(View.GONE);
+        }
+
         if (position < currentPosition) {
             viewHolder.trackVerticalIcon.setBackgroundColor(context.getResources().getColor(R.color.light_divider));
             viewHolder.trackIcon.setBackgroundColor(context.getResources().getColor(R.color.light_divider));
@@ -152,8 +164,10 @@ public class LiveTripAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             mMockIt.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
+                        currentPosition=getLayoutPosition();
                         onItemClickListener.onMockSelected(getLayoutPosition());
                     } else {
+                        currentPosition=getLayoutPosition();
                         onItemClickListener.onMockItDefault(getLayoutPosition());
                     }
                 }
@@ -162,7 +176,7 @@ public class LiveTripAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public int getCurrentPosition() {
+    public int getCurrentPositions() {
         Timestamp now = new Timestamp(new Date().getTime());
         for (int position = 0; position < allStopItemList.size(); position++) {
             if (!(DateUtil.getTimeStamp(allStopItemList.get(position).getDepartureTime()).before(now))) {

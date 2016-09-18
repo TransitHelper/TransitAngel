@@ -61,11 +61,11 @@
         android:id="@+id/mock_it"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:textOff=""
-        android:textOn=""
+        android:layout_alignParentRight="true"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
         android:background="@drawable/mock_selector"
-        android:checked="false" />
+        android:checked="false"
+        android:textOff=""
+        android:textOn="" />
 </RelativeLayout>
