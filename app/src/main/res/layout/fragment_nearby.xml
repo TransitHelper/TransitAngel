@@ -25,8 +25,8 @@
                     card_view:cardUseCompatPadding="true"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="1dp">
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp">
                     <LinearLayout
                         android:id="@+id/caltrain_container"
                         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -80,8 +80,8 @@
                     card_view:cardUseCompatPadding="true"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
-                    android:layout_marginTop="1dp"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
                     android:layout_below="@+id/card_view_caltrain">
                     <LinearLayout
                         android:id="@+id/bart_container"
@@ -133,7 +133,7 @@
                     card_view:cardUseCompatPadding="true"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
-                    android:layout_marginTop="1dp"
+                    android:layout_marginTop="4dp"
                     android:layout_marginBottom="10dp"
                     android:layout_below="@+id/card_view_bart">
 

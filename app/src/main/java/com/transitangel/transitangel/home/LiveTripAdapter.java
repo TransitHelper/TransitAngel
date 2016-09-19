@@ -1,6 +1,7 @@
 package com.transitangel.transitangel.home;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,12 +54,11 @@ public class LiveTripAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.onItemClickListener = onItemClickListener;
     }
 
-    public void setCurrentPosition(int currentPosition)
-    {
-        this.currentPosition=currentPosition;
+    public void setCurrentPosition(int currentPosition) {
+        this.currentPosition = currentPosition;
     }
 
-    public int getCurrentPosition(){
+    public int getCurrentPosition() {
         return currentPosition;
     }
 
@@ -92,7 +92,6 @@ public class LiveTripAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         Timestamp departureTime = DateUtil.getTimeStamp(allStopItemList.get(position).getDepartureTime());
         String formattedTime = dateFormat.format(departureTime);
         viewHolder.tvStopTime.setText(formattedTime);
-        Timestamp now = new Timestamp(new Date().getTime());
         switch (getItemViewType(position)) {
             case ITEM_TYPE_STATION_START:
                 params = (RelativeLayout.LayoutParams) viewHolder.trackFinal.getLayoutParams();
@@ -112,19 +111,29 @@ public class LiveTripAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
         if (context.getResources().getBoolean((R.bool.is_mock_build))) {
             viewHolder.mMockIt.setChecked(false);
-        }else{
+        } else {
             viewHolder.mMockIt.setVisibility(View.GONE);
         }
 
-        if (position < currentPosition) {
+        if (position < currentPosition || currentPosition == (allStopItemList.size() - 1)) {
             viewHolder.trackVerticalIcon.setBackgroundColor(context.getResources().getColor(R.color.light_divider));
             viewHolder.trackIcon.setBackgroundColor(context.getResources().getColor(R.color.light_divider));
             viewHolder.trackFinal.setBackgroundColor(context.getResources().getColor(R.color.light_divider));
-            viewHolder.mMockIt.setEnabled(false);
+            viewHolder.mMockIt.setVisibility(View.GONE);
         } else {
-            viewHolder.trackVerticalIcon.setBackgroundColor(context.getResources().getColor(R.color.blue_tracks));
-            viewHolder.trackIcon.setBackgroundColor(context.getResources().getColor(R.color.blue_tracks));
-            viewHolder.trackFinal.setBackgroundColor(context.getResources().getColor(R.color.blue_tracks));
+            if (!allStopItemList.get(position).getNotify())
+                viewHolder.mMockIt.setBackground(context.getResources().getDrawable(R.drawable.mock_location));
+            if (position == currentPosition) {
+                viewHolder.tvStopName.setTypeface(viewHolder.tvStopName.getTypeface(), Typeface.BOLD);
+                viewHolder.tvStopTime.setTypeface(viewHolder.tvStopTime.getTypeface(), Typeface.BOLD);
+                viewHolder.mMockIt.setVisibility(View.GONE);
+            } else {
+                viewHolder.tvStopName.setTypeface(viewHolder.tvStopName.getTypeface(), Typeface.NORMAL);
+                viewHolder.tvStopTime.setTypeface(viewHolder.tvStopTime.getTypeface(), Typeface.NORMAL);
+                viewHolder.trackVerticalIcon.setBackgroundColor(context.getResources().getColor(R.color.blue_tracks));
+                viewHolder.trackIcon.setBackgroundColor(context.getResources().getColor(R.color.blue_tracks));
+                viewHolder.trackFinal.setBackgroundColor(context.getResources().getColor(R.color.blue_tracks));
+            }
         }
         String contentDescription = allStopItemList.get(position).getName()
                 + context.getString(R.string.content_description_station)
@@ -164,10 +173,10 @@ public class LiveTripAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             mMockIt.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
-                        currentPosition=getLayoutPosition();
+                        currentPosition = getLayoutPosition();
                         onItemClickListener.onMockSelected(getLayoutPosition());
                     } else {
-                        currentPosition=getLayoutPosition();
+                        currentPosition = getLayoutPosition();
                         onItemClickListener.onMockItDefault(getLayoutPosition());
                     }
                 }

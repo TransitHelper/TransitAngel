@@ -195,7 +195,7 @@ public class LiveTripFragment extends Fragment
             rvStationList.setAdapter(adapter);
             rvStationList.setLayoutManager(mLinearLayoutManager);
             adapter.setOnItemClickListener(this);
-            adapter.setCurrentPosition(position+1);
+            adapter.setCurrentPosition(position);
             mLinearLayoutManager.scrollToPositionWithOffset(position, 0);
         } else {
             // Display empty screen
