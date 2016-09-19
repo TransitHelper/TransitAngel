@@ -42,7 +42,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
         }
         if (!gps_enabled && !network_enabled) {
             Log.e("TripID", tripId);
-            Log.e("PrefTripId", PrefManager.getOnGoingTrip().getTripId());
+            Log.e("PrefTripId", PrefManager.getOnGoingTrip() != null ? PrefManager.getOnGoingTrip().getTripId() : "null");
             String notificationMessage;
             Timestamp stopTimeStamp = DateUtil.getTimeStamp(nextStop.getArrrivalTime());
             long minutes = getTimeStampDifference(stopTimeStamp);
