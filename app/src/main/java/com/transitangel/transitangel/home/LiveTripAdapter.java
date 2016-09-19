@@ -109,11 +109,6 @@ public class LiveTripAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             default:
                 break;
         }
-        if (context.getResources().getBoolean((R.bool.is_mock_build))) {
-            viewHolder.mMockIt.setChecked(false);
-        } else {
-            viewHolder.mMockIt.setVisibility(View.GONE);
-        }
 
         if (position < currentPosition || currentPosition == (allStopItemList.size() - 1)) {
             viewHolder.trackVerticalIcon.setBackgroundColor(context.getResources().getColor(R.color.light_divider));
@@ -121,8 +116,13 @@ public class LiveTripAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             viewHolder.trackFinal.setBackgroundColor(context.getResources().getColor(R.color.light_divider));
             viewHolder.mMockIt.setVisibility(View.GONE);
         } else {
-            if (!allStopItemList.get(position).getNotify())
+            if (!allStopItemList.get(position).getNotify()) {
                 viewHolder.mMockIt.setBackground(context.getResources().getDrawable(R.drawable.mock_location));
+            } else {
+                viewHolder.mMockIt.setVisibility(View.VISIBLE);
+                viewHolder.mMockIt.setBackground(context.getResources().getDrawable(R.drawable.mock_locationselected));
+            }
+
             if (position == currentPosition) {
                 viewHolder.tvStopName.setTypeface(viewHolder.tvStopName.getTypeface(), Typeface.BOLD);
                 viewHolder.tvStopTime.setTypeface(viewHolder.tvStopTime.getTypeface(), Typeface.BOLD);
@@ -134,6 +134,12 @@ public class LiveTripAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 viewHolder.trackIcon.setBackgroundColor(context.getResources().getColor(R.color.blue_tracks));
                 viewHolder.trackFinal.setBackgroundColor(context.getResources().getColor(R.color.blue_tracks));
             }
+        }
+        if (context.getResources().getBoolean((R.bool.is_mock_build))) {
+            viewHolder.mMockIt.setChecked(false);
+        } else {
+            viewHolder.mMockIt.setVisibility(View.GONE);
+            viewHolder.mMockIt.setEnabled(false);
         }
         String contentDescription = allStopItemList.get(position).getName()
                 + context.getString(R.string.content_description_station)
