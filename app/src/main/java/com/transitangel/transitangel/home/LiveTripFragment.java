@@ -1,11 +1,13 @@
 package com.transitangel.transitangel.home;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +18,8 @@ import android.widget.Toast;
 
 import com.transitangel.transitangel.Manager.BartTransitManager;
 import com.transitangel.transitangel.Manager.CaltrainTransitManager;
+import com.transitangel.transitangel.Manager.GeofenceManager;
 import com.transitangel.transitangel.Manager.PrefManager;
-import com.transitangel.transitangel.Manager.TransitLocationManager;
 import com.transitangel.transitangel.R;
 import com.transitangel.transitangel.model.Transit.Stop;
 import com.transitangel.transitangel.model.Transit.TrainStop;
@@ -117,9 +119,37 @@ public class LiveTripFragment extends Fragment
     @Override
     public void onMockSelected(int position) {
         TrainStop stop = mStops.get(position);
-        TransitLocationManager.getSharedInstance().setMockLocation(getContext(), stop.getLatitude(),
-                stop.getLongitude(), 50);
         displayOnGoingTrip(position);
+        //TransitLocationManager.getSharedInstance().setMockLocation(getContext(), stop.getLatitude(),stop.getLongitude(), 50);
+
+        //check if it is the last stop
+        if ( position == mStops.size()-1) {
+            NotificationProvider.getInstance().endOngoingNotification(getContext());
+
+            //show the destination is approaching
+            String notificationContent = "Approaching " + stop.getName();
+
+            Intent intent = new Intent(getContext(), HomeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            NotificationProvider.getInstance().showBigTextNotification(getContext(), intent, "This is your final destination", notificationContent);
+
+            //remove all geofences
+            GeofenceManager.getSharedInstance().removeAllGeofences(new GeofenceManager.GeofenceManagerListener() {
+                @Override
+                public void onGeofencesUpdated() {
+                    Log.d("Geofence Success","Successfully removed all geofences");
+                }
+
+                @Override
+                public void onError() {
+                    Log.d("Geofence Error","Error removing all geofences");
+                }
+            });
+        }
+        else {
+            String notificationContent = "Approaching " + stop.getName();
+            NotificationProvider.getInstance().updateTripStartedNotification(getContext(),notificationContent);
+        }
     }
 
     @Override
