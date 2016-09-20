@@ -1,7 +1,9 @@
 package com.transitangel.transitangel.Manager;
 
 import android.app.PendingIntent;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.pixplicity.easyprefs.library.Prefs;
@@ -24,14 +26,20 @@ public class PrefManager {
         Prefs.putString(EXTRA_TRIP_INFO, gson.toJson(newTrip));
     }
 
+    @Nullable
     public static Trip getOnGoingTrip() {
-        if (trip == null) {
-            String tripString = Prefs.getString(EXTRA_TRIP_INFO, null);
-            if (!TextUtils.isEmpty(tripString)) {
-                Gson gson = new Gson();
-                trip = gson.fromJson(tripString, Trip.class);
+        try {
+            if (trip == null) {
+                String tripString = Prefs.getString(EXTRA_TRIP_INFO, null);
+                if (!TextUtils.isEmpty(tripString)) {
+                    Gson gson = new Gson();
+                    trip = gson.fromJson(tripString, Trip.class);
+                }
             }
+        } catch (Exception e) {
+            Log.e(TAG, "getOnGoingTrip: exception while getting on going trip", e);
         }
+
         return trip;
     }
 
