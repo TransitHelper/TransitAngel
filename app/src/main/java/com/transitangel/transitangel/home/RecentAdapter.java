@@ -176,7 +176,7 @@ public class RecentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public int getSearchListPosition(int position) {
         // Subtract the header and recent trip count.
         position = position - getTripsCount() - 1;
-        return position;
+        return position < 0 ? 0 : position;
     }
 
     @Override
